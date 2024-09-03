@@ -1,0 +1,17 @@
+﻿/* Tăng kích thước khung của toast */
+.blazored-toast[b-jnm4noxjw5] {
+    font-size: 1.5rem; /* Kích thước chữ */
+    padding: 20px; /* Khoảng cách trong khung */
+    border-radius: 8px; /* Bo tròn góc */
+    width: 21rem;
+}
+
+    /* Tùy chỉnh tiêu đề của toast (nếu có) */
+    .blazored-toast .blazored-toast-title {
+        font-size: 1.75rem; /* Kích thước tiêu đề */
+    }
+
+    /* Tùy chỉnh nội dung của toast */
+    .blazored-toast .blazored-toast-message {
+        font-size: 1.5rem; /* Kích thước nội dung */
+    }

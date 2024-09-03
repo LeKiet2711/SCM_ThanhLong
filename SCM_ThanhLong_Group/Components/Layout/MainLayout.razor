@@ -1,0 +1,35 @@
+﻿@inherits LayoutComponentBase
+@using Blazored.Toast.Configuration
+@inject SCM_ThanhLong_Group.Service.Users_Service UserService
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="3"
+                IconType="Blazored.Toast.Configuration.IconType.FontAwesome"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" />
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <span>Xin chào, @UserService.currentUserName!</span>
+            <a href="/Home" class="btn btn-primary ms-3">Hồ sơ</a>
+            <a href="/Home" class="btn btn-secondary ms-2">Đăng xuất</a>
+        </div>
+
+        <article class="content px-4">
+            
+            @Body
+        </article>
+    </main>
+</div>
+
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

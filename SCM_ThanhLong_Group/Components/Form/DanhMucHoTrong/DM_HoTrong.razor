@@ -1,0 +1,260 @@
+﻿@page "/danhmuchotrong"
+@rendermode InteractiveServer
+@inject HoTrong_Service HoTrong_Service
+@inject IToastService ToastService
+
+<h2 style="text-align:center;font-weight:bold">Danh mục hộ trồng</h2>
+<button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
+    <span class="oi oi-plus" aria-hidden="true">Thêm hộ trồng mới</span>
+</button>
+
+@if (dataList == null)
+{
+    <p><em>Loading......</em></p>
+}
+else
+{
+    <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="170px" Resizable="true" Reorderable="true" Class="telerik-grid">
+        <GridColumns>
+            <GridColumn Field="@nameof(HoTrong.MaHoTrong)" Title="Mã hộ trồng" Width="100px" />
+            <GridColumn Field="@nameof(HoTrong.TenHoTrong)" Title="Tên hộ trồng" Width="100px" />
+            <GridColumn Field="@nameof(HoTrong.KhuVucTrongID)" Title="Khu vực trồng" Width="100px" />
+            <GridColumn Field="@nameof(HoTrong.DiaChi)" Title="Địa chỉ" Width="100px" />
+            <GridColumn Field="@nameof(HoTrong.SoDienThoai)" Title="Số điện thoại" Width="100px" />
+            <GridCommandColumn Width="180px">
+                <GridCommandButton Command="Edit" OnClick="@EditItem">
+                    <span class="oi oi-pencil" Width="100px"></span> Sửa
+                </GridCommandButton>
+                <GridCommandButton Command="Delete" OnClick="@DeleteItem">
+                    <span class="oi oi-trash" Width="100px"></span> Xóa
+                </GridCommandButton>
+            </GridCommandColumn>
+        </GridColumns>
+    </TelerikGrid>
+}
+
+<div class="modal fade @addModalClass" tabindex="-1" role="dialog" style="@addModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Thêm mới khu vực trồng</b></h5>
+                <button type="button" class="close" @onclick="CloseAddModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#e5d2b8; color:brown">
+                <EditForm Model="@hoTrong" OnValidSubmit="createHoTrong">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="MaHoTrong" class="control-label"><b>Mã hộ trồng: </b></label>
+                        <InputText class="form-control" @bind-Value=@hoTrong.MaHoTrong />
+                        <ValidationMessage For="@(() => hoTrong.MaHoTrong)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="TenHoTrong" class="control-label"><b>Tên hộ trồng: </b></label>
+                        <InputText class="form-control" @bind-Value=@hoTrong.TenHoTrong />
+                        <ValidationMessage For="@(() => hoTrong.TenHoTrong)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MaKhuVuc" class="control-label"><b>Mã khu vực: </b></label>
+                        <InputSelect class="" @bind-Value="@hoTrong.KhuVucTrongID">
+                            <option value="">-- Chọn khu vực trồng --</option>
+                            @foreach (var item in khuVucTrongList)
+                            {
+                                <option value="@item.Auto_ID">@item.MaKhuVuc - @item.TenKhuVuc</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(()=>hoTrong.KhuVucTrongID)" />
+
+                    </div>
+                    <div class="form-group">
+                        <label for="DiaChi" class="control-label"><b>Địa chỉ: </b></label>
+                        <InputText class="form-control" @bind-Value=@hoTrong.DiaChi />
+                    </div>
+                    <div class="form-group">
+                        <label for="SoDienThoai" class="control-label"><b>Số điện thoại: </b></label>
+                        <InputText class="form-control" @bind-Value=@hoTrong.SoDienThoai />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Thêm hộ trồng</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade @deleteModalClass" tabindex="-1" role="dialog" style="@deleteModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Xóa hộ trồng</b></h5>
+                <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#e5d2b8; color:brown; font-size:30px">
+                <p style="color:red">Bạn có chắc chắn muốn xóa khu vực này không?</p>
+                <EditForm Model="@hoTrong" OnValidSubmit="deleteHoTrong">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="MaHoTrong" class="control-label">Mã hộ trồng: </label>
+                        <label><b>@hoTrong.MaHoTrong</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="TenHoTrong" class="control-label">Tên hộ trồng: </label>
+                        <label><b>@hoTrong.TenHoTrong</b></label>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                        <label for="KhuVucTrongID" class="control-label">Mã khu vực trồng: </label>
+                        <label><b>@hoTrong.KhuVucTrongID</b></label>
+                    </div>
+                        <label for="DiaChi" class="control-label">Địa chỉ: </label>
+                        <label><b>@hoTrong.DiaChi</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="SoDienThoai" class="control-label">Số điện thoại: </label>
+                        <label><b>@hoTrong.SoDienThoai</b></label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Xóa khu vực trồng</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    private List<HoTrong> dataList = new List<HoTrong>();
+    private List<KhuVucTrong> khuVucTrongList = new List<KhuVucTrong>();
+
+    private HoTrong hoTrong = new HoTrong();
+    private bool holdten = false;
+    private bool holdma = false;
+
+    private string addModalClass = "";
+    private string addModalDisplayStyle = "display:none";
+    private string editModalClass = "";
+    private string editModalDisplayStyle = "display:none";
+    private string deleteModalClass = "";
+    private string deleteModalDisplayStyle = "display:none";
+
+    private string maHoTrong;
+    private string tenHoTrong;
+
+    protected override async Task OnInitializedAsync()
+    {
+        khuVucTrongList = await HoTrong_Service.getKhuVucTrongData();
+        dataList = await HoTrong_Service.getAllData();
+    }
+
+    private void OpenAddModal()
+    {
+        hoTrong = new HoTrong();
+        addModalClass = "show";
+        addModalDisplayStyle = "display:block";
+    }
+
+    private void CloseAddModal()
+    {
+        addModalClass = "";
+        addModalDisplayStyle = "display:none";
+        StateHasChanged();
+    }
+
+    private void OpenEditModal(HoTrong item)
+    {
+        hoTrong = item.ShallowCopy();
+        maHoTrong = item.MaHoTrong;
+        tenHoTrong = item.TenHoTrong;
+        editModalClass = "show";
+        editModalDisplayStyle = "display:block";
+    }
+
+    private void CloseEditModal()
+    {
+        editModalClass = "";
+        editModalDisplayStyle = "display:none";
+        StateHasChanged();
+    }
+
+    private void OpenDeleteModal(HoTrong item)
+    {
+        hoTrong = item;
+        deleteModalClass = "show";
+        deleteModalDisplayStyle = "display:block";
+    }
+
+    private void CloseDeleteModal()
+    {
+        deleteModalClass = "";
+        deleteModalDisplayStyle = "display:none";
+        StateHasChanged();
+    }
+
+    protected async Task createHoTrong()
+    {
+        if (await HoTrong_Service.isMaHoTrongExist(hoTrong, dataList, "ORACLE"))
+        {
+            holdma = true;
+            ToastService.ShowError("Mã hộ trồng đã tồn tại!");
+        }
+        else if (await HoTrong_Service.isTenHoTrongExist(hoTrong, dataList, "ORACLE"))
+        {
+            holdten = true;
+            ToastService.ShowError("Tên hộ trồng đã tồn tại!");
+        }
+        else
+        {
+            try
+            {
+                await HoTrong_Service.addData(hoTrong);
+                dataList = await HoTrong_Service.getAllData();
+                CloseAddModal();
+                ToastService.ShowSuccess("Thêm hộ trồng trồng thành công!");
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                throw e;
+                //ToastService.ShowError("Có lỗi xảy ra!");
+            }
+        }
+    }
+
+    protected async Task deleteHoTrong()
+    {
+        try
+        {
+            await HoTrong_Service.deleteData(hoTrong.Auto_ID.ToString());
+            dataList = await HoTrong_Service.getAllData();
+            CloseDeleteModal();
+            ToastService.ShowSuccess("Xóa hộ trồng thành công!");
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            ToastService.ShowError("Có lỗi xảy ra!");
+        }
+    }
+
+
+    private void EditItem(GridCommandEventArgs args)
+    {
+        var item = (HoTrong)args.Item;
+        OpenEditModal(item);
+    }
+
+    private void DeleteItem(GridCommandEventArgs args)
+    {
+        var item = (HoTrong)args.Item;
+        OpenDeleteModal(item);
+    }
+}

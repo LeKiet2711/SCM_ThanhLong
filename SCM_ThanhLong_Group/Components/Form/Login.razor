@@ -1,0 +1,51 @@
+﻿@page "/"
+@using SCM_ThanhLong_Group.Components.Layout
+@layout LoginLayout
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+@inject IToastService ToastService
+@inject Users_Service Users_Service
+
+<link href="css/login.css" rel="stylesheet" />
+
+<PageTitle>Login</PageTitle>
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <div class="containerr">
+        <h1>Đăng nhập</h1>
+        <div class="box">
+            <InputText @bind-Value="loginModel.name" class="form-control" placeholder="Tên đăng nhập"></InputText>
+            <i class="fa-solid fa-user"></i>
+           <ValidationMessage For="@(() =>loginModel.name)"/>
+        </div>
+        <div class="box">
+            <InputText @bind-Value="loginModel.password" class="form-control" type="password" placeholder="Mật khẩu"></InputText>
+            <i class="fa-solid fa-lock"></i>
+            <ValidationMessage For="@(()=>loginModel.password)"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Đăng nhập</button>
+        <div class="register">
+            <a href="Register.html">Đăng kí thành viên</a>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private Users loginModel = new Users();
+
+    private async Task HandleLogin()
+    {
+        var result = await Users_Service.AuthenticateUser(loginModel.name, loginModel.password);
+
+        if (result)
+        {
+            Users_Service.currentUserName = loginModel.name;
+            ToastService.ShowSuccess("Đăng nhập thành công!");
+            Navigation.NavigateTo("/Home");
+        }
+        else
+        {
+            ToastService.ShowError("Sai thông tin tài khoản hoặc mật khẩu!");
+        }
+    }
+}

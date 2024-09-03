@@ -1,0 +1,36 @@
+﻿@page "/Home"
+@rendermode InteractiveServer
+@inject IToastService toastService
+
+<style>
+    .hero {
+        background-image: url('../images/chuoi-cung-ung.jpg');
+        background-size: cover;
+        background-position: center;
+        height: 88vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        color: purple;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+</style>
+
+
+<PageTitle>Home</PageTitle>
+<div class="hero">
+    <div class="hero-content">
+        <h1>Chuỗi Cung Ứng Thanh Long</h1>
+        <button class="btn btn-primary call-to-action" @onclick="ShowToast">Tìm hiểu thêm</button>
+    </div>
+</div>
+
+
+@code {
+    private void ShowToast()
+    {
+        toastService.ShowInfo("Chào mừng bạn đến với chương trình quản lý Chuỗi Cung Ứng Thanh Long!");
+    }
+}
