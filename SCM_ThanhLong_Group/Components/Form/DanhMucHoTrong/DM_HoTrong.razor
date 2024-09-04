@@ -14,11 +14,11 @@
 }
 else
 {
-    <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="170px" Resizable="true" Reorderable="true" Class="telerik-grid">
+    <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
         <GridColumns>
             <GridColumn Field="@nameof(HoTrong.MaHoTrong)" Title="Mã hộ trồng" Width="100px" />
             <GridColumn Field="@nameof(HoTrong.TenHoTrong)" Title="Tên hộ trồng" Width="100px" />
-            <GridColumn Field="@nameof(HoTrong.KhuVucTrongID)" Title="Khu vực trồng" Width="100px" />
+            <GridColumn Field="@nameof(HoTrong.TenKhuVucTrong)" Title="Khu vực trồng" Width="100px" />
             <GridColumn Field="@nameof(HoTrong.DiaChi)" Title="Địa chỉ" Width="100px" />
             <GridColumn Field="@nameof(HoTrong.SoDienThoai)" Title="Số điện thoại" Width="100px" />
             <GridCommandColumn Width="180px">
@@ -85,6 +85,57 @@ else
     </div>
 </div>
 
+<div class="modal fade @editModalClass" tabindex="-1" role="dialog" style="@editModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Cập nhật hộ trồng</b></h5>
+                <button type="button" class="close" @onclick="CloseEditModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#e5d2b8; color:brown">
+                <EditForm Model="@hoTrong" OnValidSubmit="updateHoTrong">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="MaHoTrong" class="control-label"><b>Mã hộ trồng: </b></label>
+                        <InputText class="form-control" @bind-Value=@hoTrong.MaHoTrong />
+                        <ValidationMessage For="@(() => hoTrong.MaHoTrong)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="TenHoTrong" class="control-label"><b>Tên hộ trồng: </b></label>
+                        <InputText class="form-control" @bind-Value=@hoTrong.TenHoTrong/>
+                        <ValidationMessage For="@(() => hoTrong.TenHoTrong)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MaKhuVuc" class="control-label"><b>Mã khu vực: </b></label>
+                        <InputSelect class="" @bind-Value="@hoTrong.KhuVucTrongID">
+                            <option value="">-- Chọn khu vực trồng --</option>
+                            @foreach (var item in khuVucTrongList)
+                            {
+                                <option value="@item.Auto_ID">@item.MaKhuVuc - @item.TenKhuVuc</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(()=>hoTrong.KhuVucTrongID)" />
+
+                    </div>
+                    <div class="form-group">
+                        <label for="MoTa" class="control-label"><b>Địa chỉ: </b></label>
+                        <InputText class="form-control" @bind-Value=@hoTrong.DiaChi />
+                    </div>
+                    <div class="form-group">
+                        <label for="SoDienThoai" class="control-label"><b>Số điện thoại: </b></label>
+                        <InputText class="form-control" @bind-Value=@hoTrong.SoDienThoai />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Cập nhật hộ trồng</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseEditModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade @deleteModalClass" tabindex="-1" role="dialog" style="@deleteModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
@@ -223,10 +274,38 @@ else
             }
             catch (Exception e)
             {
-                throw e;
-                //ToastService.ShowError("Có lỗi xảy ra!");
+                //throw e;
+                ToastService.ShowError("Có lỗi xảy ra!");
             }
         }
+    }
+
+    protected async Task updateHoTrong()
+    {
+        if (await HoTrong_Service.isMaHoTrongExist(hoTrong, dataList, maHoTrong))
+        {
+            ToastService.ShowError("Mã hộ trồng đã tồn tại!");
+        } 
+        else if (await HoTrong_Service.isTenHoTrongExist(hoTrong, dataList, tenHoTrong))
+        {
+            ToastService.ShowError("Tên hộ trồng đã tồn tại!");
+    }
+        else
+        {
+            try
+            {
+                await HoTrong_Service.updateData(hoTrong);
+                dataList = await HoTrong_Service.getAllData();
+                CloseEditModal();
+                ToastService.ShowSuccess("Cập nhật hộ trồng thành công!");
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                ToastService.ShowError("Có lỗi xảy ra!");
+            }
+        }
+
     }
 
     protected async Task deleteHoTrong()
