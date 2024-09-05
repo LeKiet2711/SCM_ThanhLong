@@ -17,7 +17,6 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<HoTrong>> getAllData()
         {
             List<HoTrong> dataList = new List<HoTrong>();
-
             using (OracleConnection conn = _dbConnection.GetConnection())
             {
                 conn.Open();
@@ -36,6 +35,7 @@ namespace SCM_ThanhLong_Group.Service
                                 MaHoTrong = reader["MaHoTrong"].ToString(),
                                 TenHoTrong = reader["TenHoTrong"].ToString(),
                                 KhuVucTrongID = int.Parse(reader["MaKhuVuc"].ToString()),
+                                TenKhuVucTrong = reader["TenKhuVuc"].ToString(),
                                 DiaChi = reader["DiaChi"].ToString(),
                                 SoDienThoai = reader["SoDienThoai"].ToString(),
                             };

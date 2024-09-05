@@ -1,11 +1,11 @@
-﻿@page "/danhmuckhuvuctrong"
+﻿@page "/danhmuckho"
 @rendermode InteractiveServer
-@inject KhuVucTrong_Service KhuVucTrong_Service
+@inject Kho_Service Kho_Service
 @inject IToastService ToastService
 
-<h2 style="text-align:center;font-weight:bold">Danh mục khu vực trồng</h2>
+<h2 style="text-align:center;font-weight:bold">Danh mục kho</h2>
 <button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
-    <span class="oi oi-plus" aria-hidden="true">Thêm khu vực mới</span>
+    <span class="oi oi-plus" aria-hidden="true">Thêm kho mới</span>
 </button>
 
 @if (dataList == null)
@@ -16,9 +16,9 @@ else
 {
     <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
         <GridColumns>
-            <GridColumn Field="@nameof(KhuVucTrong.MaKhuVuc)" Title="Mã khu vực" Width="100px"/>
-            <GridColumn Field="@nameof(KhuVucTrong.TenKhuVuc)" Title="Tên khu vực" Width="100px" />
-            <GridColumn Field="@nameof(KhuVucTrong.MoTa)" Title="Mô tả" Width="100px" />
+            <GridColumn Field="@nameof(Kho.MaKho)" Title="Mã kho" Width="100px" />
+            <GridColumn Field="@nameof(Kho.TenKho)" Title="Tên kho" Width="100px" />
+            <GridColumn Field="@nameof(Kho.DiaChi)" Title="Địa chỉ" Width="100px" />
             <GridCommandColumn Width="180px">
                 <GridCommandButton Command="Edit" OnClick="@EditItem">
                     <span class="oi oi-pencil" Width="100px"></span> Sửa
@@ -29,7 +29,6 @@ else
             </GridCommandColumn>
         </GridColumns>
     </TelerikGrid>
-
 }
 
 @* Modal cho việc thêm mới *@
@@ -43,24 +42,24 @@ else
                 </button>
             </div>
             <div class="modal-body" style="background:#e5d2b8; color:brown">
-                <EditForm Model="@khuVucTrong" OnValidSubmit="createKhuVucTrong">
+                <EditForm Model="@kho" OnValidSubmit="createKho">
                     <DataAnnotationsValidator />
                     <div class="form-group">
-                        <label for="MaKhuVuc" class="control-label"><b>Mã khu vực: </b></label>
-                        <InputText class="form-control" @bind-Value=@khuVucTrong.MaKhuVuc />
-                        <ValidationMessage For="@(() => khuVucTrong.MaKhuVuc)" />
+                        <label for="MaKho" class="control-label"><b>Mã kho: </b></label>
+                        <InputText class="form-control" @bind-Value=@kho.MaKho />
+                        <ValidationMessage For="@(() => kho.MaKho)" />
                     </div>
                     <div class="form-group">
-                        <label for="TenKhuVuc" class="control-label"><b>Tên khu vực: </b></label>
-                        <InputText class="form-control" @bind-Value=@khuVucTrong.TenKhuVuc />
-                        <ValidationMessage For="@(() => khuVucTrong.TenKhuVuc)" />
+                        <label for="TenKho" class="control-label"><b>Tên kho: </b></label>
+                        <InputText class="form-control" @bind-Value=@kho.TenKho />
+                        <ValidationMessage For="@(() => kho.TenKho)" />
                     </div>
                     <div class="form-group">
-                        <label for="MoTa" class="control-label"><b>Mô tả: </b></label>
-                        <InputText class="form-control" @bind-Value=@khuVucTrong.MoTa />
+                        <label for="DiaChi" class="control-label"><b>Địa chỉ: </b></label>
+                        <InputText class="form-control" @bind-Value=@kho.DiaChi />
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Thêm khu vực trồng</button>
+                        <button type="submit" class="btn btn-primary">Thêm kho</button>
                         <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Đóng</button>
                     </div>
                 </EditForm>
@@ -69,35 +68,36 @@ else
     </div>
 </div>
 
+
 @* Modal cho việc chỉnh sửa *@
 <div class="modal fade @editModalClass" tabindex="-1" role="dialog" style="@editModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background:#2f8f3a; color:beige">
-                <h5 class="modal-title"><b>Cập nhật khu vực trồng</b></h5>
+                <h5 class="modal-title"><b>Cập nhật kho</b></h5>
                 <button type="button" class="close" @onclick="CloseEditModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body" style="background:#e5d2b8; color:brown">
-                <EditForm Model="@khuVucTrong" OnValidSubmit="updateKhuVucTrong">
+                <EditForm Model="@kho" OnValidSubmit="updateKho">
                     <DataAnnotationsValidator />
                     <div class="form-group">
-                        <label for="MaKhuVuc" class="control-label"><b>Mã khu vực: </b></label>
-                        <InputText class="form-control" @bind-Value=@khuVucTrong.MaKhuVuc />
-                        <ValidationMessage For="@(() => khuVucTrong.MaKhuVuc)" />
+                        <label for="MaKho" class="control-label"><b>Mã kho: </b></label>
+                        <InputText class="form-control" @bind-Value=@kho.MaKho />
+                        <ValidationMessage For="@(() => kho.MaKho)" />
                     </div>
                     <div class="form-group">
-                        <label for="TenKhuVuc" class="control-label"><b>Tên khu vực: </b></label>
-                        <InputText class="form-control" @bind-Value=@khuVucTrong.TenKhuVuc />
-                        <ValidationMessage For="@(() => khuVucTrong.TenKhuVuc)" />
+                        <label for="TenKho" class="control-label"><b>Tên kho: </b></label>
+                        <InputText class="form-control" @bind-Value=@kho.TenKho />
+                        <ValidationMessage For="@(() => kho.TenKho)" />
                     </div>
                     <div class="form-group">
-                        <label for="MoTa" class="control-label"><b>Mô tả: </b></label>
-                        <InputText class="form-control" @bind-Value=@khuVucTrong.MoTa />
+                        <label for="DiaChi" class="control-label"><b>Địa chỉ: </b></label>
+                        <InputText class="form-control" @bind-Value=@kho.DiaChi />
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Cập nhật khu vực trồng</button>
+                        <button type="submit" class="btn btn-primary">Cập nhật kho</button>
                         <button type="button" class="btn btn-secondary" @onclick="CloseEditModal">Đóng</button>
                     </div>
                 </EditForm>
@@ -118,19 +118,19 @@ else
             </div>
             <div class="modal-body" style="background:#e5d2b8; color:brown; font-size:30px">
                 <p style="color:red">Bạn có chắc chắn muốn xóa khu vực này không?</p>
-                <EditForm Model="@khuVucTrong" OnValidSubmit="deleteKhuVucTrong">
+                <EditForm Model="@kho" OnValidSubmit="deleteKho">
                     <DataAnnotationsValidator />
                     <div class="form-group">
-                        <label for="MaKhuVuc" class="control-label">Mã khu vực: </label>
-                        <label><b>@khuVucTrong.MaKhuVuc</b></label>
+                        <label for="MaKho" class="control-label">Mã kho: </label>
+                        <label><b>@kho.MaKho</b></label>
                     </div>
                     <div class="form-group">
-                        <label for="TenKhuVuc" class="control-label">Tên khu vực: </label>
-                        <label><b>@khuVucTrong.TenKhuVuc</b></label>
+                        <label for="TenKhuVuc" class="control-label">Tên kho: </label>
+                        <label><b>@kho.TenKho</b></label>
                     </div>
                     <div class="form-group">
-                        <label for="MoTa" class="control-label">Mô tả: </label>
-                        <label><b>@khuVucTrong.MoTa</b></label>
+                        <label for="MoTa" class="control-label">Địa chỉ: </label>
+                        <label><b>@kho.DiaChi</b></label>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Xóa khu vực trồng</button>
@@ -144,10 +144,8 @@ else
 
 
 @code {
-    private List<KhuVucTrong> dataList = new List<KhuVucTrong>();
-    private KhuVucTrong khuVucTrong = new KhuVucTrong();
-    private bool holdten = false;
-    private bool holdma = false;
+    private List<Kho> dataList = new List<Kho>();
+    private Kho kho = new Kho();
 
     private string addModalClass = "";
     private string addModalDisplayStyle = "display:none";
@@ -156,17 +154,17 @@ else
     private string deleteModalClass = "";
     private string deleteModalDisplayStyle = "display:none";
 
-    private string maKhuVuc;
-    private string tenKhuVuc;
+    private string maKho;
+    private string tenKho;
 
     protected override async Task OnInitializedAsync()
     {
-        dataList = await KhuVucTrong_Service.getAllData();
+        dataList = await Kho_Service.getAllData();
     }
 
     private void OpenAddModal()
     {
-        khuVucTrong = new KhuVucTrong();
+        kho = new Kho();
         addModalClass = "show";
         addModalDisplayStyle = "display:block";
     }
@@ -175,16 +173,14 @@ else
     {
         addModalClass = "";
         addModalDisplayStyle = "display:none";
-        holdten = false;
-        holdma = false;
         StateHasChanged();
     }
 
-    private void OpenEditModal(KhuVucTrong item)
+    private void OpenEditModal(Kho item)
     {
-        khuVucTrong = item.ShallowCopy();
-        maKhuVuc = item.MaKhuVuc;
-        tenKhuVuc = item.TenKhuVuc;
+        kho = item.Shallowcopy();
+        maKho = kho.MaKho;
+        tenKho = kho.TenKho;
         editModalClass = "show";
         editModalDisplayStyle = "display:block";
     }
@@ -193,14 +189,12 @@ else
     {
         editModalClass = "";
         editModalDisplayStyle = "display:none";
-        holdten = false;
-        holdma = false;
         StateHasChanged();
     }
 
-    private void OpenDeleteModal(KhuVucTrong item)
+    private void OpenDeleteModal(Kho item)
     {
-        khuVucTrong = item;
+        kho = item;
         deleteModalClass = "show";
         deleteModalDisplayStyle = "display:block";
     }
@@ -212,26 +206,25 @@ else
         StateHasChanged();
     }
 
-    protected async Task createKhuVucTrong()
+    protected async Task createKho()
     {
-        if (await KhuVucTrong_Service.isMaKhuVucExist(khuVucTrong, dataList, "ORACLE"))
+        if (await Kho_Service.isMaKhoExist(kho, dataList, "ORACLE"))
         {
-            holdma = true;
-            ToastService.ShowError("Mã khu vực đã tồn tại!");
+
+            ToastService.ShowError("Mã kho đã tồn tại!");
         }
-        else if (await KhuVucTrong_Service.isTenKhuVucExist(khuVucTrong, dataList, "ORACLE"))
+        else if (await Kho_Service.isTenKhoExist(kho, dataList, "ORACLE"))
         {
-            holdten = true;
-            ToastService.ShowError("Tên khu vực đã tồn tại!");
+            ToastService.ShowError("Tên kho đã tồn tại!");
         }
         else
         {
             try
             {
-                await KhuVucTrong_Service.addData(khuVucTrong);
-                dataList = await KhuVucTrong_Service.getAllData();
+                await Kho_Service.addData(kho);
+                dataList = await Kho_Service.getAllData();
                 CloseAddModal();
-                ToastService.ShowSuccess("Thêm khu vực trồng thành công!");
+                ToastService.ShowSuccess("Thêm kho thành công!");
                 StateHasChanged();
             }
             catch (Exception)
@@ -241,26 +234,24 @@ else
         }
     }
 
-    protected async Task updateKhuVucTrong()
+    protected async Task updateKho()
     {
-        if (await KhuVucTrong_Service.isMaKhuVucExist(khuVucTrong, dataList, maKhuVuc))
+        if (await Kho_Service.isMaKhoExist(kho, dataList, maKho))
         {
-            holdma = true;
-            ToastService.ShowError("Mã khu vực đã tồn tại!");
+            ToastService.ShowError("Mã kho đã tồn tại!");
         }
-        else if (await KhuVucTrong_Service.isTenKhuVucExist(khuVucTrong, dataList, tenKhuVuc))
+        else if (await Kho_Service.isTenKhoExist(kho, dataList, tenKho))
         {
-            holdten = true;
-            ToastService.ShowError("Tên khu vực đã tồn tại!");
+            ToastService.ShowError("Tên kho đã tồn tại!");
         }
         else
         {
             try
             {
-                await KhuVucTrong_Service.updateData(khuVucTrong);
-                dataList =await KhuVucTrong_Service.getAllData();
+                await Kho_Service.updateData(kho);
+                dataList = await Kho_Service.getAllData();
                 CloseEditModal();
-                ToastService.ShowSuccess("Cập nhật khu vực trồng thành công!");
+                ToastService.ShowSuccess("Cập nhật kho thành công!");
             }
             catch (Exception)
             {
@@ -269,14 +260,14 @@ else
         }
     }
 
-    protected async Task deleteKhuVucTrong()
+    protected async Task deleteKho()
     {
         try
         {
-            await KhuVucTrong_Service.deleteData(khuVucTrong.Auto_ID.ToString());
-            dataList = await KhuVucTrong_Service.getAllData();
+            await Kho_Service.deleteData(kho.Auto_ID.ToString());
+            dataList = await Kho_Service.getAllData();
             CloseDeleteModal();
-            ToastService.ShowSuccess("Xóa khu vực trồng thành công!");
+            ToastService.ShowSuccess("Xóa kho thành công!");
             StateHasChanged();
         }
         catch (Exception)
@@ -287,14 +278,15 @@ else
 
     private void EditItem(GridCommandEventArgs args)
     {
-        var item = (KhuVucTrong)args.Item;
+        var item = (Kho)args.Item;
         OpenEditModal(item);
     }
 
     private void DeleteItem(GridCommandEventArgs args)
     {
-        var item = (KhuVucTrong)args.Item;
+        var item = (Kho)args.Item;
         OpenDeleteModal(item);
     }
+
 
 }

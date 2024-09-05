@@ -18,6 +18,7 @@ builder.Services.AddScoped<Users_Service>();
 builder.Services.AddScoped<KhuVucTrong_Service>();
 builder.Services.AddScoped<NhaPhanPhoi_Service>();
 builder.Services.AddScoped<HoTrong_Service>();
+builder.Services.AddScoped<Kho_Service>();
 
 
 builder.Services.AddBlazoredToast();

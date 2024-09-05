@@ -12,8 +12,4 @@
     <PackageReference Include="Telerik.UI.for.Blazor" Version="5.1.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Style\" />
-  </ItemGroup>
-
 </Project>

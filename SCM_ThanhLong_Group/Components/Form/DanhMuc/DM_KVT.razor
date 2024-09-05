@@ -1,0 +1,299 @@
+﻿@page "/danhmuckhuvuctrong"
+@rendermode InteractiveServer
+@inject KhuVucTrong_Service KhuVucTrong_Service
+@inject IToastService ToastService
+
+<h2 style="text-align:center;font-weight:bold">Danh mục khu vực trồng</h2>
+<button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
+    <span class="oi oi-plus" aria-hidden="true">Thêm khu vực mới</span>
+</button>
+
+@if (dataList == null)
+{
+    <p><em>Loading......</em></p>
+}
+else
+{
+    <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
+        <GridColumns>
+            <GridColumn Field="@nameof(KhuVucTrong.MaKhuVuc)" Title="Mã khu vực" Width="100px"/>
+            <GridColumn Field="@nameof(KhuVucTrong.TenKhuVuc)" Title="Tên khu vực" Width="100px" />
+            <GridColumn Field="@nameof(KhuVucTrong.MoTa)" Title="Mô tả" Width="100px" />
+            <GridCommandColumn Width="180px">
+                <GridCommandButton Command="Edit" OnClick="@EditItem">
+                    <span class="oi oi-pencil" Width="100px"></span> Sửa
+                </GridCommandButton>
+                <GridCommandButton Command="Delete" OnClick="@DeleteItem">
+                    <span class="oi oi-trash" Width="100px"></span> Xóa
+                </GridCommandButton>
+            </GridCommandColumn>
+        </GridColumns>
+    </TelerikGrid>
+}
+
+@* Modal cho việc thêm mới *@
+<div class="modal fade @addModalClass" tabindex="-1" role="dialog" style="@addModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Thêm mới khu vực trồng</b></h5>
+                <button type="button" class="close" @onclick="CloseAddModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#e5d2b8; color:brown">
+                <EditForm Model="@khuVucTrong" OnValidSubmit="createKhuVucTrong">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="MaKhuVuc" class="control-label"><b>Mã khu vực: </b></label>
+                        <InputText class="form-control" @bind-Value=@khuVucTrong.MaKhuVuc />
+                        <ValidationMessage For="@(() => khuVucTrong.MaKhuVuc)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="TenKhuVuc" class="control-label"><b>Tên khu vực: </b></label>
+                        <InputText class="form-control" @bind-Value=@khuVucTrong.TenKhuVuc />
+                        <ValidationMessage For="@(() => khuVucTrong.TenKhuVuc)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MoTa" class="control-label"><b>Mô tả: </b></label>
+                        <InputText class="form-control" @bind-Value=@khuVucTrong.MoTa />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Thêm khu vực trồng</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal cho việc chỉnh sửa *@
+<div class="modal fade @editModalClass" tabindex="-1" role="dialog" style="@editModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Cập nhật khu vực trồng</b></h5>
+                <button type="button" class="close" @onclick="CloseEditModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#e5d2b8; color:brown">
+                <EditForm Model="@khuVucTrong" OnValidSubmit="updateKhuVucTrong">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="MaKhuVuc" class="control-label"><b>Mã khu vực: </b></label>
+                        <InputText class="form-control" @bind-Value=@khuVucTrong.MaKhuVuc />
+                        <ValidationMessage For="@(() => khuVucTrong.MaKhuVuc)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="TenKhuVuc" class="control-label"><b>Tên khu vực: </b></label>
+                        <InputText class="form-control" @bind-Value=@khuVucTrong.TenKhuVuc />
+                        <ValidationMessage For="@(() => khuVucTrong.TenKhuVuc)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MoTa" class="control-label"><b>Mô tả: </b></label>
+                        <InputText class="form-control" @bind-Value=@khuVucTrong.MoTa />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Cập nhật khu vực trồng</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseEditModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal cho việc xóa *@
+<div class="modal fade @deleteModalClass" tabindex="-1" role="dialog" style="@deleteModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Xóa khu vực trồng</b></h5>
+                <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#e5d2b8; color:brown; font-size:30px">
+                <p style="color:red">Bạn có chắc chắn muốn xóa khu vực này không?</p>
+                <EditForm Model="@khuVucTrong" OnValidSubmit="deleteKhuVucTrong">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="MaKhuVuc" class="control-label">Mã khu vực: </label>
+                        <label><b>@khuVucTrong.MaKhuVuc</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="TenKhuVuc" class="control-label">Tên khu vực: </label>
+                        <label><b>@khuVucTrong.TenKhuVuc</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="MoTa" class="control-label">Mô tả: </label>
+                        <label><b>@khuVucTrong.MoTa</b></label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Xóa khu vực trồng</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private List<KhuVucTrong> dataList = new List<KhuVucTrong>();
+    private KhuVucTrong khuVucTrong = new KhuVucTrong();
+    private bool holdten = false;
+    private bool holdma = false;
+
+    private string addModalClass = "";
+    private string addModalDisplayStyle = "display:none";
+    private string editModalClass = "";
+    private string editModalDisplayStyle = "display:none";
+    private string deleteModalClass = "";
+    private string deleteModalDisplayStyle = "display:none";
+
+    private string maKhuVuc;
+    private string tenKhuVuc;
+
+    protected override async Task OnInitializedAsync()
+    {
+        dataList = await KhuVucTrong_Service.getAllData();
+    }
+
+    private void OpenAddModal()
+    {
+        khuVucTrong = new KhuVucTrong();
+        addModalClass = "show";
+        addModalDisplayStyle = "display:block";
+    }
+
+    private void CloseAddModal()
+    {
+        addModalClass = "";
+        addModalDisplayStyle = "display:none";
+        holdten = false;
+        holdma = false;
+        StateHasChanged();
+    }
+
+    private void OpenEditModal(KhuVucTrong item)
+    {
+        khuVucTrong = item.ShallowCopy();
+        maKhuVuc = item.MaKhuVuc;
+        tenKhuVuc = item.TenKhuVuc;
+        editModalClass = "show";
+        editModalDisplayStyle = "display:block";
+    }
+
+    private void CloseEditModal()
+    {
+        editModalClass = "";
+        editModalDisplayStyle = "display:none";
+        holdten = false;
+        holdma = false;
+        StateHasChanged();
+    }
+
+    private void OpenDeleteModal(KhuVucTrong item)
+    {
+        khuVucTrong = item;
+        deleteModalClass = "show";
+        deleteModalDisplayStyle = "display:block";
+    }
+
+    private void CloseDeleteModal()
+    {
+        deleteModalClass = "";
+        deleteModalDisplayStyle = "display:none";
+        StateHasChanged();
+    }
+
+    protected async Task createKhuVucTrong()
+    {
+        if (await KhuVucTrong_Service.isMaKhuVucExist(khuVucTrong, dataList, "ORACLE"))
+        {
+            holdma = true;
+            ToastService.ShowError("Mã khu vực đã tồn tại!");
+        }
+        else if (await KhuVucTrong_Service.isTenKhuVucExist(khuVucTrong, dataList, "ORACLE"))
+        {
+            holdten = true;
+            ToastService.ShowError("Tên khu vực đã tồn tại!");
+        }
+        else
+        {
+            try
+            {
+                await KhuVucTrong_Service.addData(khuVucTrong);
+                dataList = await KhuVucTrong_Service.getAllData();
+                CloseAddModal();
+                ToastService.ShowSuccess("Thêm khu vực trồng thành công!");
+                StateHasChanged();
+            }
+            catch (Exception)
+            {
+                ToastService.ShowError("Có lỗi xảy ra!");
+            }
+        }
+    }
+
+    protected async Task updateKhuVucTrong()
+    {
+        if (await KhuVucTrong_Service.isMaKhuVucExist(khuVucTrong, dataList, maKhuVuc))
+        {
+            holdma = true;
+            ToastService.ShowError("Mã khu vực đã tồn tại!");
+        }
+        else if (await KhuVucTrong_Service.isTenKhuVucExist(khuVucTrong, dataList, tenKhuVuc))
+        {
+            holdten = true;
+            ToastService.ShowError("Tên khu vực đã tồn tại!");
+        }
+        else
+        {
+            try
+            {
+                await KhuVucTrong_Service.updateData(khuVucTrong);
+                dataList =await KhuVucTrong_Service.getAllData();
+                CloseEditModal();
+                ToastService.ShowSuccess("Cập nhật khu vực trồng thành công!");
+            }
+            catch (Exception)
+            {
+                ToastService.ShowError("Có lỗi xảy ra!");
+            }
+        }
+    }
+
+    protected async Task deleteKhuVucTrong()
+    {
+        try
+        {
+            await KhuVucTrong_Service.deleteData(khuVucTrong.Auto_ID.ToString());
+            dataList = await KhuVucTrong_Service.getAllData();
+            CloseDeleteModal();
+            ToastService.ShowSuccess("Xóa khu vực trồng thành công!");
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            ToastService.ShowError("Có lỗi xảy ra!");
+        }
+    }
+
+    private void EditItem(GridCommandEventArgs args)
+    {
+        var item = (KhuVucTrong)args.Item;
+        OpenEditModal(item);
+    }
+
+    private void DeleteItem(GridCommandEventArgs args)
+    {
+        var item = (KhuVucTrong)args.Item;
+        OpenDeleteModal(item);
+    }
+
+}

@@ -12,7 +12,7 @@ namespace SCM_ThanhLong_Group.Model
         
         public string DiaChi { get; set; }
         public string SoDienThoai { get; set; }
-
+        public int isDeleted { get; set; }
         public NhaPhanPhoi ShallowCopy()
         {
             return (NhaPhanPhoi)this.MemberwiseClone();

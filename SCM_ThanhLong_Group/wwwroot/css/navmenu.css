@@ -1,0 +1,17 @@
+﻿.nav-link .bi {
+    font-size: 1.5rem; /* Tăng kích thước biểu tượng, bạn có thể thay đổi giá trị này */
+    position: relative;
+    top: -13px; /* Điều chỉnh vị trí theo trục Y */
+    margin-right: 25px; /* Khoảng cách giữa biểu tượng và chữ */
+}
+
+/* Tùy chọn: Nếu muốn thay đổi riêng kích thước và vị trí từng biểu tượng */
+.bi-house-fill,
+.bi-tree,
+.bi-shop,
+.bi-person-lines-fill,
+.bi-box-seam-fill {
+    font-size: 1.5rem; /* Thay đổi kích thước của tất cả các biểu tượng */
+    position: relative;
+    top: -13px; /* Điều chỉnh khoảng cách trên cho tất cả các biểu tượng */
+}

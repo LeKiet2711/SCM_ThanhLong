@@ -10,7 +10,7 @@ namespace SCM_ThanhLong_Group.Model
         [Required(ErrorMessage = "Tên khu vực không được để trống.")]
         public string TenKhuVuc { get; set; }
         public string MoTa { get; set; }
-
+        public int isDeleted { get; set; }
         public ICollection<HoTrong> HoTrongs { get; set; }
         public KhuVucTrong ShallowCopy()
         {
