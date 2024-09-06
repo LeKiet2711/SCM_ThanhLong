@@ -1,0 +1,110 @@
+﻿@page "/phanquyenuser"
+@using SCM_ThanhLong_Group.Model
+@inject Kho_Service khoService
+@inject Users_Service userService
+@inject ChucNang_Service chucNangService
+@inject IToastService toastService
+
+
+<TelerikComboBox Data="@lstUser"
+                 @bind-Value="@user.name"
+                 Filterable="true"
+                 FilterOperator="@StringFilterOperator.Contains"
+                 ValueField="name"
+                 TextField="name"
+                 Placeholder="Chọn user"
+                 Width="340px">
+    <ComboBoxSettings>
+        <ComboBoxPopupSettings Height="250px" MaxHeight="300px" MinHeight="75px" />
+    </ComboBoxSettings>
+</TelerikComboBox>
+    
+
+<div style="overflow-x: auto; white-space: nowrap; margin-top:40px">
+    <div style="display: inline-block; width: 900px;margin-right:20px">
+        <!-- Grid 1 -->
+        <TelerikGrid Data="@lstChucNang" Pageable="true" Sortable="true">
+            <GridColumns>
+                <GridColumn Field="MaCN" Title="Mã CN" />
+                <GridColumn Field="TenCN" Title="Tên Chức Năng" />
+                <GridColumn Field="Xem" Title="Xem">
+                    <Template>
+                        <TelerikSwitch @bind-Value="(context as ChucNang).Xem" />
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="Them" Title="Thêm">
+                    <Template>
+                        <TelerikSwitch @bind-Value="(context as ChucNang).Them" />
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="Sua" Title="Sửa">
+                    <Template>
+                        <TelerikSwitch @bind-Value="(context as ChucNang).Sua" />
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="Xoa" Title="Xóa">
+                    <Template>
+                        <TelerikSwitch @bind-Value="(context as ChucNang).Xoa" />
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+        </TelerikGrid>
+    </div>
+</div>
+
+
+
+@code {
+    private List<Users> lstUser = new List<Users>();
+    private List<ChucNang> lstChucNang = new List<ChucNang>();
+    Users user = new Users();
+
+    private string addModalClass = "";
+    private string addModalDisplayStyle = "display:none";
+    private string editModalClass = "";
+    private string editModalDisplayStyle = "display:none";
+    private string deleteModalClass = "";
+    private string deleteModalDisplayStyle = "display:none";
+
+    protected override async Task OnInitializedAsync()
+    {
+        lstUser = await userService.getAllData();
+        lstChucNang = await chucNangService.getAllData();
+    }
+
+    private void OpenAddModal()
+    {
+        addModalClass = "show";
+        addModalDisplayStyle = "display:block";
+    }
+
+    private void CloseAddModal()
+    {
+        addModalClass = "";
+        addModalDisplayStyle = "display:none";
+        StateHasChanged();
+    }
+
+    private void UpdatePermission(ChucNang chucNang, string propertyName, bool value)
+    {
+        switch (propertyName)
+        {
+            case nameof(chucNang.Xem):
+                chucNang.Xem = value;
+                break;
+            case nameof(chucNang.Them):
+                chucNang.Them = value;
+                break;
+            case nameof(chucNang.Sua):
+                chucNang.Sua = value;
+                break;
+            case nameof(chucNang.Xoa):
+                chucNang.Xoa = value;
+                break;
+        }
+
+        // Cập nhật dữ liệu vào cơ sở dữ liệu
+        chucNangService.updateData(chucNang);
+        toastService.ShowSuccess("Quyền đã được cập nhật thành công.");
+    }
+}

@@ -15,6 +15,7 @@ string oracleConnectionString = "User Id=C##ADMIN;Password=oracle;Data Source=lo
 builder.Services.AddScoped<OracleDbConnection>(sp => new OracleDbConnection(oracleConnectionString));
 
 builder.Services.AddScoped<Users_Service>();
+builder.Services.AddScoped<ChucNang_Service>();
 builder.Services.AddScoped<KhuVucTrong_Service>();
 builder.Services.AddScoped<NhaPhanPhoi_Service>();
 builder.Services.AddScoped<HoTrong_Service>();

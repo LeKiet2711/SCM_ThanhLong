@@ -101,3 +101,10 @@
         transform: translateY(-10px);
     }
 }
+
+
+/* CSS để thay đổi màu nền của track */
+.custom-switch .k-switch-on {
+    background-color: lightgreen !important; /* Nền xanh lá nhạt cho switch */
+}
+

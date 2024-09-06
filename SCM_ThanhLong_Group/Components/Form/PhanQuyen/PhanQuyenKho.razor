@@ -1,0 +1,99 @@
+﻿@page "/phanquyenkho"
+@using SCM_ThanhLong_Group.Model
+@inject Kho_Service khoService
+@inject Users_Service userService
+@inject IToastService toastService
+
+<TelerikComboBox Data="@lstKho"
+                 @bind-Value="@khoId"
+                 Filterable="true"
+                 FilterOperator="@StringFilterOperator.Contains"
+                 ValueField="Auto_ID"
+                 TextField="TenKho"
+                 Placeholder="Chọn kho"
+                 Width="340px">
+    <ComboBoxSettings>
+        <ComboBoxPopupSettings Height="250px" MaxHeight="300px" MinHeight="75px" />
+    </ComboBoxSettings>
+</TelerikComboBox>
+
+<button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
+    <span class="oi oi-plus" aria-hidden="true">Thêm</span>
+</button>
+
+<div class="modal fade @addModalClass" tabindex="-1" role="dialog" style="@addModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Thêm User</b></h5>
+                <button type="button" class="close" @onclick="CloseAddModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#e5d2b8; color:brown">
+                <EditForm Model="@user" OnValidSubmit="AddUserToKho">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="MaDangNhap" class="control-label"><b>Mã đăng nhập: </b></label>
+                        <InputSelect class="" @bind-Value="@user.name">
+                            <option value="">-- Chọn user --</option>
+                            @foreach (var item in lstUser)
+                            {
+                                <option value="@item.name">@item.name</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+<TelerikGrid Data="@lstUser" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
+    <GridColumns>
+        <GridColumn Field="name" Title="Mã đăng nhập"/>
+    </GridColumns>
+</TelerikGrid>
+
+@code {
+    List<Kho> lstKho=new List<Kho>();
+    private List<Users> lstUser = new List<Users>();
+    Users user =new Users();
+    private int khoId;
+
+    private string addModalClass = "";
+    private string addModalDisplayStyle = "display:none";
+    private string editModalClass = "";
+    private string editModalDisplayStyle = "display:none";
+    private string deleteModalClass = "";
+    private string deleteModalDisplayStyle = "display:none";
+
+    protected override async Task OnInitializedAsync()
+    {
+        lstKho = await khoService.getAllData();
+        lstUser = await userService.getAllData();
+    }
+    
+    private void OpenAddModal()
+    {
+        addModalClass = "show";
+        addModalDisplayStyle = "display:block";
+    }
+
+    private void CloseAddModal()
+    {
+        addModalClass = "";
+        addModalDisplayStyle = "display:none";
+        StateHasChanged();
+    }
+
+    private async Task AddUserToKho()
+    {
+        
+        
+    }
+}

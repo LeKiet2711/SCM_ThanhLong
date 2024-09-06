@@ -167,5 +167,33 @@ namespace SCM_ThanhLong_Group.Service
             return false;
         }
 
+        public async Task<List<Users>> getAllData2()
+        {
+            List<Users> dataList = new List<Users>();
+            using (OracleConnection conn = _dbConnection.GetConnection())
+            {
+                conn.Open();
+                using (OracleCommand cmd = new OracleCommand("SELECT * FROM SYS.ALL_USERS", conn))
+                {
+                    cmd.CommandType = CommandType.Text;
+
+                    using (OracleDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var data = new Users
+                            {
+                                name = reader["USERNAME"].ToString(),
+
+                            };
+                            dataList.Add(data);
+                        }
+
+                    }
+                }
+            }
+            return dataList;
+        }
+
     }
 }

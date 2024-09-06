@@ -5,10 +5,10 @@ namespace SCM_ThanhLong_Group.Model
 {
     public class Users
     {
-        [Required(ErrorMessage ="Vui lòng không để trống tên đăng nhập")]
-        public string name;
+        [Required(ErrorMessage = "Vui lòng không để trống tên đăng nhập")]
+        public string name { get; set; }
         
-        string email;
+        string email{ get; set; }
         [Required(ErrorMessage = "Vui lòng không để trống mật khẩu")]
         public string password;
 
