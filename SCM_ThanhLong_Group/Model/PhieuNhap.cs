@@ -14,5 +14,9 @@ namespace SCM_ThanhLong_Group.Model
         public int isDeleted { get; set; }
 
         public NhaPhanPhoi NhaPhanPhoi { get; set; }
+        public PhieuNhap Shallowcopy()
+        {
+           return (PhieuNhap)this.MemberwiseClone();
+        }
     }
 }
