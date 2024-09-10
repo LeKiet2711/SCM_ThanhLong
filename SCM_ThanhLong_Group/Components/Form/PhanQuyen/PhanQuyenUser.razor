@@ -22,7 +22,6 @@
 
 <div style="overflow-x: auto; white-space: nowrap; margin-top:40px">
     <div style="display: inline-block; width: 900px;margin-right:20px">
-        <!-- Grid 1 -->
         <TelerikGrid Data="@lstChucNang" Pageable="true" Sortable="true">
             <GridColumns>
                 <GridColumn Field="MaCN" Title="Mã CN" />
@@ -34,7 +33,7 @@
                 </GridColumn>
                 <GridColumn Field="Them" Title="Thêm">
                     <Template>
-                        <TelerikSwitch @bind-Value="(context as ChucNang).Them" />
+                        <TelerikSwitch @bind-Value="(context as ChucNang).Them"/>
                     </Template>
                 </GridColumn>
                 <GridColumn Field="Sua" Title="Sửa">
@@ -52,12 +51,16 @@
     </div>
 </div>
 
-
+<button class="btn btn-success" @onclick="@UpdateAllPermissions" style="margin-top:30px">
+    <span class="oi oi-plus" aria-hidden="true">Cập nhật</span>
+</button>
 
 @code {
     private List<Users> lstUser = new List<Users>();
     private List<ChucNang> lstChucNang = new List<ChucNang>();
     Users user = new Users();
+
+    private bool isUserActive;
 
     private string addModalClass = "";
     private string addModalDisplayStyle = "display:none";
@@ -85,26 +88,14 @@
         StateHasChanged();
     }
 
-    private void UpdatePermission(ChucNang chucNang, string propertyName, bool value)
+    private async Task UpdateAllPermissions()
     {
-        switch (propertyName)
+        foreach (var chucNang in lstChucNang)
         {
-            case nameof(chucNang.Xem):
-                chucNang.Xem = value;
-                break;
-            case nameof(chucNang.Them):
-                chucNang.Them = value;
-                break;
-            case nameof(chucNang.Sua):
-                chucNang.Sua = value;
-                break;
-            case nameof(chucNang.Xoa):
-                chucNang.Xoa = value;
-                break;
+            await chucNangService.updateData(chucNang);
         }
-
-        // Cập nhật dữ liệu vào cơ sở dữ liệu
-        chucNangService.updateData(chucNang);
-        toastService.ShowSuccess("Quyền đã được cập nhật thành công.");
+        toastService.ShowSuccess("Tất cả quyền đã được cập nhật thành công.");
     }
+
+
 }
