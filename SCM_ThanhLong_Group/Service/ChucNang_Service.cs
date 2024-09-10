@@ -1,6 +1,8 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using SCM_ThanhLong_Group.Components.Connection;
 using SCM_ThanhLong_Group.Model;
+using System.Data;
+using Telerik.SvgIcons;
 
 namespace SCM_ThanhLong_Group.Service
 {
@@ -46,12 +48,27 @@ namespace SCM_ThanhLong_Group.Service
             return dataList;
         }
 
-        public async Task<List<ChucNang>> updateData(ChucNang chucnang)
+        public async Task updateData(ChucNang data)
         {
-            List<ChucNang> dataList = new List<ChucNang>();
+            using (OracleConnection conn = _dbConnection.GetConnection())
+            {
+                conn.Open();
+                using (OracleCommand cmd = new OracleCommand("UpdateChucNang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-            return dataList;
+                    cmd.Parameters.Add("p_MACN", OracleDbType.Int32).Value = data.MaCN;
+                    cmd.Parameters.Add("p_TENCN", OracleDbType.Varchar2, 50).Value = data.TenCN;
+                    cmd.Parameters.Add("p_XEM", OracleDbType.Int32).Value = data.Xem ? 1 : 0; 
+                    cmd.Parameters.Add("p_THEM", OracleDbType.Int32).Value = data.Them ? 1 : 0; 
+                    cmd.Parameters.Add("p_SUA", OracleDbType.Int32).Value = data.Sua ? 1 : 0;  
+                    cmd.Parameters.Add("p_XOA", OracleDbType.Int32).Value = data.Xoa ? 1 : 0;  
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
+
 
     }
 }

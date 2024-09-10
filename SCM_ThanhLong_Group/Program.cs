@@ -1,3 +1,4 @@
+using Blazored.SessionStorage;
 using Blazored.Toast;
 using SCM_ThanhLong_Group.Components;
 using SCM_ThanhLong_Group.Components.Connection;
@@ -22,6 +23,7 @@ builder.Services.AddScoped<HoTrong_Service>();
 builder.Services.AddScoped<Kho_Service>();
 
 
+builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredToast();
 builder.Services.AddTelerikBlazor();
 

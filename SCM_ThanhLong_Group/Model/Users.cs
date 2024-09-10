@@ -16,7 +16,5 @@ namespace SCM_ThanhLong_Group.Model
         public string repassword;
         bool rememberMe;
 
-       
-
     }
 }
