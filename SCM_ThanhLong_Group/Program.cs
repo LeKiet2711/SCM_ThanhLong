@@ -18,7 +18,7 @@ builder.Services.AddScoped<OracleDbConnection>(sp => new OracleDbConnection(orac
 builder.Services.AddScoped<Users_Service>();
 builder.Services.AddScoped<ChucNang_Service>();
 builder.Services.AddScoped<KhuVucTrong_Service>();
-builder.Services.AddScoped<NhaPhanPhoi_Service>();
+builder.Services.AddScoped<LoaiThanhLong_Service>();
 builder.Services.AddScoped<HoTrong_Service>();
 builder.Services.AddScoped<Kho_Service>();
 

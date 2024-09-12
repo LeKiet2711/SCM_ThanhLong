@@ -11,7 +11,7 @@ body {
     min-height: 100vh;
     align-items: center;
     /*background: linear-gradient(to right, rgb(220, 219, 200), rgb(205, 99, 227)), url('../images/chuoi-cung-ung.jpg');*/
-    background: url('../images/hinhthanhlong2.jpg');
+    background: url('../images/khothanhlong.jpg');
     background-size: cover; /* Để hình nền bao phủ toàn bộ */
     background-position: center; /* Đặt hình nền ở giữa */
     background-repeat: no-repeat; /* Không lặp lại hình nền */

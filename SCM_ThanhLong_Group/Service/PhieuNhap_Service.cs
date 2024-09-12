@@ -33,7 +33,8 @@ namespace SCM_ThanhLong_Group.Service
                             {
                                 Auto_ID = int.Parse(reader["Auto_ID"].ToString()),
                                 SoPhieuNhap = reader["SoPhieuNhap"].ToString(),
-                                TenNhaPhanPhoi = reader["TenNhaPhanPhoi"].ToString(),
+                                TenHoTrong = reader["TenHoTrong"].ToString(),
+                                TenKho = reader["TenKho"].ToString(),
                                 NgayNhap = DateTime.Parse(reader["NgayNhap"].ToString()),
                                 isDeleted = int.Parse(reader["isDeleted"].ToString()),
                             };
@@ -61,18 +62,19 @@ namespace SCM_ThanhLong_Group.Service
 
                     // Thêm các tham số đầu ra
                     cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_TenNhaPhanPhoi", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("p_TenHoTrong", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("p_NgayNhap", OracleDbType.Varchar2, 200).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_MaNhaPhanPhoi", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("p_MaHoTrong", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
+
                     cmd.ExecuteNonQuery();
 
                     data.Auto_ID = int.Parse(id);
                     data.SoPhieuNhap = cmd.Parameters["p_SoPhieuNhap"].Value?.ToString() ?? string.Empty;
-                    data.TenNhaPhanPhoi = cmd.Parameters["p_TenNhaPhanPhoi"].Value?.ToString() ?? string.Empty;
+                    data.TenHoTrong = cmd.Parameters["p_TenHoTrong"].Value?.ToString() ?? string.Empty;
                     data.NgayNhap = DateTime.Parse(cmd.Parameters["p_NgayNhap"].Value?.ToString() ?? string.Empty);
                     
-                    data.NhaPhanPhoiID = cmd.Parameters["p_NhaPhanPhoiID"].Value != DBNull.Value
-                        ? Convert.ToInt32(cmd.Parameters["p_NhaPhanPhoiID"].Value)
+                    data.HoTrongID = cmd.Parameters["p_HoTrongID"].Value != DBNull.Value
+                        ? Convert.ToInt32(cmd.Parameters["p_HoTrongID"].Value)
                         : 0;
 
                 }
@@ -89,9 +91,9 @@ namespace SCM_ThanhLong_Group.Service
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.SoPhieuNhap;
-                    cmd.Parameters.Add("p_TenNhaPhanPhoi", OracleDbType.Varchar2, 50).Value = phieuNhap.TenNhaPhanPhoi;
+                    cmd.Parameters.Add("p_TenHoTrong", OracleDbType.Varchar2, 50).Value = phieuNhap.TenHoTrong;
                     cmd.Parameters.Add("p_NgayNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.NgayNhap;
-                    cmd.Parameters.Add("p_NhaPhanPhoiID", OracleDbType.Int32, 50).Value = phieuNhap.NhaPhanPhoiID;
+                    cmd.Parameters.Add("p_HoTrongID", OracleDbType.Int32, 50).Value = phieuNhap.HoTrongID;
                     await cmd.ExecuteNonQueryAsync();
                 }
 
@@ -108,9 +110,9 @@ namespace SCM_ThanhLong_Group.Service
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = phieuNhap.Auto_ID;
                     cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.SoPhieuNhap;
-                    cmd.Parameters.Add("p_TenNhaPhanPhoi", OracleDbType.Varchar2, 50).Value = phieuNhap.TenNhaPhanPhoi;
+                    cmd.Parameters.Add("p_TenHoTrong", OracleDbType.Varchar2, 50).Value = phieuNhap.TenHoTrong;
                     cmd.Parameters.Add("p_NgayNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.NgayNhap;
-                    cmd.Parameters.Add("p_NhaPhanPhoiID", OracleDbType.Int32, 50).Value = phieuNhap.NhaPhanPhoiID;
+                    cmd.Parameters.Add("p_HoTrongID", OracleDbType.Int32, 50).Value = phieuNhap.HoTrongID;
                     await cmd.ExecuteNonQueryAsync();
                 }
             }

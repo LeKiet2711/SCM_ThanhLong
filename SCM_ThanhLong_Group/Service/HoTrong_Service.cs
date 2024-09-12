@@ -129,7 +129,6 @@ namespace SCM_ThanhLong_Group.Service
                     cmd.Parameters.Add("p_MaKhuVuc", OracleDbType.Int32, 50).Value = hoTrong.KhuVucTrongID;
                     await cmd.ExecuteNonQueryAsync();
                 }
-
             }
         }
 
