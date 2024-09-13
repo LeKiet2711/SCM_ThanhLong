@@ -4,6 +4,12 @@
 @using SCM_ThanhLong_Group.Model
 @inject IToastService ToastService
 
+<style>
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+</style>
+
 <h2 style="text-align:center;font-weight:bold">Danh mục Loại Thanh Long</h2>
 <button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
     <span class="oi oi-plus" aria-hidden="true">Thêm loại thanh long mới</span>

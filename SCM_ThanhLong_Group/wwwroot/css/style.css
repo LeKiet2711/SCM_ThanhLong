@@ -11,7 +11,7 @@
     .telerik-grid .k-header {
         background-color: #4CAF50; /* Đổi màu nền tiêu đề */
         color: #ffffff; /* Đổi màu chữ tiêu đề */
-        font-weight: bold;
+        font-weight: bold;  
         text-align: center;
         font-size: 18px;
         border-bottom: 2px solid #2f8f3a;
@@ -102,9 +102,8 @@
     }
 }
 
-
-/* CSS để thay đổi màu nền của track */
-.custom-switch .k-switch-on {
-    background-color: lightgreen !important; /* Nền xanh lá nhạt cho switch */
+.select {
+    border: 0px;
+    width: 765px;
+    height: 35px;
 }
-

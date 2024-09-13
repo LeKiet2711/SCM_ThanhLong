@@ -21,6 +21,7 @@ builder.Services.AddScoped<KhuVucTrong_Service>();
 builder.Services.AddScoped<LoaiThanhLong_Service>();
 builder.Services.AddScoped<HoTrong_Service>();
 builder.Services.AddScoped<Kho_Service>();
+builder.Services.AddScoped<PhieuNhap_Service>();
 
 
 builder.Services.AddBlazoredSessionStorage();

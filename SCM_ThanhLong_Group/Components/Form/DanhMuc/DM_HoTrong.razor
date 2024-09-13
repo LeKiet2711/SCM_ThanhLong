@@ -1,7 +1,14 @@
 ﻿@page "/danhmuchotrong"
+@attribute [StreamRendering]
 @rendermode InteractiveServer
 @inject HoTrong_Service HoTrong_Service
 @inject IToastService ToastService
+
+<style>
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+</style>
 
 <h2 style="text-align:center;font-weight:bold">Danh mục hộ trồng</h2>
 <button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
@@ -32,6 +39,8 @@ else
         </GridColumns>
     </TelerikGrid>
 }
+
+
 
 <div class="modal fade @addModalClass" tabindex="-1" role="dialog" style="@addModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
@@ -187,8 +196,6 @@ else
     private List<KhuVucTrong> khuVucTrongList = new List<KhuVucTrong>();
 
     private HoTrong hoTrong = new HoTrong();
-    private bool holdten = false;
-    private bool holdma = false;
 
     private string addModalClass = "";
     private string addModalDisplayStyle = "display:none";
@@ -196,7 +203,7 @@ else
     private string editModalDisplayStyle = "display:none";
     private string deleteModalClass = "";
     private string deleteModalDisplayStyle = "display:none";
-
+    
     private string maHoTrong;
     private string tenHoTrong;
 
@@ -247,6 +254,7 @@ else
     {
         deleteModalClass = "";
         deleteModalDisplayStyle = "display:none";
+
         StateHasChanged();
     }
 
@@ -254,12 +262,10 @@ else
     {
         if (await HoTrong_Service.isMaHoTrongExist(hoTrong, dataList, "ORACLE"))
         {
-            holdma = true;
             ToastService.ShowError("Mã hộ trồng đã tồn tại!");
         }
         else if (await HoTrong_Service.isTenHoTrongExist(hoTrong, dataList, "ORACLE"))
         {
-            holdten = true;
             ToastService.ShowError("Tên hộ trồng đã tồn tại!");
         }
         else
