@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @using Blazored.Toast.Configuration
+@inject NavigationManager Navigation
 @inject SCM_ThanhLong_Group.Service.Users_Service UserService
 
 <BlazoredToasts Position="ToastPosition.BottomRight"
@@ -18,7 +19,7 @@
         <div class="top-row px-4">
             <span>Xin chào, @UserService.currentUserName!</span>
             <a href="/Home" class="btn btn-primary ms-3">Hồ sơ</a>
-            <a href="/" class="btn btn-secondary ms-2">Đăng xuất</a>
+            <button @onclick="HandleLogout" class="btn btn-secondary ms-2">Đăng xuất</button>
         </div>
 
         <article class="content px-4">
@@ -36,3 +37,27 @@
     <a class="dismiss">🗙</a>
 </div>
 
+@code {
+    private bool isInitialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !isInitialized)
+        {
+            var currentUserName = await UserService.GetCurrentUserName();
+            if (!string.IsNullOrEmpty(currentUserName))
+            {
+                UserService.currentUserName = currentUserName;
+                StateHasChanged();
+            }
+            isInitialized = true;
+        }
+    }
+
+    private async Task HandleLogout()
+    {
+        await UserService.Logout();
+        Navigation.NavigateTo("/");
+        StateHasChanged();
+    }
+}

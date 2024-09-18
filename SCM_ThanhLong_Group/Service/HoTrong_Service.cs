@@ -17,7 +17,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<HoTrong>> getAllData()
         {
             List<HoTrong> dataList = new List<HoTrong>();
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetAllHoTrong", conn))
@@ -51,7 +51,7 @@ namespace SCM_ThanhLong_Group.Service
         {
             List<KhuVucTrong> dataList = new List<KhuVucTrong>();
 
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetAllKhuVucTrong", conn))
@@ -83,7 +83,7 @@ namespace SCM_ThanhLong_Group.Service
         {
             HoTrong data = new HoTrong();
 
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetHoTrongByID", conn))
@@ -116,7 +116,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task addData(HoTrong hoTrong)
         {
-            using(OracleConnection conn=_dbConnection.GetConnection())
+            using(OracleConnection conn=_dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using(OracleCommand cmd= new OracleCommand("ADDHOTRONG", conn))
@@ -134,7 +134,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task updateData(HoTrong hoTrong)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("UPDATEHOTRONG", conn))
@@ -153,7 +153,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task deleteData(string id)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("DELETEHOTRONG", conn))

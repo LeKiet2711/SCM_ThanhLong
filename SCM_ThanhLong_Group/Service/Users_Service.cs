@@ -3,18 +3,21 @@ using SCM_ThanhLong_Group.Components.Connection;
 using SCM_ThanhLong_Group.Model;
 using System.Data;
 using System.Data.Common;
+using Blazored.SessionStorage;
 
 namespace SCM_ThanhLong_Group.Service
 {
     public class Users_Service
     {
-        private readonly OracleDbConnection _dbConnection;  
+        private readonly OracleDbConnection _dbConnection;
+        private readonly ISessionStorageService _sessionStorage;
         public string currentUserName { get; set; }
 
-        public Users_Service(OracleDbConnection dbConnection)
+        public Users_Service(OracleDbConnection dbConnection, ISessionStorageService sessionStorage)
         {
             _dbConnection = dbConnection;
-        }
+            _sessionStorage = sessionStorage;
+        }   
         public async Task<bool> AuthenticateUser(string username, string password)
         {
             string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
@@ -30,9 +33,10 @@ namespace SCM_ThanhLong_Group.Service
                         cmd.CommandType = CommandType.Text;
                         await cmd.ExecuteScalarAsync();
                     }
+                    await _sessionStorage.SetItemAsync("currentUserName", username);
                     return true;
                 }
-                catch (OracleException ex)
+                catch (OracleException)
                 {
                     return false;
                 }
@@ -66,7 +70,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<Users>> getAllData()
         {
             List<Users> dataList = new List<Users>();
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("SELECT * FROM SYS.ALL_USERS", conn))
@@ -89,6 +93,17 @@ namespace SCM_ThanhLong_Group.Service
                 }
             }
             return dataList;
+        }
+
+        public async Task<string> GetCurrentUserName()
+        {
+            return await _sessionStorage.GetItemAsync<string>("currentUserName");
+        }
+
+        public async Task Logout()
+        {
+            await _sessionStorage.RemoveItemAsync("currentUserName");
+            currentUserName = null;
         }
 
     }

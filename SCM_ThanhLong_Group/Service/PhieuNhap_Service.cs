@@ -17,7 +17,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<PhieuNhap>> getAllData()
         {
             List<PhieuNhap> dataList = new List<PhieuNhap>();
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetAllPhieuNhap", conn))
@@ -51,7 +51,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<LoaiThanhLong>> getLoaiThanhLongData()
         {
             List<LoaiThanhLong> dataList = new List<LoaiThanhLong>();
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetAllLoaiThanhLong", conn))
@@ -80,7 +80,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<HoTrong>> getHoTrongData()
         {
             List<HoTrong> dataList = new List<HoTrong>();
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetAllHoTrong", conn))
@@ -113,7 +113,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<Kho>> getKhoData()
         {
             List<Kho> dataList = new List<Kho>();
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetAllKho", conn))
@@ -145,7 +145,7 @@ namespace SCM_ThanhLong_Group.Service
         {
             PhieuNhap data = new PhieuNhap();
 
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetPhieuNhapByID", conn))
@@ -180,7 +180,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task addData(PhieuNhap phieuNhap)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("AddPhieuNhap", conn))
@@ -202,7 +202,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task updateData(PhieuNhap phieuNhap)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("UPDATEPHIEUNHAP", conn))
@@ -220,7 +220,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task deleteData(string id)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("DELETEPHIEUNHAP", conn))
