@@ -11,7 +11,7 @@ namespace SCM_ThanhLong_Group.Model
         
         public int MaLoaiThanhLong { get; set; }
         public string TenLoaiThanhLong { get; set;}
-        public int SoLuong { get; set; }
+        public double SoKg { get; set; }
         public double DonGia { get; set; }
         public double TongTien { get;set; }
 

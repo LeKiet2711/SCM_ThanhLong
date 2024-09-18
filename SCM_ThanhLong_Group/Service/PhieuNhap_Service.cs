@@ -31,12 +31,13 @@ namespace SCM_ThanhLong_Group.Service
                         {
                             var data = new PhieuNhap
                             {
-                                Auto_ID = int.Parse(reader["Auto_ID"].ToString()),
-                                SoPhieuNhap = reader["SoPhieuNhap"].ToString(),
-                                TenHoTrong = reader["TenHoTrong"].ToString(),
-                                TenKho = reader["TenKho"].ToString(),
-                                NgayNhap = DateTime.Parse(reader["NgayNhap"].ToString()),
-                                isDeleted = int.Parse(reader["isDeleted"].ToString()),
+                                Auto_ID = int.Parse(reader["AUTO_ID"].ToString()),
+                                SoPhieuNhap = reader["SOPHIEUNHAP"].ToString(),
+                                HoTrongID = int.Parse(reader["MAHOTRONG"].ToString()),
+                                TenHoTrong = reader["TENHOTRONG"].ToString(),
+                                KhoID = int.Parse(reader["MAKHO"].ToString()),
+                                TenKho = reader["TENKHO"].ToString(),
+                                NgayNhap = DateTime.Parse(reader["NGAYNHAP"].ToString()),
                             };
                             dataList.Add(data);
                         }
@@ -45,6 +46,7 @@ namespace SCM_ThanhLong_Group.Service
             }
             return dataList;
         }
+
 
         public async Task<List<LoaiThanhLong>> getLoaiThanhLongData()
         {
@@ -181,17 +183,22 @@ namespace SCM_ThanhLong_Group.Service
             using (OracleConnection conn = _dbConnection.GetConnection())
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("ADDPHIEUNHAP", conn))
+                using (OracleCommand cmd = new OracleCommand("AddPhieuNhap", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Thêm tham số vào stored procedure
                     cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.SoPhieuNhap;
-                    cmd.Parameters.Add("p_NgayNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.NgayNhap;
-                    cmd.Parameters.Add("p_MaHoTrong", OracleDbType.Int32, 50).Value = phieuNhap.HoTrongID;
-                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32, 50).Value = phieuNhap.KhoID;
+                    cmd.Parameters.Add("p_MaHoTrong", OracleDbType.Int32).Value = phieuNhap.HoTrongID;
+                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Value = phieuNhap.KhoID;
+                    cmd.Parameters.Add("p_NgayNhap", OracleDbType.Date).Value = phieuNhap.NgayNhap;
+                    cmd.Parameters.Add("p_TongTien", OracleDbType.Decimal).Value = 0; 
+
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
         }
+
 
         public async Task updateData(PhieuNhap phieuNhap)
         {

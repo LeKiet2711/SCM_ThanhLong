@@ -1,5 +1,4 @@
 ﻿@page "/phieunhapkho"
-@attribute [StreamRendering]
 @rendermode InteractiveServer
 @inject PhieuNhap_Service PhieuNhap_Service
 @inject IToastService ToastService
@@ -43,13 +42,13 @@ else
 <div class="modal fade @addModalClass" tabindex="-1" role="dialog" style="@addModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background:#2f8f3a; color:beige">
+            <div class="modal-header" style="background:#2f8f3a; color:#dedcd8">
                 <h5 class="modal-title"><b>Thêm mới phiếu nhập</b></h5>
                 <button type="button" class="close" @onclick="CloseAddModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="background:#e5d2b8; color:brown">
+            <div class="modal-body" style="background:#dedcd8; color:brown">
                 <EditForm Model="@phieuNhap" OnValidSubmit="createPhieuNhap">
                     <DataAnnotationsValidator />
                     <div class="form-group">
@@ -59,7 +58,7 @@ else
                     </div>
                     <div class="form-group">
                         <label for="MaHoTrong" class="control-label"><b>Mã hộ trồng: </b></label>
-                        <InputSelect class="" @bind-Value="@phieuNhap.HoTrongID">
+                        <InputSelect class="form-control" @bind-Value="@phieuNhap.HoTrongID">
                             <option value="">-- Chọn hộ trồng --</option>
                             @foreach (var item in hoTrongList)
                             {
@@ -67,11 +66,13 @@ else
                             }
                         </InputSelect>
                         <ValidationMessage For="@(()=>phieuNhap.HoTrongID)" />
-
                     </div>
+
+                    @* Sẽ bỏ combobox mã kho và lấy mã kho mặc định từ kho phân quyền được chọn*@
+
                     <div class="form-group">
                         <label for="MaKho" class="control-label"><b>Mã kho: </b></label>
-                        <InputSelect class="" @bind-Value="@phieuNhap.KhoID">
+                        <InputSelect class="form-control" @bind-Value="@phieuNhap.KhoID">
                             <option value="">-- Chọn kho --</option>
                             @foreach (var item in khoList)
                             {
@@ -81,18 +82,18 @@ else
                         <ValidationMessage For="@(()=>phieuNhap.KhoID)" />
 
                     </div>
-
                     <div class="form-group">
-                        <label for="NgayNhapKho" class="control-label">Ngày nhập kho: </label>
-                        <InputDate @bind-Value="@phieuNhap.NgayNhap" format="dd/MM/yyyy" />
+                        <label for="NgayNhapKho" class="control-label"><b>Ngày nhập kho: </b></label>
+                        <InputDate class="form-control" @bind-Value="@phieuNhap.NgayNhap" format="dd/MM/yyyy" />
                         <ValidationMessage For="@(()=>phieuNhap.NgayNhap)" />
                     </div>
+
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Thêm phiếu nhập</button>
                         <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Đóng</button>
                     </div>
                     
-                   @*  <a class="btn btn-primary" @onclick="OpenAddChiTietModal" style="margin-top:5px">Thêm</a>
+                   <a class="btn btn-secondary" @onclick="OpenAddChiTietModal" style="margin-top:5px">Thêm</a>
                     <table class="table table-bordered">
                         <tr>
                             <th>Mã loại thanh long</th>
@@ -104,16 +105,52 @@ else
                         @foreach (ChiTietPhieuNhap ct in lstCTPN)
                         {
                             <tr>
-                                <th>@ct.MaLoaiThanhLong</th>
-                                <th>@ct.SoLuong</th>
+                                <th>@ct.TenLoaiThanhLong</th>
+                                <th>@ct.SoKg</th>
                                 <th>@ct.DonGia</th>
-                                <th>@(ct.SoLuong* ct.DonGia)</th>
-                                <th>Xóa</th>
+                                <th>@(ct.SoKg* ct.DonGia)</th>
+                                <th>
+                                    <button type="button" class="btn btn-danger" style="color:black" @onclick="() => RemoveChiTiet(ct)">Xóa</button>
+                                </th>
                             </tr>
                         }
+                    </table>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
 
-                    </table> *@
 
+<div class="modal fade @deleteModalClass" tabindex="-1" role="dialog" style="@deleteModalDisplayStyle">
+    <div class="modal-dialog model-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Xóa phiếu nhập</b></h5>
+                <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#dedcd8; color:brown; font-size:30px">
+                <p style="color:red">Bạn có chắc chắn muốn xóa phiếu nhập này không?</p>
+                <EditForm Model="@phieuNhap" OnValidSubmit="deletePhieuNhap">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="SoPhieuNhap" class="control-label">Số phiếu nhập: </label>
+                        <label><b>@phieuNhap.SoPhieuNhap</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="TenKho" class="control-label">Tên kho: </label>
+                        <label><b>@phieuNhap.TenKho</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="MoTa" class="control-label">Tên hộ trồng: </label>
+                        <label><b>@phieuNhap.TenHoTrong</b></label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Xóa phiếu nhập</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Đóng</button>
+                    </div>
                 </EditForm>
             </div>
         </div>
@@ -124,26 +161,28 @@ else
 <div class="modal fade @addChiTietModalClass" tabindex="-1" role="dialog" style="@addChiTietModalDisplayStyle">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background:#2f8f3a; color:beige">
+            <div class="modal-header" style="background:#2f8f3a; color:#dedcd8">
                 <h5 class="modal-title"><b>Thêm chi tiết phiếu nhập</b></h5>
                 <button type="button" class="close" @onclick="CloseAddChiTietModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <InputSelect class="" @bind-Value="@newChiTiet.MaLoaiThanhLong">
-                    <option value=""></option>
-                    @foreach (var item in loaiThanhLongList)
-                    {
-                        <option value="@item.Auto_ID">@item.MaLoaiThanhLong - @item.TenLoaiThanhLong</option>
-                    }
-                </InputSelect>
                 <div class="form-group">
-                    <label for="SoLuong">Số lượng nhập</label>
-                    <InputNumber class="form-control" @bind-Value="newChiTiet.SoLuong" />
+                    <InputSelect class="form-control" @bind-Value="@newChiTiet.MaLoaiThanhLong">
+                        <option value="">-- Chọn loại thanh long --</option>
+                        @foreach (var item in loaiThanhLongList)
+                        {
+                            <option value="@item.Auto_ID">@item.MaLoaiThanhLong - @item.TenLoaiThanhLong</option>
+                        }
+                    </InputSelect>
                 </div>
                 <div class="form-group">
-                    <label for="DonGia">Đơn giá</label>
+                    <label for="SoLuong">Số Kg nhập:</label>
+                    <InputNumber class="form-control" @bind-Value="newChiTiet.SoKg" />
+                </div>
+                <div class="form-group">
+                    <label for="DonGia">Đơn giá:</label>
                     <InputNumber class="form-control" @bind-Value="newChiTiet.DonGia" />
                 </div>
                 <div class="modal-footer">
@@ -154,6 +193,9 @@ else
         </div>
     </div>
 </div>
+
+
+
 
 @code {
     private List<PhieuNhap> dataList = new List<PhieuNhap>();
@@ -198,8 +240,6 @@ else
         addModalDisplayStyle = "display:none";
         StateHasChanged();
     }
-
-
 
     private void OpenEditModal(PhieuNhap item)
     {
@@ -247,8 +287,17 @@ else
 
     private void AddChiTiet()
     {
+        // Lấy tên loại thanh long từ mã loại thanh long
+        var loaiThanhLong = loaiThanhLongList.FirstOrDefault(l => l.Auto_ID == newChiTiet.MaLoaiThanhLong);
+        newChiTiet.TenLoaiThanhLong = loaiThanhLong?.TenLoaiThanhLong ?? "Không xác định";
         lstCTPN.Add(newChiTiet);
         CloseAddChiTietModal();
+    }
+
+    private void RemoveChiTiet(ChiTietPhieuNhap chitiet)
+    {
+        lstCTPN.Remove(chitiet);
+        StateHasChanged();
     }
 
     protected async Task createPhieuNhap()
@@ -272,6 +321,23 @@ else
                 //throw e;
                 ToastService.ShowError("Có lỗi xảy ra!");
             }
+        }
+    }
+
+    protected async Task deletePhieuNhap()
+    {
+        try
+        {
+            await PhieuNhap_Service.deleteData(phieuNhap.Auto_ID.ToString());
+            dataList = await PhieuNhap_Service.getAllData();
+            CloseDeleteModal();
+            ToastService.ShowSuccess("Xóa phiếu nhập thành công!");
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            //throw e;
+            ToastService.ShowError("Có lỗi xảy ra!");
         }
     }
 

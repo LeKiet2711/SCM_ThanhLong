@@ -46,7 +46,7 @@ else
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="background:#e5d2b8; color:brown">
+            <div class="modal-body" style="background:#dedcd8; color:brown">
                 <EditForm Model="@loaiThanhLong" OnValidSubmit="createLoaiThanhLong">
                     <DataAnnotationsValidator />
                     <div class="form-group">
@@ -73,13 +73,13 @@ else
 <div class="modal fade @editModalClass" tabindex="-1" role="dialog" style="@editModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background:#2f8f3a; color:beige">
+            <div class="modal-header" style="background:#dedcd8; color:beige">
                 <h5 class="modal-title"><b>Cập nhật loại thanh long</b></h5>
                 <button type="button" class="close" @onclick="CloseEditModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="background:#e5d2b8; color:brown">
+            <div class="modal-body" style="background:#dedcd8; color:brown">
                 <EditForm Model="@loaiThanhLong" OnValidSubmit="updateLoaiThanhLong">
                     <DataAnnotationsValidator />
                     <div class="form-group">
@@ -106,13 +106,13 @@ else
 <div class="modal fade @deleteModalClass" tabindex="-1" role="dialog" style="@deleteModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background:#2f8f3a; color:beige">
+            <div class="modal-header" style="background:#dedcd8; color:beige">
                 <h5 class="modal-title"><b>Xóa loại thanh long</b></h5>
                 <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="background:#e5d2b8; color:brown; font-size:30px">
+            <div class="modal-body" style="background:#dedcd8; color:brown; font-size:30px">
                 <p style="color:red">Bạn có chắc chắn muốn xóa khu vực này không?</p>
                 <EditForm Model="@loaiThanhLong" OnValidSubmit="deleteLoaiThanhLong">
                     <DataAnnotationsValidator />
