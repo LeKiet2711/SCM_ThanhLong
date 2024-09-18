@@ -7,16 +7,17 @@ namespace SCM_ThanhLong_Group.Components.Connection
 {
     public class OracleDbConnection
     {
-        private string _connectionString;
+        private readonly ConnectionStringManager _connectionStringManager;
 
-        public OracleDbConnection(string connectionString)
+        public OracleDbConnection(ConnectionStringManager connectionStringManager)
         {
-            _connectionString = connectionString;
+            _connectionStringManager = connectionStringManager;
         }
 
-        public OracleConnection GetConnection()
+        public OracleConnection GetConnection(string userId, string password)
         {
-            return new OracleConnection(_connectionString);
+            string connectionString = _connectionStringManager.GetConnectionString(userId, password);
+            return new OracleConnection(connectionString);
         }
     }
 }

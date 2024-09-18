@@ -12,8 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-string oracleConnectionString = "User Id=C##ADMIN;Password=oracle;Data Source=localhost:1521/orcl1;";
-builder.Services.AddScoped<OracleDbConnection>(sp => new OracleDbConnection(oracleConnectionString));
+//string oracleConnectionString = "User Id=C##ADMIN;Password=oracle;Data Source=localhost:1521/orcl1;";
+//builder.Services.AddScoped<OracleDbConnection>(sp => new OracleDbConnection(oracleConnectionString));
+
+builder.Services.AddSingleton<ConnectionStringManager>();
+builder.Services.AddScoped<OracleDbConnection>();
 
 builder.Services.AddScoped<Users_Service>();
 builder.Services.AddScoped<ChucNang_Service>();

@@ -18,7 +18,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<ChucNang>> getAllData()
         {
             List<ChucNang> dataList = new List<ChucNang>();
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetAllChucNang", conn))
@@ -50,7 +50,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task updateData(ChucNang data)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("UpdateChucNang", conn))

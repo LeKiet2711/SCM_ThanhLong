@@ -17,7 +17,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<Kho>> getAllData()
         {
             List<Kho> dataList=new List<Kho>();
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetAllKho", conn))
@@ -49,7 +49,7 @@ namespace SCM_ThanhLong_Group.Service
         {
             Kho data = new Kho();
 
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetKhoByID", conn))
@@ -102,7 +102,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task addData(Kho kho)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("AddKho", conn))
@@ -119,7 +119,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task updateData(Kho kho)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("UpdateKho", conn))
@@ -137,7 +137,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task deleteData(string Auto_ID)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("DeleteKho", conn))
@@ -170,7 +170,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<Users>> getAllData2()
         {
             List<Users> dataList = new List<Users>();
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("SELECT * FROM SYS.ALL_USERS", conn))

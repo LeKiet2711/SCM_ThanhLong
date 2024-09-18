@@ -34,6 +34,7 @@
 
 @code {
     private Users loginModel = new Users();
+    private bool isInitialized = false;
 
     private async Task HandleLogin()
     {
@@ -48,6 +49,19 @@
         else
         {
             ToastService.ShowError("Sai thông tin tài khoản hoặc mật khẩu!");
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !isInitialized)
+        {
+            var currentUserName = await Users_Service.GetCurrentUserName();
+            if (!string.IsNullOrEmpty(currentUserName))
+            {
+                Navigation.NavigateTo("/");
+            }
+            isInitialized = true;
         }
     }
 }

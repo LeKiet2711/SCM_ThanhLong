@@ -17,7 +17,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<LoaiThanhLong>> getAllData() 
         {
             List<LoaiThanhLong> dataList=new List<LoaiThanhLong>();
-            using(OracleConnection conn = _dbConnection.GetConnection())
+            using(OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetAllLoaiThanhLong", conn))
@@ -47,7 +47,7 @@ namespace SCM_ThanhLong_Group.Service
         {
             LoaiThanhLong data = new LoaiThanhLong();
 
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("GetLoaiThanhLongByID", conn))
@@ -72,7 +72,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task addData(LoaiThanhLong loaiThanhLong)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection()) 
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle")) 
             { 
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("AddLoaiThanhLong",conn))
@@ -88,7 +88,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task updateData(LoaiThanhLong loaiThanhLong)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("UpdateLoaiThanhLong", conn))
@@ -104,7 +104,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task deleteData(string id)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection())
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("DELETELOAITHANHLONG", conn))
