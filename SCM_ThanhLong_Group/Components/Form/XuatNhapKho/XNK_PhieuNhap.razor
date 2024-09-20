@@ -2,6 +2,8 @@
 @rendermode InteractiveServer
 @inject PhieuNhap_Service PhieuNhap_Service
 @inject IToastService ToastService
+@inject Users_Service Users_Service
+@inject Users user
 
 <style>
     .modal {
@@ -121,6 +123,62 @@ else
     </div>
 </div>
 
+<div class="modal fade @editModalClass" tabindex="-1" role="dialog" style="@editModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:#dedcd8">
+                <h5 class="modal-title"><b>Sửa phiếu nhập</b></h5>
+                <button type="button" class="close" @onclick="CloseEditModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#dedcd8; color:brown">
+                <EditForm Model="@phieuNhap" OnValidSubmit="updatePhieuNhap">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="SoPhieuNhap" class="control-label"><b>Số phiếu nhập: </b></label>
+                        <InputText class="form-control" @bind-Value=@phieuNhap.SoPhieuNhap />
+                        <ValidationMessage For="@(() => phieuNhap.SoPhieuNhap)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MaHoTrong" class="control-label"><b>Mã hộ trồng: </b></label>
+                        <InputSelect class="form-control" @bind-Value="@phieuNhap.HoTrongID">
+                            <option value="">-- Chọn hộ trồng --</option>
+                            @foreach (var item in hoTrongList)
+                            {
+                                    <option value="@item.Auto_ID">@item.MaHoTrong - @item.TenHoTrong</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(()=>phieuNhap.HoTrongID)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MaKho" class="control-label"><b>Mã kho: </b></label>
+                        <InputSelect class="form-control" @bind-Value="@phieuNhap.KhoID">
+                            <option value="">-- Chọn kho --</option>
+                            @foreach (var item in khoList)
+                            {
+                                <option value="@item.Auto_ID">@item.MaKho - @item.TenKho</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(()=>phieuNhap.KhoID)" />
+
+                    </div>
+                    <div class="form-group">
+                        <label for="NgayNhapKho" class="control-label"><b>Ngày nhập kho: </b></label>
+                        <InputDate class="form-control" @bind-Value="@phieuNhap.NgayNhap" format="dd/MM/yyyy" />
+                        <ValidationMessage For="@(()=>phieuNhap.NgayNhap)" />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Sửa phiếu nhập</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade @deleteModalClass" tabindex="-1" role="dialog" style="@deleteModalDisplayStyle">
     <div class="modal-dialog model-lg" role="document">
@@ -218,9 +276,13 @@ else
     private string addChiTietModalDisplayStyle = "display:none";
 
     private string soPhieuNhap;
+    private string username;
+    private string password;
 
     protected override async Task OnInitializedAsync()
     {
+        user.username = "C##" + await Users_Service.GetCurrentUserName();
+        user.password = await Users_Service.GetCurrentPassWord();
         hoTrongList = await PhieuNhap_Service.getHoTrongData();
         khoList = await PhieuNhap_Service.getKhoData();
         loaiThanhLongList= await PhieuNhap_Service.getLoaiThanhLongData();
@@ -320,6 +382,30 @@ else
             {
                 //throw e;
                 ToastService.ShowError("Có lỗi xảy ra!");
+            }
+        }
+    }
+
+    protected async Task updatePhieuNhap()
+    {
+        if(await PhieuNhap_Service.isSoPhieuNhapExist(phieuNhap, dataList, soPhieuNhap))
+        {
+            ToastService.ShowError("Số phiếu nhập đã tồn tại!");
+        }
+        else
+        {
+            try
+            {
+                await PhieuNhap_Service.updateData(phieuNhap);
+                dataList = await PhieuNhap_Service.getAllData();
+                CloseEditModal();
+                ToastService.ShowSuccess("Sửa phiếu nhập thành công!");
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                throw e;
+                //ToastService.ShowError("Có lỗi xảy ra!");
             }
         }
     }

@@ -8,19 +8,21 @@ namespace SCM_ThanhLong_Group.Service
     public class PhieuNhap_Service
     {
         private readonly OracleDbConnection _dbConnection;
+        private readonly Users _user;
 
-        public PhieuNhap_Service(OracleDbConnection dbConnection)
+        public PhieuNhap_Service(OracleDbConnection dbConnection, Users user)
         {
             _dbConnection = dbConnection;
+            _user = user;
         }
 
         public async Task<List<PhieuNhap>> getAllData()
         {
             List<PhieuNhap> dataList = new List<PhieuNhap>();
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username,_user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetAllPhieuNhap", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllPhieuNhap", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = System.Data.ParameterDirection.Output;
@@ -51,10 +53,10 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<LoaiThanhLong>> getLoaiThanhLongData()
         {
             List<LoaiThanhLong> dataList = new List<LoaiThanhLong>();
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetAllLoaiThanhLong", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllLoaiThanhLong", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = System.Data.ParameterDirection.Output;
@@ -80,10 +82,10 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<HoTrong>> getHoTrongData()
         {
             List<HoTrong> dataList = new List<HoTrong>();
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetAllHoTrong", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllHoTrong", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = System.Data.ParameterDirection.Output;
@@ -113,10 +115,10 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<Kho>> getKhoData()
         {
             List<Kho> dataList = new List<Kho>();
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetAllKho", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllKho", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = System.Data.ParameterDirection.Output;
@@ -145,10 +147,10 @@ namespace SCM_ThanhLong_Group.Service
         {
             PhieuNhap data = new PhieuNhap();
 
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetPhieuNhapByID", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetPhieuNhapByID", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -180,10 +182,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task addData(PhieuNhap phieuNhap)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("AddPhieuNhap", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.AddPhieuNhap", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -202,17 +204,17 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task updateData(PhieuNhap phieuNhap)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("UPDATEPHIEUNHAP", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.UPDATEPHIEUNHAP", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = phieuNhap.Auto_ID;
                     cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.SoPhieuNhap;
-                    cmd.Parameters.Add("p_NgayNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.NgayNhap;
                     cmd.Parameters.Add("p_MaHoTrong", OracleDbType.Int32, 50).Value = phieuNhap.HoTrongID;
                     cmd.Parameters.Add("p_MaKho", OracleDbType.Int32, 50).Value = phieuNhap.KhoID;
+                    cmd.Parameters.Add("p_NgayNhap", OracleDbType.Date).Value = phieuNhap.NgayNhap;
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
@@ -220,10 +222,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task deleteData(string id)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("DELETEPHIEUNHAP", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.DELETEPHIEUNHAP", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = int.Parse(id);
@@ -232,7 +234,7 @@ namespace SCM_ThanhLong_Group.Service
             }
         }
 
-        public async Task<bool> isSoPhieuNhapExist(PhieuNhap phieuNhap, List<PhieuNhap> lstData, string ma)
+        public async Task<bool> isSoPhieuNhapExist(PhieuNhap phieuNhap, List<PhieuNhap> lstData, string ma) 
         {
             if (lstData.Any(k => k.SoPhieuNhap == phieuNhap.SoPhieuNhap && phieuNhap.SoPhieuNhap != ma))
             {

@@ -35,11 +35,11 @@
                     <DataAnnotationsValidator />
                     <div class="form-group">
                         <label for="MaDangNhap" class="control-label"><b>Mã đăng nhập: </b></label>
-                        <InputSelect class="" @bind-Value="@user.name">
+                        <InputSelect class="" @bind-Value="@user.username">
                             <option value="">-- Chọn user --</option>
                             @foreach (var item in lstUser)
                             {
-                                <option value="@item.name">@item.name</option>
+                                <option value="@item.username">@item.username</option>
                             }
                         </InputSelect>
                     </div>

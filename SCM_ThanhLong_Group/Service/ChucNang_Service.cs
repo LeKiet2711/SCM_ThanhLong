@@ -21,7 +21,7 @@ namespace SCM_ThanhLong_Group.Service
             using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetAllChucNang", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllChucNang", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = System.Data.ParameterDirection.Output;
@@ -53,7 +53,7 @@ namespace SCM_ThanhLong_Group.Service
             using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("UpdateChucNang", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.UpdateChucNang", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 

@@ -3,6 +3,8 @@
 @inject LoaiThanhLong_Service LoaiThanhLong_Service
 @using SCM_ThanhLong_Group.Model
 @inject IToastService ToastService
+@inject Users_Service Users_Service
+@inject Users user
 
 <style>
     .modal {
@@ -73,7 +75,7 @@ else
 <div class="modal fade @editModalClass" tabindex="-1" role="dialog" style="@editModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background:#dedcd8; color:beige">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
                 <h5 class="modal-title"><b>Cập nhật loại thanh long</b></h5>
                 <button type="button" class="close" @onclick="CloseEditModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -106,7 +108,7 @@ else
 <div class="modal fade @deleteModalClass" tabindex="-1" role="dialog" style="@deleteModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background:#dedcd8; color:beige">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
                 <h5 class="modal-title"><b>Xóa loại thanh long</b></h5>
                 <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -150,8 +152,13 @@ else
     private string maLoaiThanhLong;
     private string tenLoaiThanhLong;
 
+    private string username;
+    private string password;
+
     protected override async Task OnInitializedAsync()
     {
+        user.username = "C##" + await Users_Service.GetCurrentUserName();
+        user.password = await Users_Service.GetCurrentPassWord();
         dataList = await LoaiThanhLong_Service.getAllData();
     }
 

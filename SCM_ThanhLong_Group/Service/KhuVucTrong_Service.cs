@@ -10,20 +10,22 @@ namespace SCM_ThanhLong_Group.Service
     public class KhuVucTrong_Service
     {
         private readonly OracleDbConnection _dbConnection;
+        private readonly Users _user;
 
-        public KhuVucTrong_Service(OracleDbConnection dbConnection)
+        public KhuVucTrong_Service(OracleDbConnection dbConnection, Users user)
         {
             _dbConnection = dbConnection;
+            _user = user;
         }
 
-        public async Task<List<KhuVucTrong>> getAllData(string userId, string password)
+        public async Task<List<KhuVucTrong>> getAllData()
         {
             List<KhuVucTrong> dataList = new List<KhuVucTrong>();
 
-            using (OracleConnection conn = _dbConnection.GetConnection(userId, password))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username,_user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("GetAllKhuVucTrong", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllKhuVucTrong", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
@@ -51,10 +53,10 @@ namespace SCM_ThanhLong_Group.Service
         {
             KhuVucTrong data = new KhuVucTrong();
 
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin", "oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetKhuVucTrongByID", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetKhuVucTrongByID", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -79,10 +81,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task addData(KhuVucTrong khuVucTrong)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin", "oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("AddKhuVucTrong", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.AddKhuVucTrong", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -96,10 +98,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task updateData(KhuVucTrong khuVucTrong)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin", "oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("UpdateKhuVucTrong", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.UpdateKhuVucTrong", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = khuVucTrong.Auto_ID;
@@ -114,10 +116,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task deleteData(string Auto_ID)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin", "oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("DeleteKhuVucTrong", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.DeleteKhuVucTrong", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = Auto_ID;

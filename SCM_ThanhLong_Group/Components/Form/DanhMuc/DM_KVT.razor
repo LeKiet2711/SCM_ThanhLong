@@ -1,7 +1,9 @@
 ﻿@page "/danhmuckhuvuctrong"
 @rendermode InteractiveServer
 @inject KhuVucTrong_Service KhuVucTrong_Service
+@inject Users_Service Users_Service
 @inject IToastService ToastService
+@inject Users user
 
 <style>
     .modal {
@@ -79,7 +81,7 @@ else
 <div class="modal fade @editModalClass" tabindex="-1" role="dialog" style="@editModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background:#dedcd8; color:beige">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
                 <h5 class="modal-title"><b>Cập nhật khu vực trồng</b></h5>
                 <button type="button" class="close" @onclick="CloseEditModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -116,7 +118,7 @@ else
 <div class="modal fade @deleteModalClass" tabindex="-1" role="dialog" style="@deleteModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background:#dedcd8; color:beige">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
                 <h5 class="modal-title"><b>Xóa khu vực trồng</b></h5>
                 <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -165,9 +167,14 @@ else
     private string maKhuVuc;
     private string tenKhuVuc;
 
+    private string username;
+    private string password;
+
     protected override async Task OnInitializedAsync()
     {
-        dataList = await KhuVucTrong_Service.getAllData("C##kietlg","123");
+        user.username="C##"+ await Users_Service.GetCurrentUserName();
+        user.password=await Users_Service.GetCurrentPassWord();
+        dataList = await KhuVucTrong_Service.getAllData();
     }
 
     private void OpenAddModal()
@@ -235,7 +242,7 @@ else
             try
             {
                 await KhuVucTrong_Service.addData(khuVucTrong);
-                dataList = await KhuVucTrong_Service.getAllData("C##Admin", "oracle");
+                dataList = await KhuVucTrong_Service.getAllData();
                 CloseAddModal();
                 ToastService.ShowSuccess("Thêm khu vực trồng thành công!");
                 StateHasChanged();
@@ -264,7 +271,7 @@ else
             try
             {
                 await KhuVucTrong_Service.updateData(khuVucTrong);
-                dataList = await KhuVucTrong_Service.getAllData("C##Admin", "oracle");
+                dataList = await KhuVucTrong_Service.getAllData();
                 CloseEditModal();
                 ToastService.ShowSuccess("Cập nhật khu vực trồng thành công!");
             }
@@ -280,7 +287,7 @@ else
         try
         {
             await KhuVucTrong_Service.deleteData(khuVucTrong.Auto_ID.ToString());
-            dataList = await KhuVucTrong_Service.getAllData("C##Admin", "oracle");
+            dataList = await KhuVucTrong_Service.getAllData();
             CloseDeleteModal();
             ToastService.ShowSuccess("Xóa khu vực trồng thành công!");
             StateHasChanged();

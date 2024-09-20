@@ -16,9 +16,9 @@
     <div class="containerr">
         <h1>Đăng nhập</h1>
         <div class="box">
-            <InputText @bind-Value="loginModel.name" class="form-control" placeholder="Tên đăng nhập"></InputText>
+            <InputText @bind-Value="loginModel.username" class="form-control" placeholder="Tên đăng nhập"></InputText>
             <i class="fa-solid fa-user"></i>
-           <ValidationMessage For="@(() =>loginModel.name)"/>
+           <ValidationMessage For="@(() =>loginModel.username)"/>
         </div>
         <div class="box">
             <InputText @bind-Value="loginModel.password" class="form-control" type="password" placeholder="Mật khẩu"></InputText>
@@ -38,11 +38,12 @@
 
     private async Task HandleLogin()
     {
-        var result = await Users_Service.AuthenticateUser(loginModel.name, loginModel.password);
+        var result = await Users_Service.AuthenticateUser(loginModel.username, loginModel.password);
 
         if (result)
         {
-            Users_Service.currentUserName = loginModel.name;
+            Users_Service.currentUserName = loginModel.username;
+            Users_Service.currentPassWord = loginModel.password;
             ToastService.ShowSuccess("Đăng nhập thành công!");
             Navigation.NavigateTo("/Home");
         }
@@ -57,6 +58,7 @@
         if (firstRender && !isInitialized)
         {
             var currentUserName = await Users_Service.GetCurrentUserName();
+            var currentPassWord = await Users_Service.GetCurrentPassWord();
             if (!string.IsNullOrEmpty(currentUserName))
             {
                 Navigation.NavigateTo("/");

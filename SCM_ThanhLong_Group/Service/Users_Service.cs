@@ -12,7 +12,7 @@ namespace SCM_ThanhLong_Group.Service
         private readonly OracleDbConnection _dbConnection;
         private readonly ISessionStorageService _sessionStorage;
         public string currentUserName { get; set; }
-
+        public string currentPassWord { get; set; }
         public Users_Service(OracleDbConnection dbConnection, ISessionStorageService sessionStorage)
         {
             _dbConnection = dbConnection;
@@ -34,6 +34,7 @@ namespace SCM_ThanhLong_Group.Service
                         await cmd.ExecuteScalarAsync();
                     }
                     await _sessionStorage.SetItemAsync("currentUserName", username);
+                    await _sessionStorage.SetItemAsync("currentPassWord", password);
                     return true;
                 }
                 catch (OracleException)
@@ -83,7 +84,7 @@ namespace SCM_ThanhLong_Group.Service
                         {
                             var data = new Users
                             {
-                                name= reader["USERNAME"].ToString(),
+                                username= reader["USERNAME"].ToString(),
 
                             };
                             dataList.Add(data);
@@ -100,10 +101,17 @@ namespace SCM_ThanhLong_Group.Service
             return await _sessionStorage.GetItemAsync<string>("currentUserName");
         }
 
+        public async Task<string> GetCurrentPassWord()
+        {
+            return await _sessionStorage.GetItemAsync<string>("currentPassWord");
+        }
+
         public async Task Logout()
         {
             await _sessionStorage.RemoveItemAsync("currentUserName");
+            await _sessionStorage.RemoveItemAsync("currentPassword");
             currentUserName = null;
+            currentPassWord = null;
         }
 
     }

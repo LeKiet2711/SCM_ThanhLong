@@ -2,6 +2,7 @@ using Blazored.SessionStorage;
 using Blazored.Toast;
 using SCM_ThanhLong_Group.Components;
 using SCM_ThanhLong_Group.Components.Connection;
+using SCM_ThanhLong_Group.Model;
 using SCM_ThanhLong_Group.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ builder.Services.AddSingleton<ConnectionStringManager>();
 builder.Services.AddScoped<OracleDbConnection>();
 
 builder.Services.AddScoped<Users_Service>();
+builder.Services.AddScoped<Users>();
 builder.Services.AddScoped<ChucNang_Service>();
 builder.Services.AddScoped<KhuVucTrong_Service>();
 builder.Services.AddScoped<LoaiThanhLong_Service>();

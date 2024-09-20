@@ -8,19 +8,21 @@ namespace SCM_ThanhLong_Group.Service
     public class Kho_Service
     {
         private readonly OracleDbConnection _dbConnection;
+        private readonly Users _user;
 
-        public Kho_Service(OracleDbConnection dbConnection)
+        public Kho_Service(OracleDbConnection dbConnection, Users user)
         {
             _dbConnection = dbConnection;
+            _user = user;
         }
 
         public async Task<List<Kho>> getAllData()
         {
             List<Kho> dataList=new List<Kho>();
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username,_user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetAllKho", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllKho", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = System.Data.ParameterDirection.Output;
@@ -49,10 +51,10 @@ namespace SCM_ThanhLong_Group.Service
         {
             Kho data = new Kho();
 
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetKhoByID", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetKhoByID", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -102,10 +104,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task addData(Kho kho)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("AddKho", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.AddKho", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -119,10 +121,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task updateData(Kho kho)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("UpdateKho", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.UpdateKho", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = kho.Auto_ID;
@@ -137,10 +139,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task deleteData(string Auto_ID)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("DeleteKho", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.DeleteKho", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = Auto_ID;
@@ -170,7 +172,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<Users>> getAllData2()
         {
             List<Users> dataList = new List<Users>();
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("SELECT * FROM SYS.ALL_USERS", conn))
@@ -183,7 +185,7 @@ namespace SCM_ThanhLong_Group.Service
                         {
                             var data = new Users
                             {
-                                name = reader["USERNAME"].ToString(),
+                                username = reader["USERNAME"].ToString(),
 
                             };
                             dataList.Add(data);

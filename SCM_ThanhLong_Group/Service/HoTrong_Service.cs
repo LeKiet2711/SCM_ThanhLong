@@ -8,19 +8,21 @@ namespace SCM_ThanhLong_Group.Service
     public class HoTrong_Service
     {
         private readonly OracleDbConnection _dbConnection;
+        private readonly Users _user;
 
-        public HoTrong_Service(OracleDbConnection dbConnection)
+        public HoTrong_Service(OracleDbConnection dbConnection, Users user)
         {
             _dbConnection = dbConnection;
+            _user = user;
         }
 
         public async Task<List<HoTrong>> getAllData()
         {
             List<HoTrong> dataList = new List<HoTrong>();
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username,_user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetAllHoTrong", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllHoTrong", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = System.Data.ParameterDirection.Output;
@@ -51,10 +53,10 @@ namespace SCM_ThanhLong_Group.Service
         {
             List<KhuVucTrong> dataList = new List<KhuVucTrong>();
 
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetAllKhuVucTrong", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllKhuVucTrong", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = System.Data.ParameterDirection.Output;
@@ -83,10 +85,10 @@ namespace SCM_ThanhLong_Group.Service
         {
             HoTrong data = new HoTrong();
 
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("GetHoTrongByID", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetHoTrongByID", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -116,10 +118,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task addData(HoTrong hoTrong)
         {
-            using(OracleConnection conn=_dbConnection.GetConnection("C##Admin","oracle"))
+            using(OracleConnection conn=_dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using(OracleCommand cmd= new OracleCommand("ADDHOTRONG", conn))
+                using(OracleCommand cmd= new OracleCommand("C##Admin.ADDHOTRONG", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_MaHoTrong", OracleDbType.Varchar2, 50).Value = hoTrong.MaHoTrong;
@@ -134,10 +136,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task updateData(HoTrong hoTrong)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("UPDATEHOTRONG", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.UPDATEHOTRONG", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = hoTrong.Auto_ID;
@@ -153,10 +155,10 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task deleteData(string id)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("DELETEHOTRONG", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.DELETEHOTRONG", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = int.Parse(id);
