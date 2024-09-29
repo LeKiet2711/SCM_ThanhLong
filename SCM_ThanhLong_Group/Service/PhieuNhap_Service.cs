@@ -1,4 +1,5 @@
 ﻿using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using SCM_ThanhLong_Group.Components.Connection;
 using SCM_ThanhLong_Group.Model;
 using System.Data;
@@ -143,7 +144,7 @@ namespace SCM_ThanhLong_Group.Service
             return dataList;
         }
 
-        public PhieuNhap getDataByID(string id)
+        public PhieuNhap getDataByID(int id)
         {
             PhieuNhap data = new PhieuNhap();
 
@@ -155,32 +156,33 @@ namespace SCM_ThanhLong_Group.Service
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     // Thêm tham số đầu vào
-                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = int.Parse(id);
+                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = id;
 
                     // Thêm các tham số đầu ra
                     cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("p_TenHoTrong", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_NgayNhap", OracleDbType.Varchar2, 200).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_MaHoTrong", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_MaKho", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("p_NgayNhap", OracleDbType.Date).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("p_MaHoTrong", OracleDbType.Int32).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Direction = ParameterDirection.Output;
 
                     cmd.ExecuteNonQuery();
 
-                    data.Auto_ID = int.Parse(id);
+                    data.Auto_ID = id;
                     data.SoPhieuNhap = cmd.Parameters["p_SoPhieuNhap"].Value?.ToString() ?? string.Empty;
                     data.TenHoTrong = cmd.Parameters["p_TenHoTrong"].Value?.ToString() ?? string.Empty;
                     data.NgayNhap = DateTime.Parse(cmd.Parameters["p_NgayNhap"].Value?.ToString() ?? string.Empty);
-                    
-                    data.HoTrongID = cmd.Parameters["p_HoTrongID"].Value != DBNull.Value
-                        ? Convert.ToInt32(cmd.Parameters["p_HoTrongID"].Value)
-                        : 0;
 
+                    if (cmd.Parameters["p_NgayNhap"].Value != DBNull.Value)
+                    {
+                        Oracle.ManagedDataAccess.Types.OracleDate oracleDate = (Oracle.ManagedDataAccess.Types.OracleDate)cmd.Parameters["p_NgayNhap"].Value;
+                        data.NgayNhap = oracleDate.Value;
+                    }
                 }
             }
             return data;
         }
 
-        public async Task addData(PhieuNhap phieuNhap)
+        public async Task<int> addData(PhieuNhap phieuNhap)
         {
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
@@ -188,18 +190,26 @@ namespace SCM_ThanhLong_Group.Service
                 using (OracleCommand cmd = new OracleCommand("C##Admin.AddPhieuNhap", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
-                    // Thêm tham số vào stored procedure
                     cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.SoPhieuNhap;
                     cmd.Parameters.Add("p_MaHoTrong", OracleDbType.Int32).Value = phieuNhap.HoTrongID;
                     cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Value = phieuNhap.KhoID;
                     cmd.Parameters.Add("p_NgayNhap", OracleDbType.Date).Value = phieuNhap.NgayNhap;
-                    cmd.Parameters.Add("p_TongTien", OracleDbType.Decimal).Value = 0; 
 
+                    cmd.Parameters.Add("p_TongTien", OracleDbType.Decimal).Value = 0;
+                    var autoIDParam = new OracleParameter("p_AUTO_ID", OracleDbType.Decimal)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(autoIDParam);
                     await cmd.ExecuteNonQueryAsync();
+
+                    // Chuyển đổi OracleDecimal sang int
+                    OracleDecimal autoIDDecimal = (OracleDecimal)autoIDParam.Value;
+                    return autoIDDecimal.ToInt32();  // Chuyển đổi OracleDecimal thành int
                 }
             }
         }
+
 
 
         public async Task updateData(PhieuNhap phieuNhap)

@@ -6,9 +6,8 @@ namespace SCM_ThanhLong_Group.Model
     {
         public int Auto_ID { get; set; }
         [Required(ErrorMessage = "Vui lòng không để trống số phiếu nhập")]
-        public string SoPhieuNhap { get; set; }
+        public int SoPhieuNhap { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn loại thanh long")]
-        
         public int MaLoaiThanhLong { get; set; }
         public string TenLoaiThanhLong { get; set;}
         public double SoKg { get; set; }
@@ -16,5 +15,11 @@ namespace SCM_ThanhLong_Group.Model
         public double TongTien { get;set; }
 
         public LoaiThanhLong LoaiThanhLong { get; set; }
+
+        public ChiTietPhieuNhap Shallowcopy()
+        {
+            return (ChiTietPhieuNhap)this.MemberwiseClone();
+        }
+
     }
 }

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Adding Telerik Native Blazor Viewer page log</title>
+    <style>
+        body {
+            background: #fff;
+            color: #505050;
+            font: 14px 'Segoe UI', tahoma, arial, helvetica, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+
+        #header {
+            background: #efefef;
+            padding: 0;
+        }
+
+        /* Start: Toggle details */
+        label { 
+            top:0; 
+            left:0; 
+            font-weight:700; 
+            margin-top: 10px;
+            user-select: none;
+            -ms-user-select: none;
+        }
+
+            label:hover{
+                color: cadetblue;
+                border-color: #505050;
+            }
+
+        input#show, input#hide {
+            display:none;
+        }
+
+        ul#details {
+            transition: opacity 1s ease-out;
+            opacity: 0; 
+            height: 0;
+            font-size: 0;
+            overflow: hidden;
+        }
+
+        input#show:checked ~ .show:before {
+            content: "";
+        }
+
+        input#show:checked ~ .hide:before {
+            content: "Hide details";
+            border: solid;
+            padding: 3px;
+        }
+
+        input#hide:checked ~ .hide:before {
+            content: "";
+        }
+
+        input#hide:checked ~ .show:before {
+            content: "Show details"; 
+            border: solid;
+            padding: 3px;
+        }
+
+        input#show:checked ~ ul#details {
+            opacity: 1;
+            font-size: 100%;
+            height: auto;
+            padding: 10px;
+        }
+
+        input#hide:checked ~ ul#details {
+            transition: opacity 1s ease-out;
+            opacity: 0; 
+            height: 0;
+            font-size: 0;
+            overflow: hidden;
+        }
+
+        /* End: toggle details */
+
+
+        h1 {
+            font-size: 48px;
+            font-weight: normal;
+            margin: 0;
+            padding: 0 30px;
+            line-height: 150px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #fff;
+            background: #969696;
+            padding: 0 30px;
+            line-height: 50px;
+        }
+
+        #main {
+            padding: 5px 30px;
+        }
+
+        .section {
+            width: 21.7%;
+            float: left;
+            margin: 0 0 0 40px;
+        }
+
+            .section h2 {
+                font-size: 13px;
+                text-transform: uppercase;
+                margin: 0;
+                border-bottom: 1px solid silver;
+                padding-bottom: 12px;
+                margin-bottom: 8px;
+            }
+
+            .section.first {
+                margin-left: 0;
+                width: 25%
+            }
+
+                .section.first h2 {
+                    font-size: 20px;
+                    text-transform: none;
+                    margin-bottom: 16px;
+                    border: none;
+                }
+
+                .section.first li {
+                    border-top: 1px solid silver;
+                    padding: 8px 0;
+                }
+
+            .section.last {
+                margin-right: 0;
+                width: 70%;
+            }
+            
+            .section.last h2 {
+                    font-size: 20px;
+                    text-transform: none;
+                    margin-bottom: 5px;
+                    border: none;
+                }
+
+            .section.last li {
+                padding: 4px 0;
+                border-bottom: solid;
+                border-bottom-width: 1px;
+                border-color: lightgray;
+            }
+            
+            .section.last ul{
+                padding-bottom:10px;   
+                margin-bottom: 10px; 
+            }
+            
+                
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            line-height: 20px;
+        }
+
+
+
+        a {
+            color: #267cb2;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <p><span style="color: red;">ERROR!</span> An error occurred while adding a Razor page with Telerik Native Blazor Report Viewer</p>
+    </div>
+
+    <div id="main">
+        <div class="section first">
+            <h2>Telerik Native Blazor Report Viewer-enabled application consists of: </h2>
+            <ul>
+                <li><a href="https://docs.telerik.com/reporting/embedding-reports/display-reports-in-applications/web-application/native-blazor-report-viewer/overview">Native Blazor Report Viewer</a> prerequisites</li>
+                <li>Razor page with Native Blazor Report Viewer</li>
+                <li><a href="https://docs.telerik.com/reporting/embedding-reports/host-the-report-engine-remotely/telerik-reporting-rest-services/overview" >Telerik Reporting REST Service</a> with its prerequisites</li>
+            </ul>
+        </div>
+
+        <div class="section last">
+            <h2>Summary</h2>
+            <ul style="padding-bottom: 10px; padding-left: 7px;">
+                <li style="color: none;">Added folder: Reports</li>
+<li style="color: none;">Added SampleReport.trdp</li>
+<li style="color: none;">Added ReportViewerPage.razor</li>
+<li style="color: none;">Added folder: Controllers</li>
+<li style="color: none;">Added ReportsController.cs</li>
+<li style="color: #FF0000;">Error: System.IO.IOException: The process cannot access the file 'C:\Users\Kiêt\OneDrive\Tài liệu\code\SCM_ThanhLong_Group\SCM_ThanhLong_Group\Controllers\ReportsController.cs' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.File.InternalWriteAllBytes(String path, Byte[] bytes, Boolean checkHost)
+   at Telerik.ReportViewer.Design.Common.RootProjectItem.AddToProject(DTEProject project)
+   at Telerik.Reporting.VsX.TemplateWizards.IT.Common.NetCoreWebItemTemplateWizardBase.RunFinishedCore()
+   at Telerik.Reporting.VsX.TemplateWizards.IT.ReportViewer.Blazor.BlazorItemTemplateWizard.RunFinishedCore()
+   at Telerik.Reporting.VsX.TemplateWizards.IT.ReportViewer.Blazor.BlazorNativeItemTemplateWizard.RunFinishedCore()
+   at Telerik.Reporting.VsX.TemplateWizards.IT.Common.ItemTemplateWizardBase.Microsoft.VisualStudio.TemplateWizard.IWizard.RunFinished()</li>
+<li style="color: #FF0000;">Error: Model state: ET RestService; URI /api/reports; CrN True; Tk </li>
+
+            </ul>
+
+            <input type="radio" id="show" name="group" />   
+            <input type="radio" id="hide" name="group" checked />
+            <label for="hide" class="hide" unselectable="on"></label>
+            <label for="show" class="show" unselectable="on"></label> 
+
+            <ul id="details">
+                9/29/2024 7:17:23 PM
+<li style="color: none;">Build Started</li>
+<li style="color: none;">Added folder: Reports</li>
+<li style="color: none;">Added SampleReport.trdp</li>
+<li style="color: none;">Adding CS\BlazorNative\TelerikBlazorNativeViewerPage.razor.ServiceUrl project item</li>
+<li style="color: none;">Added ReportViewerPage.razor</li>
+<li style="color: none;">Adding CS\BlazorNative\TelerikBlazorNativeViewerPage.razor.ReportServer project item</li>
+<li style="color: none;">Added folder: Controllers</li>
+<li style="color: none;">Added ReportsController.cs</li>
+<li style="color: #FF0000;">Error: System.IO.IOException: The process cannot access the file 'C:\Users\Kiêt\OneDrive\Tài liệu\code\SCM_ThanhLong_Group\SCM_ThanhLong_Group\Controllers\ReportsController.cs' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.File.InternalWriteAllBytes(String path, Byte[] bytes, Boolean checkHost)
+   at Telerik.ReportViewer.Design.Common.RootProjectItem.AddToProject(DTEProject project)
+   at Telerik.Reporting.VsX.TemplateWizards.IT.Common.NetCoreWebItemTemplateWizardBase.RunFinishedCore()
+   at Telerik.Reporting.VsX.TemplateWizards.IT.ReportViewer.Blazor.BlazorItemTemplateWizard.RunFinishedCore()
+   at Telerik.Reporting.VsX.TemplateWizards.IT.ReportViewer.Blazor.BlazorNativeItemTemplateWizard.RunFinishedCore()
+   at Telerik.Reporting.VsX.TemplateWizards.IT.Common.ItemTemplateWizardBase.Microsoft.VisualStudio.TemplateWizard.IWizard.RunFinished()</li>
+<li style="color: #FF0000;">Error: Model state: ET RestService; URI /api/reports; CrN True; Tk </li>
+
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

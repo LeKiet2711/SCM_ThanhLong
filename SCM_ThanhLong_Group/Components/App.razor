@@ -10,7 +10,11 @@
     <link rel="stylesheet" href="SCM_ThanhLong_Group.styles.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="SCM_ThanhLong_Group.styles.css" rel="stylesheet" />
+
+    <script src="_content/Telerik.ReportViewer.BlazorNative/js/reporting-blazor-viewer.js" defer></script>
     <link rel="stylesheet" href="_content/Telerik.UI.for.Blazor/css/kendo-theme-default/all.css" />
+    <link href="_content/Telerik.ReportViewer.BlazorNative/css/reporting-blazor-viewer.css" rel="stylesheet" />
+
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
@@ -23,13 +27,15 @@
 
     <script src="/script/scp.js"></script>
     <script src="_content/Telerik.UI.for.Blazor/js/telerik-blazor.js"></script>
-    <HeadOutlet/>
+
+    <HeadOutlet />
 </head>
 
 <body>
     <Routes @rendermode="@InteractiveServer" />
+    <script src="_content/Telerik.WebReportDesigner.Blazor/telerikWebReportDesignerInterop.js" defer></script>
+    <script src="_content/Telerik.ReportViewer.Blazor/interop.js" defer></script>
     <script src="_framework/blazor.web.js"></script>
-   
 </body>
 
 </html>

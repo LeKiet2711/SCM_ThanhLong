@@ -1,0 +1,32 @@
+﻿@page "/reportnhapkho"
+
+<PageTitle>Report Viewer</PageTitle>
+
+<ReportViewer ServiceUrl="/api/reports"
+              @bind-ReportSource="@ReportSource"
+              @bind-ScaleMode="@ScaleMode"
+              @bind-ViewMode="@ViewMode"
+              @bind-ParametersAreaVisible="@ParametersAreaVisible"
+              @bind-DocumentMapVisible="@DocumentMapVisible"
+              @bind-Scale="@Scale"
+              PageMode="@PageMode.ContinuousScroll"
+              PrintMode="@PrintMode.AutoSelect"
+              KeepClientAlive="true"
+              EnableSendEmail="true"
+              ServiceType="@ReportViewerServiceType.REST"
+              Height="900px"
+              Width="100%">
+</ReportViewer>
+
+@code {
+    public ScaleMode ScaleMode { get; set; } = ScaleMode.Specific;
+    public ViewMode ViewMode { get; set; } = ViewMode.Interactive;
+    public bool ParametersAreaVisible { get; set; }
+    public bool DocumentMapVisible { get; set; }
+    public double Scale { get; set; } = 1.0;
+
+    public ReportSourceOptions ReportSource { get; set; } = new ReportSourceOptions("ReportPhieuNhap_1.trdp", new Dictionary<string, object>
+    {
+        // Add parameters if applicable
+    });
+}

@@ -1,6 +1,8 @@
 ﻿@page "/phieunhapkho"
 @rendermode InteractiveServer
 @inject PhieuNhap_Service PhieuNhap_Service
+@inject ChiTietPhieuNhap_Service ChiTietPhieuNhap_Service
+@inject NavigationManager Navigation
 @inject IToastService ToastService
 @inject Users_Service Users_Service
 @inject Users user
@@ -34,6 +36,12 @@ else
                 </GridCommandButton>
                 <GridCommandButton Command="Delete" OnClick="@DeleteItem">
                     <span class="oi oi-trash" Width="100px"></span> Xóa
+                </GridCommandButton>
+                <GridCommandButton OnClick="() => ViewDetails((context as PhieuNhap).Auto_ID)">
+                    <span class="oi oi-eye" Width="100px"></span> Xem chi tiết phiếu nhập
+                </GridCommandButton>
+                <GridCommandButton Command="Delete" OnClick="@DeleteItem">
+                    <span class="oi oi-trash" Width="100px"></span> In phiếu nhập
                 </GridCommandButton>
             </GridCommandColumn>
         </GridColumns>
@@ -253,8 +261,6 @@ else
 </div>
 
 
-
-
 @code {
     private List<PhieuNhap> dataList = new List<PhieuNhap>();
     private List<HoTrong> hoTrongList = new List<HoTrong>();
@@ -372,16 +378,23 @@ else
         {
             try
             {
-                await PhieuNhap_Service.addData(phieuNhap);
-                dataList = await PhieuNhap_Service.getAllData();
+                int autoID = await PhieuNhap_Service.addData(phieuNhap);
+                phieuNhap.Auto_ID = autoID;
+
+                foreach(ChiTietPhieuNhap ctpn in lstCTPN)
+                {
+                    ctpn.SoPhieuNhap = phieuNhap.Auto_ID;
+                    await ChiTietPhieuNhap_Service.addData(ctpn);
+                }
+                dataList= await PhieuNhap_Service.getAllData();
                 CloseAddModal();
                 ToastService.ShowSuccess("Thêm phiếu nhập thành công!");
                 StateHasChanged();
             }
             catch (Exception e)
             {
-                //throw e;
-                ToastService.ShowError("Có lỗi xảy ra!");
+                throw e;
+                //ToastService.ShowError("Có lỗi xảy ra!");
             }
         }
     }
@@ -415,6 +428,7 @@ else
         try
         {
             await PhieuNhap_Service.deleteData(phieuNhap.Auto_ID.ToString());
+            await ChiTietPhieuNhap_Service.deleteData(phieuNhap.Auto_ID);
             dataList = await PhieuNhap_Service.getAllData();
             CloseDeleteModal();
             ToastService.ShowSuccess("Xóa phiếu nhập thành công!");
@@ -444,4 +458,8 @@ else
         OpenDeleteModal(item);
     }
 
+    private void ViewDetails(int Auto_ID)
+    {
+        Navigation.NavigateTo($"/chitietphieunhap/{Auto_ID}");
+    }
 }

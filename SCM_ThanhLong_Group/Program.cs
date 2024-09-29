@@ -1,23 +1,36 @@
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using Telerik.WebReportDesigner;
 using Blazored.SessionStorage;
 using Blazored.Toast;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using SCM_ThanhLong_Group.Components;
 using SCM_ThanhLong_Group.Components.Connection;
 using SCM_ThanhLong_Group.Model;
 using SCM_ThanhLong_Group.Service;
+using Telerik.Reporting.Services;
+using Telerik.Reporting.Cache.File;
+
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-
+builder.Services.AddRazorPages().AddNewtonsoftJson();
+builder.Services.AddControllers();
+builder.Services.AddMvc();
+builder.Services.TryAddSingleton<IReportServiceConfiguration>(sp => new ReportServiceConfiguration
+{
+    ReportingEngineConfiguration = sp.GetService<IConfiguration>(),
+    HostAppId = "SCM_ThanhLong_Group",
+    Storage = new FileStorage(),
+    ReportSourceResolver = new UriReportSourceResolver(
+        System.IO.Path.Combine(GetReportsDir(sp)))
+});
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-//string oracleConnectionString = "User Id=C##ADMIN;Password=oracle;Data Source=localhost:1521/orcl1;";
-//builder.Services.AddScoped<OracleDbConnection>(sp => new OracleDbConnection(oracleConnectionString));
-
 builder.Services.AddSingleton<ConnectionStringManager>();
 builder.Services.AddScoped<OracleDbConnection>();
+builder.Services.AddControllers();
 
 builder.Services.AddScoped<Users_Service>();
 builder.Services.AddScoped<Users>();
@@ -27,6 +40,7 @@ builder.Services.AddScoped<LoaiThanhLong_Service>();
 builder.Services.AddScoped<HoTrong_Service>();
 builder.Services.AddScoped<Kho_Service>();
 builder.Services.AddScoped<PhieuNhap_Service>();
+builder.Services.AddScoped<ChiTietPhieuNhap_Service>();
 
 
 builder.Services.AddBlazoredSessionStorage();
@@ -34,7 +48,13 @@ builder.Services.AddBlazoredToast();
 builder.Services.AddTelerikBlazor();
 
 var app = builder.Build();
-
+app.UseRouting();
+app.UseAntiforgery();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    // ... 
+});
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -52,3 +72,8 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
+
+static string GetReportsDir(IServiceProvider sp)
+{
+    return Path.Combine(sp.GetService<IWebHostEnvironment>().ContentRootPath, "Reports");
+}
