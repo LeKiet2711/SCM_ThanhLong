@@ -40,7 +40,7 @@ else
                 <GridCommandButton OnClick="() => ViewDetails((context as PhieuNhap).Auto_ID)">
                     <span class="oi oi-eye" Width="100px"></span> Xem chi tiết phiếu nhập
                 </GridCommandButton>
-                <GridCommandButton Command="Delete" OnClick="@DeleteItem">
+                <GridCommandButton OnClick="() => ExportReport((context as PhieuNhap).Auto_ID.ToString())">
                     <span class="oi oi-trash" Width="100px"></span> In phiếu nhập
                 </GridCommandButton>
             </GridCommandColumn>
@@ -461,5 +461,10 @@ else
     private void ViewDetails(int Auto_ID)
     {
         Navigation.NavigateTo($"/chitietphieunhap/{Auto_ID}");
+    }
+
+    private void ExportReport(string Auto_ID)
+    {
+        Navigation.NavigateTo($"/reportnhapkho/{Auto_ID}");
     }
 }

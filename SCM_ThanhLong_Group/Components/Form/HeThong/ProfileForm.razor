@@ -1,0 +1,42 @@
+﻿@page "/quanlyprofile"
+@rendermode InteractiveServer
+@inject Profile_Service profile_Service
+@inject IToastService ToastService
+@inject Users user
+
+<style>
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+</style>
+
+@if (dataList == null)
+{
+    <p><em>Loading......</em></p>
+}
+else
+{
+    <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
+        <GridColumns>
+            <GridColumn Field="@nameof(Profile.ProfileName)" Title="Profile Name" Width="100px" />
+            <GridColumn Field="@nameof(Profile.ResourceName)" Title="Resource Name" Width="100px" />
+            <GridColumn Field="@nameof(Profile.ResourceType)" Title="Resource Type" Width="100px" />
+            <GridColumn Field="@nameof(Profile.Limit)" Title="Limit" Width="100px" />
+            <GridColumn Field="@nameof(Profile.Common)" Title="Common" Width="100px" />
+        </GridColumns>
+    </TelerikGrid>
+}
+
+
+
+@code {
+    private List<Profile> dataList = new List<Profile>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user.username = "sys";
+        user.password = "sys";
+        dataList = await profile_Service.GetAllProfiles();
+    }
+
+}
