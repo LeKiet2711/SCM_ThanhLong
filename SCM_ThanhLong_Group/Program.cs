@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using System.IO;
-using Telerik.WebReportDesigner;
 using Blazored.SessionStorage;
 using Blazored.Toast;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -41,6 +40,7 @@ builder.Services.AddScoped<HoTrong_Service>();
 builder.Services.AddScoped<Kho_Service>();
 builder.Services.AddScoped<PhieuNhap_Service>();
 builder.Services.AddScoped<ChiTietPhieuNhap_Service>();
+builder.Services.AddScoped<Profile_Service>();
 
 
 builder.Services.AddBlazoredSessionStorage();
