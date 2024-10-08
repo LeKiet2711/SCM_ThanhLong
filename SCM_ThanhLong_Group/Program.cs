@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using System.IO;
-using Telerik.WebReportDesigner;
 using Blazored.SessionStorage;
 using Blazored.Toast;
 using Microsoft.Extensions.DependencyInjection.Extensions;
