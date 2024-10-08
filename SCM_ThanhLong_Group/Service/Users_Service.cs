@@ -21,7 +21,7 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<bool> AuthenticateUser(string username, string password)
         {
             //string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
-            string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/chkb;";
+            string connectionString = $"User Id=C##{username};Password={password};Data Source=192.168.1.25:1521/orcl1;";
 
             using (var conn = new OracleConnection(connectionString))
             {
