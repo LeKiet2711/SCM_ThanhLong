@@ -14,10 +14,20 @@ namespace SCM_ThanhLong_Group.Components.Connection
             _connectionStringManager = connectionStringManager;
         }
 
-        public OracleConnection GetConnection(string userId, string password)
+        public OracleConnection GetConnection(string userId, string password, string dbaPrivilege = null)
         {
-            string connectionString = _connectionStringManager.GetConnectionString(userId, password);
-            return new OracleConnection(connectionString);
+            var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionStringManager.GetConnectionString(userId, password))
+            {
+                UserID = userId,
+                Password = password
+            };
+
+            if (!string.IsNullOrEmpty(dbaPrivilege))
+            {
+                connectionStringBuilder.DBAPrivilege = dbaPrivilege;
+            }
+
+            return new OracleConnection(connectionStringBuilder.ToString());
         }
     }
 }
