@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 @inject PhieuNhap_Service PhieuNhap_Service
 @inject ChiTietPhieuNhap_Service ChiTietPhieuNhap_Service
-@inject LoaiThanhLong_Service LoaiThanhLong_Service
+@inject LoThanhLong_Service LoThanhLong_Service
 @inject IToastService ToastService
 @inject Users_Service Users_Service
 @inject Users user
@@ -13,7 +13,7 @@
     }
 </style>
 
-<h2 style="text-align:center;font-weight:bold">Chi tiết phiếu nhập @phieuNhap.SoPhieuNhap</h2>
+<h2 style="text-align:center;font-weight:bold">Chi tiết phiếu nhập @Auto_ID</h2>
 <button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
     <span class="oi oi-plus" aria-hidden="true">Thêm chi tiết phiếu nhập mới</span>
 </button>
@@ -26,7 +26,7 @@ else
 {
     <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
         <GridColumns>
-            <GridColumn Field="@nameof(ChiTietPhieuNhap.TenLoaiThanhLong)" Title="Tên loại thanh long" Width="100px" />
+            <GridColumn Field="@nameof(ChiTietPhieuNhap.MaLoSTR)" Title="Tên loại thanh long" Width="100px" />
             <GridColumn Field="@nameof(ChiTietPhieuNhap.SoKg)" Title="Số Kg" Width="100px" />
             <GridColumn Field="@nameof(ChiTietPhieuNhap.DonGia)" Title="Đơn giá" Width="100px" />
             <GridCommandColumn Width="180px">
@@ -50,11 +50,12 @@ else
             <div class="modal-body">
                 <EditForm Model="@ctpn" OnValidSubmit="createChiTietPhieuNhap">
                     <div class="form-group">
-                        <InputSelect class="form-control" @bind-Value="@ctpn.MaLoaiThanhLong">
-                            <option value="">-- Chọn loại thanh long --</option>
-                            @foreach (var item in loaiThanhLongList)
+                        <label for="MaLo" class="control-label"><b>Mã lô hàng: </b></label>
+                        <InputSelect class="form-control" @bind-Value="@ctpn.MaLo">
+                            <option value="">-- Chọn lô thanh long --</option>
+                            @foreach (var item in loThanhLongList)
                             {
-                                <option value="@item.Auto_ID">@item.MaLoaiThanhLong - @item.TenLoaiThanhLong</option>
+                                <option value="@item.Auto_ID">@item.MaLo</option>
                             }
                         </InputSelect>
                     </div>
@@ -96,8 +97,8 @@ else
                         <label><b>@ctpn.Auto_ID</b></label>
                     </div>
                     <div class="form-group">
-                        <label for="TenLoaiThanhLong" class="control-label">Tên loại thanh long: </label>
-                        <label><b>@ctpn.TenLoaiThanhLong</b></label>
+                        <label for="MaLoSTR" class="control-label">Mã lô hàng: </label>
+                        <label><b>@ctpn.MaLoSTR</b></label>
                     </div>
                     <div class="form-group">
                         <label for="SoKg" class="control-label">Số Kg: </label>
@@ -124,7 +125,7 @@ else
 
     public string PN{ get; set; }
     private List<ChiTietPhieuNhap> dataList = new List<ChiTietPhieuNhap>();
-    private List<LoaiThanhLong> loaiThanhLongList = new List<LoaiThanhLong>();
+    private List<LoThanhLong> loThanhLongList = new List<LoThanhLong>();
 
     private PhieuNhap phieuNhap = new PhieuNhap();
     private ChiTietPhieuNhap ctpn=new ChiTietPhieuNhap();
@@ -144,8 +145,8 @@ else
         user.username = "C##" + await Users_Service.GetCurrentUserName();
         user.password = await Users_Service.GetCurrentPassWord();
         dataList = await ChiTietPhieuNhap_Service.getAllData(Auto_ID);
-        loaiThanhLongList = await LoaiThanhLong_Service.getAllData();
-        phieuNhap = PhieuNhap_Service.getDataByID(Auto_ID);
+        loThanhLongList = await LoThanhLong_Service.getAllData();
+        //phieuNhap = PhieuNhap_Service.getDataByID(Auto_ID);
     }
 
     private void OpenAddModal()

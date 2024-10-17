@@ -35,13 +35,14 @@ builder.Services.AddScoped<Users_Service>();
 builder.Services.AddScoped<Users>();
 builder.Services.AddScoped<ChucNang_Service>();
 builder.Services.AddScoped<KhuVucTrong_Service>();
-builder.Services.AddScoped<LoaiThanhLong_Service>();
 builder.Services.AddScoped<HoTrong_Service>();
 builder.Services.AddScoped<Kho_Service>();
 builder.Services.AddScoped<PhieuNhap_Service>();
+builder.Services.AddScoped<PhieuXuat_Service>();
 builder.Services.AddScoped<ChiTietPhieuNhap_Service>();
+builder.Services.AddScoped<ChiTietPhieuXuat_Service>();
 builder.Services.AddScoped<Profile_Service>();
-
+builder.Services.AddScoped<LoThanhLong_Service>();
 
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredToast();

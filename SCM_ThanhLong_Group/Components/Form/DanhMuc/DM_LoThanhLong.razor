@@ -1,0 +1,339 @@
+﻿@page "/danhmuclothanhlong"
+@rendermode InteractiveServer
+@inject LoThanhLong_Service loThanhLong_Service
+@inject IToastService ToastService
+@inject Users_Service Users_Service
+@inject Users user
+
+<style>
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+</style>
+
+<h2 style="text-align:center;font-weight:bold">Danh mục Lô Thanh Long</h2>
+<button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
+    <span class="oi oi-plus" aria-hidden="true">Thêm lô thanh long mới</span>
+</button>
+
+@if (dataList == null)
+{
+    <p><em>Loading......</em></p>
+}
+else
+{
+    <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
+        <GridColumns>
+            <GridColumn Field="@nameof(LoThanhLong.MaLo)" Title="Mã lô" Width="100px" />
+            <GridColumn Field="@nameof(LoThanhLong.TenHoTrong)" Title="Tên hộ trồng" Width="100px" />
+            <GridColumn Field="@nameof(LoThanhLong.NgayThuHoach)" Title="Ngày thu hoạch" Width="100px" />
+            <GridColumn Field="@nameof(LoThanhLong.TrangThai)" Title="Trạng thái" Width="100px" />
+            <GridColumn Field="@nameof(LoThanhLong.MoTa)" Title="Mô tả" Width="100px" />
+            <GridCommandColumn Width="180px">
+                <GridCommandButton Command="Edit" OnClick="@EditItem">
+                    <span class="oi oi-pencil" Width="100px"></span> Sửa
+                </GridCommandButton>
+                <GridCommandButton Command="Delete" OnClick="@DeleteItem">
+                    <span class="oi oi-trash" Width="100px"></span> Xóa
+                </GridCommandButton>
+            </GridCommandColumn>
+           
+        </GridColumns>
+    </TelerikGrid>
+}
+
+<div class="modal fade @addModalClass" tabindex="-1" role="dialog" style="@addModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Thêm mới lô thanh long</b></h5>
+                <button type="button" class="close" @onclick="CloseAddModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#dedcd8; color:brown">
+                <EditForm Model="@loThanhLong" OnValidSubmit="createLoThanhLong">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="MaLo" class="control-label"><b>Mã lô: </b></label>
+                        <InputText class="form-control" @bind-Value=@loThanhLong.MaLo />
+                        <ValidationMessage For="@(() => loThanhLong.MaLo)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MaHoTrong" class="control-label"><b>Mã hộ trồng: </b></label>
+                        <InputSelect class="form-control" @bind-Value="@loThanhLong.HoTrongID">
+                            <option value="">-- Chọn hộ trồng --</option>
+                            @foreach (var item in lstHoTrong)
+                            {
+                                <option value="@item.Auto_ID">@item.MaHoTrong - @item.TenHoTrong</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(()=>loThanhLong.HoTrongID)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="NgayThuHoach" class="control-label"><b>Ngày thu hoạch: </b></label>
+                        <InputDate class="form-control" @bind-Value=@loThanhLong.NgayThuHoach />
+                        <ValidationMessage For="@(() => loThanhLong.NgayThuHoach)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="TrangThai" class="control-label"><b>Trạng thái: </b></label>
+                        <InputText class="form-control" @bind-Value=@loThanhLong.TrangThai />
+                        <ValidationMessage For="@(() => loThanhLong.TrangThai)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MoTa" class="control-label"><b>Mô tả: </b></label>
+                        <InputText class="form-control" @bind-Value=@loThanhLong.MoTa />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Thêm lô thanh long</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade @editModalClass" tabindex="-1" role="dialog" style="@editModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Cập nhật lô thanh long</b></h5>
+                <button type="button" class="close" @onclick="CloseEditModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#dedcd8; color:brown">
+                <EditForm Model="@loThanhLong" OnValidSubmit="updateLoThanhLong">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="MaLo" class="control-label"><b>Mã lô: </b></label>
+                        <InputText class="form-control" @bind-Value=@loThanhLong.MaLo />
+                        <ValidationMessage For="@(() => loThanhLong.MaLo)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MaHoTrong" class="control-label"><b>Mã hộ trồng: </b></label>
+                        <InputSelect class="form-control" @bind-Value="@loThanhLong.HoTrongID">
+                            <option value="">-- Chọn hộ trồng --</option>
+                            @foreach (var item in lstHoTrong)
+                            {
+                                <option value="@item.Auto_ID">@item.MaHoTrong - @item.TenHoTrong</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(()=>loThanhLong.HoTrongID)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="NgayThuHoach" class="control-label"><b>Ngày thu hoạch: </b></label>
+                        <InputDate class="form-control" @bind-Value=@loThanhLong.NgayThuHoach />
+                        <ValidationMessage For="@(() => loThanhLong.NgayThuHoach)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="TrangThai" class="control-label"><b>Trạng thái: </b></label>
+                        <InputText class="form-control" @bind-Value=@loThanhLong.TrangThai />
+                        <ValidationMessage For="@(() => loThanhLong.TrangThai)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MoTa" class="control-label"><b>Mô tả: </b></label>
+                        <InputText class="form-control" @bind-Value=@loThanhLong.MoTa />
+                        <ValidationMessage For="@(() => loThanhLong.MoTa)" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Cập nhật lô thanh long</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseEditModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade @deleteModalClass" tabindex="-1" role="dialog" style="@deleteModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Xóa lô thanh long</b></h5>
+                <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#dedcd8; color:brown; font-size:30px">
+                <p style="color:red">Bạn có chắc chắn muốn xóa lô thanh long này không?</p>
+                <EditForm Model="@loThanhLong" OnValidSubmit="deleteLoThanhLong">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="MaLo" class="control-label">Mã lô: </label>
+                        <label><b>@loThanhLong.MaLo</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="TenHoTrong" class="control-label">Tên hộ trồng: </label>
+                        <label><b>@loThanhLong.TenHoTrong</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="NgayThuHoach" class="control-label">Ngày thu hoạch: </label>
+                        <label><b>@loThanhLong.NgayThuHoach.ToShortDateString()</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="TrangThai" class="control-label">Trạng thái: </label>
+                        <label><b>@loThanhLong.TrangThai</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="MoTa" class="control-label">Mô tả: </label>
+                        <label><b>@loThanhLong.MoTa</b></label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Xóa lô thanh long</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+    private List<LoThanhLong> dataList = new List<LoThanhLong>();
+    private List<HoTrong> lstHoTrong = new List<HoTrong>();
+    private LoThanhLong loThanhLong = new LoThanhLong();
+
+    private string addModalClass = "";
+    private string addModalDisplayStyle = "display:none";
+    private string editModalClass = "";
+    private string editModalDisplayStyle = "display:none";
+    private string deleteModalClass = "";
+    private string deleteModalDisplayStyle = "display:none";
+
+    private string maLo;
+
+    private string username;
+    private string password;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user.username = "C##" + await Users_Service.GetCurrentUserName();
+        user.password = await Users_Service.GetCurrentPassWord();
+        dataList = await loThanhLong_Service.getAllData();
+        lstHoTrong = await loThanhLong_Service.getHoTrongData();
+    }
+
+    private void OpenAddModal()
+    {
+        loThanhLong = new LoThanhLong();
+        addModalClass = "show";
+        addModalDisplayStyle = "display:block";
+    }
+
+    private void CloseAddModal()
+    {
+        addModalClass = "";
+        addModalDisplayStyle = "display:none";
+        StateHasChanged();
+    }
+
+    private void OpenEditModal(LoThanhLong item)
+    {
+        loThanhLong = item.ShallowCopy();
+        maLo = item.MaLo;
+        editModalClass = "show";
+        editModalDisplayStyle = "display:block";
+    }
+
+    private void CloseEditModal()
+    {
+        editModalClass = "";
+        editModalDisplayStyle = "display:none";
+        StateHasChanged();
+    }
+
+    private void OpenDeleteModal(LoThanhLong item)
+    {
+        loThanhLong = item.ShallowCopy();
+        deleteModalClass = "show";
+        deleteModalDisplayStyle = "display:block";
+    }
+
+    private void CloseDeleteModal()
+    {
+        deleteModalClass = "";
+        deleteModalDisplayStyle = "display:none";
+        StateHasChanged();
+    }
+
+    private void EditItem(GridCommandEventArgs args)
+    {
+        var item = (LoThanhLong)args.Item;
+        OpenEditModal(item);
+    }
+
+    private void DeleteItem(GridCommandEventArgs args)
+    {
+        var item = (LoThanhLong)args.Item;
+        OpenDeleteModal(item);
+    }
+
+
+    private async Task createLoThanhLong()
+    {
+        if (await loThanhLong_Service.isMaLoExist(loThanhLong, dataList, "ORACLE"))
+        {
+            ToastService.ShowError("Mã lô đã tồn tại!");
+        }
+        else
+        {
+            try
+            {
+                await loThanhLong_Service.addData(loThanhLong);
+                dataList = await loThanhLong_Service.getAllData();
+                CloseAddModal();
+                ToastService.ShowSuccess("Thêm lô hàng thành công!");
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                ToastService.ShowError("Có lỗi xảy ra!");
+            }
+        }
+    }
+
+
+    private async Task updateLoThanhLong()
+    {
+        if (await loThanhLong_Service.isMaLoExist(loThanhLong, dataList, maLo))
+        {
+            ToastService.ShowError("Mã lô hàng đã tồn tại!");
+        }
+        else
+        {
+            try
+            {
+                await loThanhLong_Service.updateData(loThanhLong);
+                dataList = await loThanhLong_Service.getAllData();
+                CloseEditModal();
+                ToastService.ShowSuccess("Cập nhật lô hàng thành công!");
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                ToastService.ShowError("Có lỗi xảy ra!");
+            }
+        }
+    }
+
+    private async Task deleteLoThanhLong()
+    {
+        try
+        {
+            await loThanhLong_Service.deleteData(loThanhLong.Auto_ID.ToString());
+            dataList = await loThanhLong_Service.getAllData();
+            CloseDeleteModal();
+            ToastService.ShowSuccess("Xóa lô hàng thành công!");
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            ToastService.ShowError("Có lỗi xảy ra!");
+        }
+    }
+}

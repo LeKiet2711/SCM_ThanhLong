@@ -27,7 +27,6 @@ else
     <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
         <GridColumns>
             <GridColumn Field="@nameof(PhieuNhap.SoPhieuNhap)" Title="Số phiếu nhập" Width="100px" />
-            <GridColumn Field="@nameof(PhieuNhap.TenHoTrong)" Title="Tên hộ trồng" Width="100px" />
             <GridColumn Field="@nameof(PhieuNhap.TenKho)" Title="Tên kho" Width="100px" />
             <GridColumn Field="@nameof(PhieuNhap.NgayNhap)" Title="Ngày nhập" Width="100px" />
             <GridCommandColumn Width="180px">
@@ -66,17 +65,6 @@ else
                         <InputText class="form-control" @bind-Value=@phieuNhap.SoPhieuNhap />
                         <ValidationMessage For="@(() => phieuNhap.SoPhieuNhap)" />
                     </div>
-                    <div class="form-group">
-                        <label for="MaHoTrong" class="control-label"><b>Mã hộ trồng: </b></label>
-                        <InputSelect class="form-control" @bind-Value="@phieuNhap.HoTrongID">
-                            <option value="">-- Chọn hộ trồng --</option>
-                            @foreach (var item in hoTrongList)
-                            {
-                                <option value="@item.Auto_ID">@item.MaHoTrong - @item.TenHoTrong</option>
-                            }
-                        </InputSelect>
-                        <ValidationMessage For="@(()=>phieuNhap.HoTrongID)" />
-                    </div>
 
                     @* Sẽ bỏ combobox mã kho và lấy mã kho mặc định từ kho phân quyền được chọn*@
 
@@ -106,7 +94,7 @@ else
                    <a class="btn btn-secondary" @onclick="OpenAddChiTietModal" style="margin-top:5px">Thêm</a>
                     <table class="table table-bordered">
                         <tr>
-                            <th>Mã loại thanh long</th>
+                            <th>Mã lô hàng</th>
                             <th>Số lượng nhập</th>
                             <th>Đơn giá</th>
                             <th>Thành tiền</th>
@@ -115,7 +103,7 @@ else
                         @foreach (ChiTietPhieuNhap ct in lstCTPN)
                         {
                             <tr>
-                                <th>@ct.TenLoaiThanhLong</th>
+                                <th>@ct.MaLoSTR</th>
                                 <th>@ct.SoKg</th>
                                 <th>@ct.DonGia</th>
                                 <th>@(ct.SoKg* ct.DonGia)</th>
@@ -147,17 +135,6 @@ else
                         <label for="SoPhieuNhap" class="control-label"><b>Số phiếu nhập: </b></label>
                         <InputText class="form-control" @bind-Value=@phieuNhap.SoPhieuNhap />
                         <ValidationMessage For="@(() => phieuNhap.SoPhieuNhap)" />
-                    </div>
-                    <div class="form-group">
-                        <label for="MaHoTrong" class="control-label"><b>Mã hộ trồng: </b></label>
-                        <InputSelect class="form-control" @bind-Value="@phieuNhap.HoTrongID">
-                            <option value="">-- Chọn hộ trồng --</option>
-                            @foreach (var item in hoTrongList)
-                            {
-                                    <option value="@item.Auto_ID">@item.MaHoTrong - @item.TenHoTrong</option>
-                            }
-                        </InputSelect>
-                        <ValidationMessage For="@(()=>phieuNhap.HoTrongID)" />
                     </div>
                     <div class="form-group">
                         <label for="MaKho" class="control-label"><b>Mã kho: </b></label>
@@ -209,10 +186,6 @@ else
                         <label for="TenKho" class="control-label">Tên kho: </label>
                         <label><b>@phieuNhap.TenKho</b></label>
                     </div>
-                    <div class="form-group">
-                        <label for="MoTa" class="control-label">Tên hộ trồng: </label>
-                        <label><b>@phieuNhap.TenHoTrong</b></label>
-                    </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Xóa phiếu nhập</button>
                         <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Đóng</button>
@@ -235,11 +208,11 @@ else
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <InputSelect class="form-control" @bind-Value="@newChiTiet.MaLoaiThanhLong">
-                        <option value="">-- Chọn loại thanh long --</option>
-                        @foreach (var item in loaiThanhLongList)
+                    <InputSelect class="form-control" @bind-Value="@newChiTiet.MaLo">
+                        <option value="">-- Chọn lô thanh long --</option>
+                        @foreach (var item in loThanhLongList)
                         {
-                            <option value="@item.Auto_ID">@item.MaLoaiThanhLong - @item.TenLoaiThanhLong</option>
+                            <option value="@item.Auto_ID">@item.MaLo</option>
                         }
                     </InputSelect>
                 </div>
@@ -264,7 +237,7 @@ else
 @code {
     private List<PhieuNhap> dataList = new List<PhieuNhap>();
     private List<HoTrong> hoTrongList = new List<HoTrong>();
-    private List<LoaiThanhLong> loaiThanhLongList = new List<LoaiThanhLong>();
+    private List<LoThanhLong> loThanhLongList = new List<LoThanhLong>();
     private List<Kho> khoList = new List<Kho>();
 
     public List<ChiTietPhieuNhap> lstCTPN = new List<ChiTietPhieuNhap>();
@@ -291,8 +264,8 @@ else
         user.password = await Users_Service.GetCurrentPassWord();
         hoTrongList = await PhieuNhap_Service.getHoTrongData();
         khoList = await PhieuNhap_Service.getKhoData();
-        loaiThanhLongList= await PhieuNhap_Service.getLoaiThanhLongData();
         dataList = await PhieuNhap_Service.getAllData();
+        loThanhLongList = await PhieuNhap_Service.getLoThanhLongData();
     }
 
     private void OpenAddModal()
@@ -355,9 +328,8 @@ else
 
     private void AddChiTiet()
     {
-        // Lấy tên loại thanh long từ mã loại thanh long
-        var loaiThanhLong = loaiThanhLongList.FirstOrDefault(l => l.Auto_ID == newChiTiet.MaLoaiThanhLong);
-        newChiTiet.TenLoaiThanhLong = loaiThanhLong?.TenLoaiThanhLong ?? "Không xác định";
+        var loThanhLong = loThanhLongList.FirstOrDefault(l => l.Auto_ID == newChiTiet.MaLo);
+        newChiTiet.MaLoSTR = loThanhLong?.MaLo ?? "Không xác định";
         lstCTPN.Add(newChiTiet);
         CloseAddChiTietModal();
     }
@@ -393,8 +365,8 @@ else
             }
             catch (Exception e)
             {
-                throw e;
-                //ToastService.ShowError("Có lỗi xảy ra!");
+                //throw e;
+                ToastService.ShowError("Có lỗi xảy ra!");
             }
         }
     }
@@ -417,8 +389,8 @@ else
             }
             catch (Exception e)
             {
-                throw e;
-                //ToastService.ShowError("Có lỗi xảy ra!");
+                //throw e;
+                ToastService.ShowError("Có lỗi xảy ra!");
             }
         }
     }
@@ -439,11 +411,6 @@ else
             //throw e;
             ToastService.ShowError("Có lỗi xảy ra!");
         }
-    }
-
-    private void addLstObject()
-    {
-        
     }
 
     private void EditItem(GridCommandEventArgs args)
