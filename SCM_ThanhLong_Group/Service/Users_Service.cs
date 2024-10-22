@@ -20,7 +20,7 @@ namespace SCM_ThanhLong_Group.Service
         }   
         public async Task<bool> AuthenticateUser(string username, string password)
         {
-            string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
+            string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost/orcl;";
             //string connectionString = $"User Id=C##{username};Password={password};Data Source=192.168.1.25:1521/orcl1;";
 
             using (var conn = new OracleConnection(connectionString))
@@ -47,7 +47,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task<bool> ChangePassword(string username, string oldPassword, string newPassword)
         {
-            string connectionString = $"User Id=C##{username};Password={oldPassword};Data Source=localhost:1521/orcl1;";
+            string connectionString = $"User Id=C##{username};Password={oldPassword};Data Source=localhost/orcl;";
 
             using (var conn = new OracleConnection(connectionString))
             {

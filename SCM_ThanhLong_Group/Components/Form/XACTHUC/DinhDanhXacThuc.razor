@@ -1,0 +1,31 @@
+﻿@page "/dinhdanh"
+
+<PageTitle>Dinhdanh</PageTitle>
+<link href="xacthux.css" rel="stylesheet" />
+<h2>Xac Thuc
+</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="inputCode">Đoạn mã cần giải:</label>
+                <textarea class="form-control" id="inputCode" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="outputCode">Đoạn mã sau khi giải:</label>
+                <textarea class="form-control" id="outputCode" rows="3" disabled></textarea>
+            </div>
+            <div class="form-group">
+                <label for="inputKey">Key:</label>
+                <input type="text" class="form-control" id="inputKey">
+            </div>
+            <button class="btn btn-primary" @* @onclick="GiaiMa" *@>Giải mã</button>
+            <button class="btn btn-secondary" @* @onclick="XacThuc" *@>Xác thực</button>
+        </div>
+    </div>
+</div>
+
+
+@code {
+  
+}
