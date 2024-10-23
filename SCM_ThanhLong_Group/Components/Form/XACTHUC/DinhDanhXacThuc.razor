@@ -38,212 +38,116 @@
 </div>
 
 @code {
+
     private string randomText = string.Empty;
-
     private string encryptedText = string.Empty;
-
     private string decryptedText = string.Empty;
-
     private string privateKey = string.Empty;
 
-
+    private string usernameHolding;
 
     protected override async Task OnInitializedAsync()
-
     {
-
         try
-
         {
-
             user.username = "C##" + await Users_Service.GetCurrentUserName();
-
             user.password = await Users_Service.GetCurrentPassWord();
-
             randomText = XacThucService.GenerateRandomText(16);
-
         }
-
         catch (Exception ex)
-
         {
-
             ToastService.ShowError($"Error initializing: {ex.Message}");
-
         }
 
     }
 
-
-
     private async Task MaHoa()
-
     {
-
         try
-
         {
-
             if (string.IsNullOrEmpty(privateKey))
 
             {
-
                 ToastService.ShowError("Vui lòng nhập khóa trước khi mã hóa.");
-
                 return;
-
             }
+            //bool isKeyValid = await XacThucService.ValidateKey(privateKey);
+            usernameHolding=await XacThucService.GetUsernameByKeyValue(privateKey);
 
-
-
-            bool isKeyValid = await XacThucService.ValidateKey(privateKey);
-
-             if (!isKeyValid)s
-
-            {
-
+             if (usernameHolding == "NOT_FOUND")
+             {
                  ToastService.ShowError("Khóa không hợp lệ.");
 
                  return;
-
              }
-
-
-
             encryptedText = XacThucService.EncryptAES(randomText, privateKey);
-
             ToastService.ShowSuccess("Mã hóa thành công!");
-
         }
-
         catch (Exception ex)
-
         {
-
             ToastService.ShowError($"Mã hóa thất bại: {ex.Message}");
-
         }
-
     }
 
-
-
     private async Task GiaiMa()
-
     {
-
         try
-
         {
-
             if (string.IsNullOrEmpty(encryptedText))
-
             {
-
                 ToastService.ShowError("Không có đoạn mã nào để giải mã.");
-
                 return;
-
             }
-
-
-
-            bool isKeyValid = await XacThucService.ValidateKey(privateKey);
-
-            if (!isKeyValid)
-
+            usernameHolding = await XacThucService.GetUsernameByKeyValue(privateKey);
+            if (usernameHolding == "NOT_FOUND")
             {
-
                 ToastService.ShowError("Khóa không hợp lệ.");
-
                 return;
-
             }
-
-
-
             decryptedText = XacThucService.Decrypt(encryptedText, privateKey);
 
             if (decryptedText == randomText)
-
             {
-
                 ToastService.ShowSuccess("Giải mã thành công!");
-
             }
-
             else
-
             {
-
                 ToastService.ShowError("Giải mã thất bại: Khóa không chính xác.");
-
             }
-
         }
-
         catch (Exception ex)
-
         {
-
             ToastService.ShowError($"Giải mã thất bại: {ex.Message}");
-
         }
-
     }
 
-
-
     private async Task XacThuc()
-
     {
-
         try
-
         {
-
-           bool isKeyValid = await XacThucService.ValidateKey(privateKey);
-
-            if (!isKeyValid)
+            usernameHolding = await XacThucService.GetUsernameByKeyValue(privateKey);
+            if (usernameHolding == "NOT_FOUND")
 
             {
-
                 ToastService.ShowError("Khóa không hợp lệ.");
-
                 return;
-
             }
-
-
-
             string decryptedTextResult = XacThucService.Decrypt(encryptedText, privateKey);
-
             if (decryptedTextResult == randomText)
-
             {
-
                 ToastService.ShowSuccess("Xác thực thành công!");
 
                 Navigation.NavigateTo("/Home");
-
             }
-
             else
-
             {
-
                 ToastService.ShowError("Xác thực thất bại: Đoạn mã sau khi giải không khớp.");
-
             }
-
         }
 
         catch (Exception ex)
-
         {
-
             ToastService.ShowError($"Xác thực thất bại: {ex.Message}");
-
         }
 
     }

@@ -17,27 +17,31 @@ public class XacThucService
         _user = user;
     }
 
-    public async Task<bool> ValidateKey(string key)
+    public async Task<string> GetUsernameByKeyValue(string keyValue)
     {
-        using (var connection = _dbConnection.GetConnection(_user.username, _user.password))
-        {
-            await connection.OpenAsync();
-            using (var command = new OracleCommand("SELECT COUNT(*) FROM KEY_ASE WHERE KEY_VALUE = :key",connection))
-            {
-                command.Parameters.Add(new OracleParameter("key", OracleDbType.Varchar2, key, ParameterDirection.Input));
+        string username = string.Empty;
 
-                try
+        using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+        {
+            await conn.OpenAsync();
+            using (OracleCommand cmd = new OracleCommand("C##Admin.GetUsernameByKeyValue", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_key_value", OracleDbType.Varchar2).Value = keyValue;
+                var usernameParam = new OracleParameter("p_username", OracleDbType.Varchar2, 20)
                 {
-                    var result = await command.ExecuteScalarAsync();
-                    return Convert.ToInt32(result) > 0;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Error executing query", ex);
-                }
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(usernameParam);
+                await cmd.ExecuteNonQueryAsync();
+
+                username = usernameParam.Value.ToString(); // Lấy tham số đầu ra
             }
         }
+
+        return username;
     }
+
 
     public string EncryptAES(string plainText, string key)
     {

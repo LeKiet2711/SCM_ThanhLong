@@ -22,16 +22,17 @@ namespace SCM_ThanhLong_Group.Components.Pages.Controllers
 
         protected override HttpStatusCode SendMailMessage(MailMessage mailMessage)
         {
-            throw new System.NotImplementedException("This method should be implemented in order to send mail messages");
+            using (var smtpClient = new SmtpClient("smtp.gmail.com", 587))
+            {
+                smtpClient.Credentials = new NetworkCredential("lgklgk2711@gmail.com", "lpwliwpwybzylkpj");
+                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                smtpClient.EnableSsl = true; // Đặt thành true để kích hoạt SSL
 
-            //using (var smtpClient = new SmtpClient("smtp01.mycompany.com", 25))
-            //{
-            //    smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            //    smtpClient.EnableSsl = false;
-
-            //    smtpClient.Send(mailMessage);
-            //}
-            //return HttpStatusCode.OK;
+                smtpClient.Send(mailMessage);
+            }
+            return HttpStatusCode.OK;
         }
+
+
     }
 }
