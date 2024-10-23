@@ -1,80 +1,104 @@
-﻿using SCM_ThanhLong_Group.Components.Connection;
-using System.Runtime.Intrinsics.Arm;
+﻿using Oracle.ManagedDataAccess.Client;
 using SCM_ThanhLong_Group.Model;
-using System.Text;
-using System.Security.Cryptography;
-using Telerik.SvgIcons;
-using Oracle.ManagedDataAccess.Client;
-using Newtonsoft.Json.Linq;
+using SCM_ThanhLong_Group.Components.Connection;
 using System.Data;
-using System.Data.Common;
-namespace SCM_ThanhLong_Group.Service
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+
+public class XacThucService
 {
-    public class XacThucService
+    private readonly OracleDbConnection _dbConnection;
+    private readonly Users _user;
+
+    public XacThucService(OracleDbConnection dbConnection, Users user)
     {
-        private readonly OracleDbConnection _dbConnection;
-        public string EncryptAES(string plainText, string key)
+        _dbConnection = dbConnection;
+        _user = user;
+    }
+
+    public async Task<bool> ValidateKey(string key)
+    {
+        using (var connection = _dbConnection.GetConnection(_user.username, _user.password))
         {
-            using (System.Security.Cryptography.Aes aesDal = System.Security.Cryptography.Aes.Create())
+            await connection.OpenAsync();
+            using (var command = new OracleCommand("SELECT COUNT(*) FROM KEY_ASE WHERE KEY_VALUE = :key",connection))
             {
-                aesDal.Key = Encoding.UTF8.GetBytes(key);
-                aesDal.IV = new byte[16];
-                ICryptoTransform encrytor = aesDal.CreateEncryptor(aesDal.Key, aesDal.IV);
-                using (MemoryStream msEncrypt = new MemoryStream())
+                command.Parameters.Add(new OracleParameter("key", OracleDbType.Varchar2, key, ParameterDirection.Input));
+
+                try
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encrytor, CryptoStreamMode.Write))
-                    {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                        {
-                            swEncrypt.Write(plainText);
-                        }
-                    }
-                    byte[] encrypted = msEncrypt.ToArray();
-                    return Convert.ToBase64String(encrypted);
+                    var result = await command.ExecuteScalarAsync();
+                    return Convert.ToInt32(result) > 0;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error executing query", ex);
                 }
             }
         }
-        public XacThucService(OracleDbConnection dbConnection)
-        {
-            _dbConnection = dbConnection;
-        }
-        public string Decrypt(string encryptedText, string secretkey)
-        {
-            byte[] fullCipher = Convert.FromBase64String(encryptedText);
-            byte[] iv = new byte[16];
-            byte[] cipherTextBytes = new byte[fullCipher.Length - iv.Length];
+    }
 
-            Array.Copy(fullCipher, iv, iv.Length);
-            Array.Copy(fullCipher, iv.Length, cipherTextBytes, 0, cipherTextBytes.Length);
-            using (System.Security.Cryptography.Aes aes = System.Security.Cryptography.Aes.Create())
+    public string EncryptAES(string plainText, string key)
+    {
+        if (string.IsNullOrEmpty(plainText))
+            throw new ArgumentNullException(nameof(plainText));
+        if (string.IsNullOrEmpty(key))
+            throw new ArgumentNullException(nameof(key));
+
+        using (Aes aesAlg = Aes.Create())
+        {
+            aesAlg.Key = Encoding.UTF8.GetBytes(key);
+            aesAlg.IV = new byte[16]; // Initialization vector with zeros
+
+            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+            using (var msEncrypt = new System.IO.MemoryStream())
             {
-                aes.Key = Encoding.UTF8.GetBytes(secretkey);
-                aes.IV = iv;
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
-                using (ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+                using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                 {
-                    using (MemoryStream ms = new MemoryStream(cipherTextBytes))
+                    using (var swEncrypt = new StreamWriter(csEncrypt))
                     {
-                        using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                        {
-                            using (StreamReader sr = new StreamReader(cs))
-                            {
-                                return sr.ReadToEnd();
-                            }
-                        }
+                        swEncrypt.Write(plainText);
+                    }
+                    return Convert.ToBase64String(msEncrypt.ToArray());
+                }
+            }
+        }
+    }
+
+    public string Decrypt(string cipherText, string key)
+    {
+        if (string.IsNullOrEmpty(cipherText))
+            throw new ArgumentNullException(nameof(cipherText));
+        if (string.IsNullOrEmpty(key))
+            throw new ArgumentNullException(nameof(key));
+
+        using (Aes aesAlg = Aes.Create())
+        {
+            aesAlg.Key = Encoding.UTF8.GetBytes(key);
+            aesAlg.IV = new byte[16]; // Initialization vector with zeros
+
+            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+            using (var msDecrypt = new System.IO.MemoryStream(Convert.FromBase64String(cipherText)))
+            {
+                using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                {
+                    using (var srDecrypt = new StreamReader(csDecrypt))
+                    {
+                        return srDecrypt.ReadToEnd();
                     }
                 }
             }
-
         }
+    }
 
-      
-
+    public string GenerateRandomText(int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var random = new Random();
+        return new string(Enumerable.Repeat(chars, length)
+          .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }
-            
-
-           
-
-

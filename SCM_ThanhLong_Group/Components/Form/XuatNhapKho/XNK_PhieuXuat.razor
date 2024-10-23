@@ -87,7 +87,7 @@ else
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Thêm phiếu nhập</button>
+                        <button type="submit" class="btn btn-primary">Thêm phiếu xuất</button>
                         <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Đóng</button>
                     </div>
 
@@ -163,6 +163,43 @@ else
         </div>
     </div>
 </div>
+
+<div class="modal fade @addChiTietModalClass" tabindex="-1" role="dialog" style="@addChiTietModalDisplayStyle">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:#dedcd8">
+                <h5 class="modal-title"><b>Thêm chi tiết phiếu xuất</b></h5>
+                <button type="button" class="close" @onclick="CloseAddChiTietModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <InputSelect class="form-control" @bind-Value="@newChiTiet.MaLo">
+                        <option value="">-- Chọn lô thanh long --</option>
+                        @foreach (var item in loThanhLongList)
+                        {
+                            <option value="@item.Auto_ID">@item.MaLo</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="form-group">
+                    <label for="SoLuong">Số Kg xuất:</label>
+                    <InputNumber class="form-control" @bind-Value="newChiTiet.SoKg" />
+                </div>
+                <div class="form-group">
+                    <label for="DonGia">Đơn giá:</label>
+                    <InputNumber class="form-control" @bind-Value="newChiTiet.DonGia" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="AddChiTiet">Thêm</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseAddChiTietModal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 @code {

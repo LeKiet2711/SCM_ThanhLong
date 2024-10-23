@@ -87,7 +87,7 @@ namespace SCM_ThanhLong_Group.Service
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.DELETECHITIETPHIEUXuatCT", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.DELETECHITIETPHIEUXUAT", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_MACHITIET", OracleDbType.Int32).Value = machitiet;

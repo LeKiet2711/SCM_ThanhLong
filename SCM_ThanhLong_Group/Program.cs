@@ -10,7 +10,6 @@ using SCM_ThanhLong_Group.Service;
 using Telerik.Reporting.Services;
 using Telerik.Reporting.Cache.File;
 
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages().AddNewtonsoftJson();
 builder.Services.AddControllers();
@@ -43,6 +42,7 @@ builder.Services.AddScoped<ChiTietPhieuNhap_Service>();
 builder.Services.AddScoped<ChiTietPhieuXuat_Service>();
 builder.Services.AddScoped<Profile_Service>();
 builder.Services.AddScoped<LoThanhLong_Service>();
+builder.Services.AddScoped<XacThucService>();
 
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredToast();
@@ -51,11 +51,7 @@ builder.Services.AddTelerikBlazor();
 var app = builder.Build();
 app.UseRouting();
 app.UseAntiforgery();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-    // ... 
-});
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -73,9 +69,16 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
+app.MapControllers(); // Use top-level route registration
+
 app.Run();
 
 static string GetReportsDir(IServiceProvider sp)
 {
-    return Path.Combine(sp.GetService<IWebHostEnvironment>().ContentRootPath, "Reports");
+    var env = sp.GetService<IWebHostEnvironment>();
+    if (env == null)
+    {
+        throw new InvalidOperationException("IWebHostEnvironment is not available.");
+    }
+    return Path.Combine(env.ContentRootPath, "Reports");
 }
