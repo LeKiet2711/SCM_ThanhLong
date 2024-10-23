@@ -4,6 +4,7 @@ using SCM_ThanhLong_Group.Model;
 using System.Data;
 using System.Data.Common;
 using Blazored.SessionStorage;
+using Telerik.SvgIcons;
 
 namespace SCM_ThanhLong_Group.Service
 {
@@ -47,7 +48,9 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task<bool> ChangePassword(string username, string oldPassword, string newPassword)
         {
-            string connectionString = $"User Id=C##{username};Password={oldPassword};Data Source=localhost:1521/orcl1;";
+            //string connectionString = $"User Id=C##{username};Password={oldPassword};Data Source=localhost:1521/orcl1;";
+            string connectionString = $"User Id={username};Password={oldPassword};Data Source=localhost:1521/chkb;";
+
 
             using (var conn = new OracleConnection(connectionString))
             {

@@ -4,6 +4,9 @@
 @inject IToastService ToastService
 @inject Users user
 
+@inject NavigationManager nav
+
+
 <style>
     .modal {
         background-color: rgba(0, 0, 0, 0.5);
@@ -25,7 +28,11 @@ else
             <GridColumn Field="@nameof(Profile.Common)" Title="Common" Width="100px" />
         </GridColumns>
     </TelerikGrid>
+
+    <button @onclick="themProfile">Thêm Profile</button>
+    <button @onclick="assignProfile">Gán Profile cho user</button>
 }
+
 
 
 
@@ -37,6 +44,16 @@ else
         user.username = "sys";
         user.password = "sys";
         dataList = await profile_Service.GetAllProfiles();
+    }
+
+    protected void themProfile()
+    {
+        nav.NavigateTo("themprofile");
+    }
+
+    protected void assignProfile()
+    {
+        nav.NavigateTo("assign-profile");
     }
 
 }

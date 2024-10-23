@@ -1,8 +1,11 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿using DocumentFormat.OpenXml.Office.Word;
+using Oracle.ManagedDataAccess.Client;
 using SCM_ThanhLong_Group.Components.Connection;
+using SCM_ThanhLong_Group.Components.Form.HeThong;
 using SCM_ThanhLong_Group.Model;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace SCM_ThanhLong_Group.Service
@@ -50,5 +53,140 @@ namespace SCM_ThanhLong_Group.Service
 
             return profiles;
         }
+
+        public async Task<bool> createProfile(string tenProfile, string thuocTinh)
+        {
+            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+
+            using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+            {
+                string sqlProcedure = "sp_CreateProfile";
+                OracleCommand hd = new OracleCommand();
+                hd.CommandText = sqlProcedure;
+                hd.Connection = kn;
+                hd.CommandType = System.Data.CommandType.StoredProcedure;
+                hd.Parameters.Add("tenProfile", OracleDbType.Varchar2).Value = tenProfile;
+                hd.Parameters.Add("thuoTinhProFile", OracleDbType.Varchar2).Value = thuocTinh;
+                try
+                {
+                    await kn.OpenAsync();
+                    hd.ExecuteNonQuery();
+                    kn.Close();
+                    return true;
+                }
+                catch (Exception e) {
+                    return false;
+                }
+            }    
+        }
+
+        public async Task<List<string>> getAllUser()
+        {
+            List<string> users = new List<string>();
+            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+
+            using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+            {
+                string sqlProcedure = "getAllUser";
+                OracleCommand hd = new OracleCommand();
+                hd.CommandText = sqlProcedure;
+                hd.Connection = kn;
+                hd.CommandType = System.Data.CommandType.StoredProcedure;
+                //hd.Parameters.Add("userName", OracleDbType.Varchar2).Direction = System.Data.ParameterDirection.Output;
+                try
+                {
+                    await kn.OpenAsync();
+                    OracleParameter outParam = new OracleParameter("userName", OracleDbType.RefCursor);
+                    outParam.Direction = ParameterDirection.Output;
+                    hd.Parameters.Add(outParam);
+                    using (OracleDataReader read = hd.ExecuteReader())
+                    {
+                        if (read.HasRows)
+                        {
+                            while (read.Read())
+                            {
+                                users.Add(read["USERNAME"].ToString());
+                            }
+                        }
+                    }
+                    kn.Close();
+                    return users;
+                }
+                catch (Exception e)
+                {
+                    return users;
+                }
+            }
+        }
+
+        public async Task<List<string>> getAllProfileName()
+        {
+            List<string> users = new List<string>();
+            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+
+            using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+            {
+                string sqlProcedure = "getAllProfileName";
+                OracleCommand hd = new OracleCommand();
+                hd.CommandText = sqlProcedure;
+                hd.Connection = kn;
+                hd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    await kn.OpenAsync();
+                    OracleParameter outParam = new OracleParameter("profileName", OracleDbType.RefCursor);
+                    outParam.Direction = ParameterDirection.Output;
+                    hd.Parameters.Add(outParam);
+                    using (OracleDataReader read = hd.ExecuteReader())
+                    {
+                        if (read.HasRows)
+                        {
+                            while (read.Read())
+                            {
+                                users.Add(read["PROFILE"].ToString());
+                            }
+                        }
+                    }
+                    kn.Close();
+                    return users;
+                }
+                catch (Exception e)
+                {
+                    return users;
+                }
+            }
+        }
+
+        public async Task<bool> AssignProfileForUser(string userName, string profileName)
+        {
+            if(userName.Trim().Length>0 || profileName.Trim().Length>0)
+            {
+                string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+
+                using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+                {
+                    kn.OpenAsync();
+                    OracleCommand hd = new OracleCommand();
+                    hd.Connection = kn;
+                    hd.CommandText = "sp_AssignProfileToUser";
+                    hd.CommandType = CommandType.StoredProcedure;
+                    hd.Parameters.Add("userName", OracleDbType.Varchar2).Value = userName;
+                    hd.Parameters.Add("profileName", OracleDbType.Varchar2).Value = profileName;
+                    try
+                    {
+                        hd.ExecuteNonQuery();
+                        kn.Close();
+                        return true;
+                    }
+                    catch (Exception e)
+                    {
+                        return false;
+                    }
+                }    
+            }
+            return false;
+        }
+
+
     }
 }

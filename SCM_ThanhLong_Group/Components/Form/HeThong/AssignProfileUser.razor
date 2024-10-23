@@ -1,0 +1,54 @@
+﻿@page "/assign-profile"
+@rendermode InteractiveServer
+@inject Profile_Service profileService
+
+<h3>AssignProfileUser</h3>
+
+<select @bind="userName">
+    @foreach (string name in users)
+    {
+        <option>@name</option>
+    }
+</select>
+
+<select @bind="profileName">
+    @foreach (string pro in profiles)
+    {
+        <option>@pro</option>
+    }
+</select>
+
+<h1>@userName</h1>
+<h1>@profileName</h1>
+<h1>@kq</h1>
+
+<button @onclick="assignProfileForUser">Gán profile</button>
+
+@code {
+    private List<string> users = new List<string>();
+    private List<string> profiles = new List<string>();
+    private string userName { get; set; }
+    private string profileName { get; set; }
+
+    private string kq = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await profileService.getAllUser();
+        profiles = await profileService.getAllProfileName();
+    }
+
+    private async void assignProfileForUser()
+    {
+        if (await profileService.AssignProfileForUser(userName, profileName))
+        {
+            kq = "Thành công!";
+        }
+        else
+        {
+            kq = "Lỗi!";
+        }
+    }
+
+
+}
