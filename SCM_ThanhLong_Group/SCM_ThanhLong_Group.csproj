@@ -19,8 +19,9 @@
   <ItemGroup>
     <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
     <PackageReference Include="Blazored.Toast" Version="4.2.1" />
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.5.0" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.6.0" />
     <PackageReference Include="Telerik.Reporting" Version="18.0.24.305" />
+    <PackageReference Include="Telerik.Reporting.OpenXmlRendering" Version="18.0.24.305" />
     <PackageReference Include="Telerik.Reporting.Services.AspNetCore" Version="18.0.24.305" />
     <PackageReference Include="Telerik.ReportViewer.BlazorNative" Version="18.0.24.305" />
     <PackageReference Include="Telerik.UI.for.Blazor" Version="5.1.1" />

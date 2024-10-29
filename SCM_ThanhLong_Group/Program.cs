@@ -10,6 +10,8 @@ using SCM_ThanhLong_Group.Service;
 using Telerik.Reporting.Services;
 using Telerik.Reporting.Cache.File;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages().AddNewtonsoftJson();
 builder.Services.AddControllers();
@@ -50,6 +52,12 @@ builder.Services.AddTelerikBlazor();
 
 var app = builder.Build();
 app.UseRouting();
+app.UseAntiforgery();
+app.UseEndpoints(endpoints =>
+{
+	endpoints.MapControllers();
+	// ... 
+});
 app.UseAntiforgery();
 
 // Configure the HTTP request pipeline.
