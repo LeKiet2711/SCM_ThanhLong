@@ -31,6 +31,10 @@ else
 
     <button @onclick="themProfile">Thêm Profile</button>
     <button @onclick="assignProfile">Gán Profile cho user</button>
+    @* <button @onclick="updateProfile">Cập nhật Profile</button>
+    <button @onclick="updateProfile">Tạo mới User</button>
+    <button @onclick="updateProfile">Cập nhật User</button> *@
+    
 }
 
 
@@ -43,7 +47,7 @@ else
     {
         user.username = "sys";
         user.password = "sys";
-        dataList = await profile_Service.GetAllProfiles();
+        dataList = await profile_Service.GetAllProfilesSP();
     }
 
     protected void themProfile()
@@ -53,7 +57,13 @@ else
 
     protected void assignProfile()
     {
-        nav.NavigateTo("assign-profile");
+        nav.NavigateTo("assignprofile");
     }
+
+    protected void updateProfile()
+    {
+        nav.NavigateTo("capnhatprofile");
+    }
+
 
 }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using Telerik.SvgIcons;
 
 namespace SCM_ThanhLong_Group.Service
 {
@@ -52,6 +53,68 @@ namespace SCM_ThanhLong_Group.Service
             }
 
             return profiles;
+        }
+
+        public async Task<List<Profile>> GetAllProfilesSP()
+        {
+            List<Profile> profiles = new List<Profile>();
+
+            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+
+            try
+            {
+                using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+                {
+                    await conn.OpenAsync();
+                    OracleCommand command = new OracleCommand();
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "sp_getAllProfile";
+                    command.Connection = conn;
+                    //Thiếu loại hành động cũng lỗi
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    //Cách 1 (ngắn gọn)
+                    command.Parameters.Add("tableProfile", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                   
+
+                    //Cách 2
+                    //OracleParameter outPara = new OracleParameter();
+                    //outPara.ParameterName = "tableProfile";
+                    //outPara.OracleDbType = OracleDbType.RefCursor;
+                    //outPara.Direction = ParameterDirection.Output;
+                    //command.Parameters.Add(outPara);
+                    //==hết cách 2
+
+                    //cách 3
+                    //OracleParameter parameter = new OracleParameter("tableProfile", OracleDbType.RefCursor);
+                    //parameter.Direction = ParameterDirection.Output;
+                    //command.Parameters.Add(parameter);
+                    //=== hết cách 3
+
+                    OracleDataReader read = command.ExecuteReader();
+                    if (read.HasRows)
+                    {
+                        while (read.Read())
+                        {
+                            var profile = new Profile
+                            {
+                                ProfileName = read["PROFILE"].ToString(),
+                                ResourceName = read["RESOURCE_NAME"].ToString(),
+                                ResourceType = read["RESOURCE_TYPE"].ToString(),
+                                Limit = read["LIMIT"].ToString(),
+                                Common = read["COMMON"].ToString()
+                            };
+                            profiles.Add(profile);
+                        }
+                    }
+                    conn.Close();
+                    return profiles;
+                }
+            }
+            catch (Exception ex)
+            {
+                return profiles;
+            }
         }
 
         public async Task<bool> createProfile(string tenProfile, string thuocTinh)

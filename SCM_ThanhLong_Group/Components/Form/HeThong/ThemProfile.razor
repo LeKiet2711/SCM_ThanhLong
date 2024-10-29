@@ -4,6 +4,9 @@
 @inject NavigationManager nav
 @using System.Text.RegularExpressions
 
+@*Dùng thư viện này để bật alert*@
+@inject IJSRuntime JsRuntime
+
 <PageTitle>Thêm profile</PageTitle>
 
 @* code box *@
@@ -130,6 +133,7 @@
                 alert("Failed to copy text: " + err);
             });
         }
+
     </script>
 
     @* Hết phần hiển thị thông tin profile *@
@@ -175,13 +179,13 @@
 
 @code {
     private string khanhBang = "";
-    public void luu()
-    {
-        khanhBang = "Khánh Băng xin chào! " + tenProfile + "  ";// + CPU_PER_SESSION;
-    }
+    // public void luu()
+    // {
+    //     khanhBang = "Khánh Băng xin chào! " + tenProfile + "  ";+ CPU_PER_SESSION;
+    // }
 
     private string tenProfile { get; set; }
-   
+
     private string value { get; set; }
     private string profileAttribute { get; set; }
 
@@ -211,6 +215,10 @@
                 thuocTinhProfileHienThi += profileAttribute + " " + value + "\n\t ";
             }
         }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Vui lòng nhập hạn mức profile!");
+        }
     }
 
     private async void taoProfile()
@@ -229,7 +237,7 @@
         }
         else
         {
-            khanhBang += "Vui lòng nhập đầy đủ các trường!";
+            await JsRuntime.InvokeVoidAsync("alert", "Vui lòng nhập đầy đủ thông tin hợp lệ cho profile!");
         }
     }
 
