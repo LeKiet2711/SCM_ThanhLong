@@ -4,6 +4,7 @@
 @inject IToastService ToastService
 @inject Users_Service Users_Service
 @inject Users user
+@inject NavigationManager NavigationManager
 
 <style>
     .modal {
@@ -167,9 +168,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        user.username = "C##" + await Users_Service.GetCurrentUserName();
-        user.password = await Users_Service.GetCurrentPassWord();
-        dataList = await Kho_Service.getAllData();
+        try
+        {
+            user.username = "C##" + await Users_Service.GetCurrentUserName();
+            user.password = await Users_Service.GetCurrentPassWord();
+            dataList = await Kho_Service.getAllData();
+        }
+        catch
+        {
+            NavigationManager.NavigateTo("/Error");
+        }
     }
 
     private void OpenAddModal()

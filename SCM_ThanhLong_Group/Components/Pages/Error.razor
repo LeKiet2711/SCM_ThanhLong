@@ -1,0 +1,33 @@
+﻿@page "/Error"
+@using System.Diagnostics
+
+<PageTitle>Error</PageTitle>
+
+<h1 class="text-danger">Lỗi !</h1>
+<h2 class="text-danger">Bạn không có quyền truy cập !</h2>
+
+@if (ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@RequestId</code>
+    </p>
+}
+
+<h3>Chú ý</h3>
+<p>
+    Vui lòng liên hệ <strong>Nhà phát triển</strong> hoặc <strong>Quản trị viên</strong>  của hệ thống để được cấp quyền truy cập.
+</p>
+<p>
+
+</p>
+
+@code{
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    private string? RequestId { get; set; }
+    private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+    protected override void OnInitialized() =>
+        RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+}

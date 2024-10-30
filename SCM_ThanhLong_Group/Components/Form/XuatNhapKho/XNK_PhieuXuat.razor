@@ -228,12 +228,18 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        try{
         user.username = "C##" + await Users_Service.GetCurrentUserName();
         user.password = await Users_Service.GetCurrentPassWord();
         hoTrongList = await PhieuXuat_Service.getHoTrongData();
         khoList = await PhieuXuat_Service.getKhoData();
         dataList = await PhieuXuat_Service.getAllData();
         loThanhLongList = await PhieuXuat_Service.getLoThanhLongData();
+        }
+        catch
+        {
+            Navigation.NavigateTo("/Error");
+        }
     }
 
     private void OpenAddModal()

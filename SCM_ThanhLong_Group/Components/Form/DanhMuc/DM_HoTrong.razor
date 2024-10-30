@@ -5,6 +5,7 @@
 @inject IToastService ToastService
 @inject Users_Service Users_Service
 @inject Users user
+@inject NavigationManager NavigationManager
 
 <style>
     .modal {
@@ -205,7 +206,7 @@ else
     private string editModalDisplayStyle = "display:none";
     private string deleteModalClass = "";
     private string deleteModalDisplayStyle = "display:none";
-    
+
     private string maHoTrong;
     private string tenHoTrong;
 
@@ -214,10 +215,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        user.username = "C##" + await Users_Service.GetCurrentUserName();
-        user.password = await Users_Service.GetCurrentPassWord();
-        khuVucTrongList = await HoTrong_Service.getKhuVucTrongData();
-        dataList = await HoTrong_Service.getAllData();
+        try
+        {
+            user.username = "C##" + await Users_Service.GetCurrentUserName();
+            user.password = await Users_Service.GetCurrentPassWord();
+            khuVucTrongList = await HoTrong_Service.getKhuVucTrongData();
+            dataList = await HoTrong_Service.getAllData();
+        }
+        catch
+        {
+            NavigationManager.NavigateTo("/Error");
+        }
     }
 
     private void OpenAddModal()
