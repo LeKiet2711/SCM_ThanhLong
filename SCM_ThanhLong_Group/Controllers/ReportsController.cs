@@ -4,6 +4,8 @@ using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.IO;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Telerik.Reporting.Services;
 using Telerik.Reporting.Services.AspNetCore;
 
@@ -17,58 +19,47 @@ namespace SCM_ThanhLong_Group.Components.Pages.Controllers
         {
         }
 
-        public static byte[] EncryptWithAES(byte[] reportData, out byte[] aesKey, out byte[] aesIV)
+        public static byte[] EncryptPdf(byte[] pdfData, string userPassword, string ownerPassword)
         {
-            using (Aes aes = Aes.Create())
+            using (var input = new MemoryStream(pdfData))
+            using (var output = new MemoryStream())
             {
-                aesKey = aes.Key;
-                aesIV = aes.IV;
-
-                using (var encryptor = aes.CreateEncryptor(aesKey, aesIV))
-                using (var ms = new MemoryStream())
-                {
-                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    {
-                        cs.Write(reportData, 0, reportData.Length);
-                    }
-                    return ms.ToArray();
-                }
-            }
-        }
-
-        public static byte[] EncryptAESKeyWithRSA(byte[] aesKey, RSAParameters publicKey)
-        {
-            using (var rsa = new RSACryptoServiceProvider())
-            {
-                rsa.ImportParameters(publicKey);
-                return rsa.Encrypt(aesKey, false); // Mã hóa khóa AES bằng RSA
-            }
-        }
-
-        private byte[] EncryptReport(byte[] reportData, RSAParameters publicKey)
-        {
-            using (var rsa = new RSACryptoServiceProvider())
-            {
-                rsa.ImportParameters(publicKey);
-                return rsa.Encrypt(reportData, false);
+                var reader = new PdfReader(input);
+                PdfEncryptor.Encrypt(reader, output, true, userPassword, ownerPassword, PdfWriter.ALLOW_PRINTING);
+                return output.ToArray();
             }
         }
 
         protected override HttpStatusCode SendMailMessage(MailMessage mailMessage)
         {
-            //byte[] reportData = System.IO.File.ReadAllBytes("C:\\mg\\SampleReport.pdf");
+            string userPassword = "952648";
+            string ownerPassword = "password";
 
-            //// Khóa công khai của người nhận
-            //RSAParameters publicKey = new RSAParameters
-            //{
-            //    Modulus = Convert.FromBase64String("MIIBIANBgkqjkqhANBgkqhkiG9w0BhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuK5Q5Q=="),
-            //    Exponent = Convert.FromBase64String("AQABgkqjkqhAhANNBgkqhANhkiG9w0BA")
-            //};
-            //byte[] encryptedReport = EncryptReport(reportData, publicKey);
+            // Tạo danh sách tệp đính kèm mới
+            var newAttachments = new List<Attachment>();
 
-            //// Tạo tệp đính kèm từ báo cáo đã mã hóa
-            //var attachment = new Attachment(new MemoryStream(encryptedReport), "report_encrypted.pdf", "application/pdf");
-            //mailMessage.Attachments.Add(attachment);
+            // Mã hóa nội dung tệp đính kèm
+            foreach (var attachment in mailMessage.Attachments)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    attachment.ContentStream.CopyTo(memoryStream);
+                    byte[] encryptedData = EncryptPdf(memoryStream.ToArray(), userPassword, ownerPassword);
+
+                    // Tạo tệp đính kèm mới với nội dung đã mã hóa
+                    var newAttachment = new Attachment(new MemoryStream(encryptedData), attachment.Name, attachment.ContentType.MediaType);
+                    newAttachments.Add(newAttachment);
+                }
+            }
+
+            // Xóa các tệp đính kèm cũ
+            mailMessage.Attachments.Clear();
+
+            // Thêm các tệp đính kèm mới
+            foreach (var newAttachment in newAttachments)
+            {
+                mailMessage.Attachments.Add(newAttachment);
+            }
 
             using (var smtpClient = new SmtpClient("smtp.gmail.com", 587))
             {
@@ -78,6 +69,7 @@ namespace SCM_ThanhLong_Group.Components.Pages.Controllers
 
                 smtpClient.Send(mailMessage);
             }
+
             return HttpStatusCode.OK;
         }
     }

@@ -9,8 +9,7 @@ namespace SCM_ThanhLong_Group.Model
         public string SoPhieuXuat { get; set; }
         public string TenKho { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn kho")]
-        public int? KhoID { get; set; }
-        [Required(ErrorMessage = "Ngày xuất không được để trống")]
+        public int KhoID { get; set; }
         public DateTime? NgayXuat { get; set; }
         public int isDeleted { get; set; }
         public Kho Kho { get; set; }

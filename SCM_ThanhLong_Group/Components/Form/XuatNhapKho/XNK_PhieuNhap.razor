@@ -14,6 +14,22 @@
 </style>
 
 <h2 style="text-align:center;font-weight:bold">Phiếu nhập kho</h2>
+
+<TelerikComboBox Data="@khoList"
+                 Value="@khoId"
+                 Filterable="true"
+                 FilterOperator="@StringFilterOperator.Contains"
+                 ValueField="Auto_ID"
+                 TextField="TenKho"
+                 Placeholder="Chọn kho"
+                 Width="340px"
+                 ValueChanged="@(async (int args) => await ValueChanged(args))">
+    <ComboBoxSettings>
+        <ComboBoxPopupSettings Height="250px" MaxHeight="300px" MinHeight="75px" />
+    </ComboBoxSettings>
+</TelerikComboBox>
+
+
 <button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
     <span class="oi oi-plus" aria-hidden="true">Thêm phiếu nhập mới</span>
 </button>
@@ -64,21 +80,6 @@ else
                         <label for="SoPhieuNhap" class="control-label"><b>Số phiếu nhập: </b></label>
                         <InputText class="form-control" @bind-Value=@phieuNhap.SoPhieuNhap />
                         <ValidationMessage For="@(() => phieuNhap.SoPhieuNhap)" />
-                    </div>
-
-                    @* Sẽ bỏ combobox mã kho và lấy mã kho mặc định từ kho phân quyền được chọn*@
-
-                    <div class="form-group">
-                        <label for="MaKho" class="control-label"><b>Mã kho: </b></label>
-                        <InputSelect class="form-control" @bind-Value="@phieuNhap.KhoID">
-                            <option value="">-- Chọn kho --</option>
-                            @foreach (var item in khoList)
-                            {
-                                <option value="@item.Auto_ID">@item.MaKho - @item.TenKho</option>
-                            }
-                        </InputSelect>
-                        <ValidationMessage For="@(()=>phieuNhap.KhoID)" />
-
                     </div>
                     <div class="form-group">
                         <label for="NgayNhapKho" class="control-label"><b>Ngày nhập kho: </b></label>
@@ -135,18 +136,6 @@ else
                         <label for="SoPhieuNhap" class="control-label"><b>Số phiếu nhập: </b></label>
                         <InputText class="form-control" @bind-Value=@phieuNhap.SoPhieuNhap />
                         <ValidationMessage For="@(() => phieuNhap.SoPhieuNhap)" />
-                    </div>
-                    <div class="form-group">
-                        <label for="MaKho" class="control-label"><b>Mã kho: </b></label>
-                        <InputSelect class="form-control" @bind-Value="@phieuNhap.KhoID">
-                            <option value="">-- Chọn kho --</option>
-                            @foreach (var item in khoList)
-                            {
-                                <option value="@item.Auto_ID">@item.MaKho - @item.TenKho</option>
-                            }
-                        </InputSelect>
-                        <ValidationMessage For="@(()=>phieuNhap.KhoID)" />
-
                     </div>
                     <div class="form-group">
                         <label for="NgayNhapKho" class="control-label"><b>Ngày nhập kho: </b></label>
@@ -239,6 +228,7 @@ else
     private List<HoTrong> hoTrongList = new List<HoTrong>();
     private List<LoThanhLong> loThanhLongList = new List<LoThanhLong>();
     private List<Kho> khoList = new List<Kho>();
+    private int khoId;
 
     public List<ChiTietPhieuNhap> lstCTPN = new List<ChiTietPhieuNhap>();
 
@@ -261,17 +251,30 @@ else
     protected override async Task OnInitializedAsync()
     {
         try{
-        user.username = "C##" + await Users_Service.GetCurrentUserName();
-        user.password = await Users_Service.GetCurrentPassWord();
-        hoTrongList = await PhieuNhap_Service.getHoTrongData();
-        khoList = await PhieuNhap_Service.getKhoData();
-        dataList = await PhieuNhap_Service.getAllData();
-        loThanhLongList = await PhieuNhap_Service.getLoThanhLongData();
+            user.username = "C##" + await Users_Service.GetCurrentUserName();
+            user.password = await Users_Service.GetCurrentPassWord();
+            hoTrongList = await PhieuNhap_Service.getHoTrongData();
+            khoList = await PhieuNhap_Service.getKhoData();
+            dataList = await PhieuNhap_Service.getAllData(khoId);
+            loThanhLongList = await PhieuNhap_Service.getLoThanhLongData();
+            //await LoadData(khoId);
         }
         catch
         {
             Navigation.NavigateTo("/Error");
         }
+    }
+
+    private async Task ValueChanged(int args)
+    {
+        khoId = args;
+        phieuNhap.KhoID = khoId;
+        await LoadData(khoId);
+    }
+
+    private async Task LoadData(int maKho)
+    {
+        dataList = await PhieuNhap_Service.getAllData(maKho);
     }
 
     private void OpenAddModal()
@@ -356,6 +359,7 @@ else
         {
             try
             {
+                phieuNhap.KhoID = khoId;
                 int autoID = await PhieuNhap_Service.addData(phieuNhap);
                 phieuNhap.Auto_ID = autoID;
 
@@ -364,7 +368,7 @@ else
                     ctpn.SoPhieuNhap = phieuNhap.Auto_ID;
                     await ChiTietPhieuNhap_Service.addData(ctpn);
                 }
-                dataList= await PhieuNhap_Service.getAllData();
+                dataList = await PhieuNhap_Service.getAllData(khoId);
                 CloseAddModal();
                 ToastService.ShowSuccess("Thêm phiếu nhập thành công!");
                 StateHasChanged();
@@ -387,8 +391,9 @@ else
         {
             try
             {
+                phieuNhap.KhoID = khoId;
                 await PhieuNhap_Service.updateData(phieuNhap);
-                dataList = await PhieuNhap_Service.getAllData();
+                dataList = await PhieuNhap_Service.getAllData(khoId);
                 CloseEditModal();
                 ToastService.ShowSuccess("Sửa phiếu nhập thành công!");
                 StateHasChanged();
@@ -407,7 +412,7 @@ else
         {
             await PhieuNhap_Service.deleteData(phieuNhap.Auto_ID.ToString());
             await ChiTietPhieuNhap_Service.deleteData(phieuNhap.Auto_ID);
-            dataList = await PhieuNhap_Service.getAllData();
+            dataList = await PhieuNhap_Service.getAllData(khoId);
             CloseDeleteModal();
             ToastService.ShowSuccess("Xóa phiếu nhập thành công!");
             StateHasChanged();

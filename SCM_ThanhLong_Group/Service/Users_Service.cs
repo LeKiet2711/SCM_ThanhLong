@@ -75,7 +75,7 @@ namespace SCM_ThanhLong_Group.Service
             using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("SELECT * FROM SYS.ALL_USERS", conn))
+                using (OracleCommand cmd = new OracleCommand("SELECT * FROM SYS.ALL_USERS WHERE USERNAME LIKE 'C##%'", conn))
                 {
                     cmd.CommandType = CommandType.Text;
 
@@ -114,6 +114,20 @@ namespace SCM_ThanhLong_Group.Service
             currentUserName = null;
             currentPassWord = null;
         }
+
+        public async Task ExecuteSqlCommand(string sqlCommand)
+        {
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin", "oracle"))
+            {
+                conn.Open();
+                using (OracleCommand cmd = new OracleCommand(sqlCommand, conn))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
 
     }
 }

@@ -17,16 +17,17 @@ namespace SCM_ThanhLong_Group.Service
             _user = user;
         }
 
-        public async Task<List<PhieuNhap>> getAllData()
+        public async Task<List<PhieuNhap>> getAllData(int? maKho = null)
         {
             List<PhieuNhap> dataList = new List<PhieuNhap>();
-            using (OracleConnection conn = _dbConnection.GetConnection(_user.username,_user.password))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllPhieuNhap", conn))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = System.Data.ParameterDirection.Output;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Value = maKho.HasValue ? (object)maKho.Value : DBNull.Value;
 
                     using (OracleDataReader reader = cmd.ExecuteReader())
                     {

@@ -17,44 +17,38 @@ namespace SCM_ThanhLong_Group.Service
             _user = user;
         }
 
-        public async Task<List<PhieuXuat>> getAllData()
+        public async Task<List<PhieuXuat>> getAllData(int? maKho = null)
         {
-            List<PhieuXuat> phieuXuatList = new List<PhieuXuat>();
-
+            List<PhieuXuat> dataList = new List<PhieuXuat>();
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllPhieuXuat", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
-                    // Thêm tham số đầu ra
-                    var cursorParam = new OracleParameter("p_cursor", OracleDbType.RefCursor)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-                    cmd.Parameters.Add(cursorParam);
+                    cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Value = maKho.HasValue ? (object)maKho.Value : DBNull.Value;
 
                     using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
-                            PhieuXuat phieuXuat = new PhieuXuat
+                            var data = new PhieuXuat
                             {
-                                Auto_ID = reader.GetInt32(0),
-                                SoPhieuXuat = reader.GetString(1),
-                                KhoID = reader.GetInt32(2),
-                                TenKho = reader.GetString(3),
-                                NgayXuat = reader.GetDateTime(4)
+                                Auto_ID = int.Parse(reader["AUTO_ID"].ToString()),
+                                SoPhieuXuat = reader["SOPHIEUXUAT"].ToString(),
+                                KhoID = int.Parse(reader["MAKHO"].ToString()),
+                                TenKho = reader["TENKHO"].ToString(),
+                                NgayXuat = DateTime.Parse(reader["NGAYXUAT"].ToString()),
                             };
-                            phieuXuatList.Add(phieuXuat);
+                            dataList.Add(data);
                         }
                     }
                 }
             }
-
-            return phieuXuatList;
+            return dataList;
         }
+
 
         public async Task<List<HoTrong>> getHoTrongData()
         {

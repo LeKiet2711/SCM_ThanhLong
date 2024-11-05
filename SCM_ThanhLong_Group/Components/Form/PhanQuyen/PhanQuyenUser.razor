@@ -1,64 +1,68 @@
 ﻿@page "/phanquyenuser"
 @using SCM_ThanhLong_Group.Model
 @inject Kho_Service khoService
-@inject Users_Service userService
+@inject Users_Service user_Service
 @inject ChucNang_Service chucNangService
 @inject IToastService toastService
-
+@inject Users users
+@inject NavigationManager NavigationManager
 
 <TelerikComboBox Data="@lstUser"
                  @bind-Value="@user.username"
                  Filterable="true"
                  FilterOperator="@StringFilterOperator.Contains"
-                 ValueField="name"
-                 TextField="name"
+                 ValueField="username"
+                 TextField="username"
                  Placeholder="Chọn user"
                  Width="340px">
     <ComboBoxSettings>
         <ComboBoxPopupSettings Height="250px" MaxHeight="300px" MinHeight="75px" />
     </ComboBoxSettings>
 </TelerikComboBox>
-    
 
 <div style="overflow-x: auto; white-space: nowrap; margin-top:40px">
     <div style="display: inline-block; width: 900px;margin-right:20px">
-        <TelerikGrid Data="@lstChucNang" Pageable="true" Sortable="true">
-            <GridColumns>
-                <GridColumn Field="MaCN" Title="Mã CN" />
-                <GridColumn Field="TenCN" Title="Tên Chức Năng" />
-                <GridColumn Field="Xem" Title="Xem">
-                    <Template>
-                        <TelerikSwitch @bind-Value="(context as ChucNang).Xem" />
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="Them" Title="Thêm">
-                    <Template>
-                        <TelerikSwitch @bind-Value="(context as ChucNang).Them"/>
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="Sua" Title="Sửa">
-                    <Template>
-                        <TelerikSwitch @bind-Value="(context as ChucNang).Sua" />
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="Xoa" Title="Xóa">
-                    <Template>
-                        <TelerikSwitch @bind-Value="(context as ChucNang).Xoa" />
-                    </Template>
-                </GridColumn>
-            </GridColumns>
-        </TelerikGrid>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Table Name</th>
+                    <th>Xem</th>
+                    <th>Them</th>
+                    <th>Sua</th>
+                    <th>Xoa</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tablePermission in lstTables)
+                {
+                    <tr>
+                        <td>@tablePermission.TableName</td>
+                        <td>
+                            <input type="checkbox" checked="@tablePermission.Xem" @onchange="async (e) => await UpdatePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        </td>
+                        <td>
+                            <input type="checkbox" checked="@tablePermission.Them" @onchange="async (e) => await UpdatePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        </td>
+                        <td>
+                            <input type="checkbox" checked="@tablePermission.Sua" @onchange="async (e) => await UpdatePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        </td>
+                        <td>
+                            <input type="checkbox" checked="@tablePermission.Xoa" @onchange="async (e) => await UpdatePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 
-<button class="btn btn-success" @onclick="@UpdateAllPermissions" style="margin-top:30px">
-    <span class="oi oi-plus" aria-hidden="true">Cập nhật</span>
-</button>
 
 @code {
     private List<Users> lstUser = new List<Users>();
-    private List<ChucNang> lstChucNang = new List<ChucNang>();
+    private List<TablePermission> lstTables = new List<TablePermission>();
     Users user = new Users();
+    private string[] permissions = { "Xem", "Them", "Sua", "Xoa" };
+    private string? selectedPermission;
 
     private bool isUserActive;
 
@@ -69,32 +73,81 @@
     private string deleteModalClass = "";
     private string deleteModalDisplayStyle = "display:none";
 
+    private string username = string.Empty;
+    private string password = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
-        lstUser = await userService.getAllData();
-        lstChucNang = await chucNangService.getAllData();
+        user.username = "C##" + await user_Service.GetCurrentUserName();
+        user.password = await user_Service.GetCurrentPassWord();
+        lstUser = await user_Service.getAllData();
+        InitializeTablePermissions();
     }
 
-    private void OpenAddModal()
+    private void InitializeTablePermissions()
     {
-        addModalClass = "show";
-        addModalDisplayStyle = "display:block";
-    }
-
-    private void CloseAddModal()
-    {
-        addModalClass = "";
-        addModalDisplayStyle = "display:none";
-        StateHasChanged();
-    }
-
-    private async Task UpdateAllPermissions()
-    {
-        foreach (var chucNang in lstChucNang)
+        lstTables = new List<TablePermission>
         {
-            await chucNangService.updateData(chucNang);
+            new TablePermission { TableName = "KHUVUCTRONG" },
+            new TablePermission { TableName = "KHO" },
+            new TablePermission { TableName = "HOTRONG" },
+            new TablePermission { TableName = "LOTHANHLONG" }
+        };
+    }
+
+    private async Task UpdatePermission(TablePermission tablePermission, bool isGranted)
+    {
+        if (user.username == null)
+        {
+            toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
+            return;
         }
-        toastService.ShowSuccess("Tất cả quyền đã được cập nhật thành công.");
+
+        string[] storedProcedures = GetStoredProceduresForTable(tablePermission.TableName);
+        foreach (var procedure in storedProcedures)
+        {
+            string sqlCommand = isGranted
+                ? $"GRANT EXECUTE ON C##Admin.{procedure} TO {user.username};"
+                : $"REVOKE EXECUTE ON C##Admin.{procedure} FROM {user.username};";
+
+            await user_Service.ExecuteSqlCommand(sqlCommand);
+        }
+    }
+
+    private string[] GetStoredProceduresForTable(string tableName)
+    {
+        if (tableName == "KHUVUCTRONG")
+        {
+            return new[] { "GetAllKhuVucTrong", "AddKhuVucTrong", "UpdateKhuVucTrong", "DeleteKhuVucTrong" };
+        }
+        else if (tableName == "KHO")
+        {
+            return new[] { "GetAllKho", "AddKho", "UpdateKho", "DeleteKho" };
+        }
+        else if (tableName == "HOTRONG")
+        {
+            return new[] { "GetAllHoTrong", "AddHoTrong", "UpdateHoTrong", "DeleteHoTrong" };
+        }
+        else if (tableName == "LOTHANHLONG")
+        {
+            return new[] { "GetAllLoThanhLong", "AddLoThanhLong", "UpdateLoThanhLong", "DeleteLoThanhLong" };
+        }
+        else
+        {
+            return Array.Empty<string>();
+        }
+    }
+
+    private async Task OnUserSelected(ChangeEventArgs e)
+    {
+        if (e.Value != null && lstUser != null)
+        {
+            user.username = lstUser.FirstOrDefault(u => u.username == e.Value.ToString())?.username;
+            if (user.username != null)
+            {
+                await InvokeAsync(StateHasChanged);
+            }
+        }
     }
 
 
