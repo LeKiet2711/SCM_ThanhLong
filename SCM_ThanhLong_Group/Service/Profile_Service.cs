@@ -6,6 +6,7 @@ using SCM_ThanhLong_Group.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Telerik.SvgIcons;
 
@@ -338,5 +339,36 @@ namespace SCM_ThanhLong_Group.Service
             }
             return result;
         }
+
+        public async Task killSession(string userName)
+        {
+            //string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+
+            try
+            {
+                using (OracleConnection kn = _dbConnection.GetConnection("sys", "sys", "SYSDBA"))
+                {
+                    string sqlKillSession = "killSessionUser";
+                    OracleCommand oracleCommand= new OracleCommand();
+                    oracleCommand.Connection = kn;
+                    oracleCommand.CommandText= sqlKillSession;
+                    oracleCommand.CommandType= CommandType.StoredProcedure;
+
+                    oracleCommand.Parameters.Add("userName", OracleDbType.Varchar2).Value = userName;
+
+                    //kn.OpenAsync();
+                    kn.Open();
+                    oracleCommand.ExecuteNonQuery();
+                    kn.Close();
+                    //kn.CloseAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+
     }
 }

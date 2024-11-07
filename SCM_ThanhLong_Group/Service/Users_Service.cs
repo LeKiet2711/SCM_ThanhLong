@@ -23,7 +23,10 @@ namespace SCM_ThanhLong_Group.Service
         {
             //string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
             string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/chkb;";
-
+            if(string.Compare(username,"sys", true)==0)
+            {
+                connectionString += "DBA Privilege=SYSDBA;";
+            }    
             using (var conn = new OracleConnection(connectionString))
             {
                 try
