@@ -22,6 +22,7 @@ namespace SCM_ThanhLong_Group.Service
         {
             string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost/orcl1;";
             //string connectionString = $"User Id=C##{username};Password={password};Data Source=192.168.1.25:1521/orcl1;";
+            //string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost/chkb;";
 
             using (var conn = new OracleConnection(connectionString))
             {
