@@ -8,9 +8,21 @@
 
 @*Thư viện biểu thức chính quy*@
 @using System.Text.RegularExpressions
+@inject Users user
 
 <PageTitle>Cập nhật profile</PageTitle>
-<h3>CapNhatProfile</h3>
+<h3>Cập nhật profile</h3>
+
+
+<label for="">Tên profile</label>
+<span>@profileName</span>
+<br />
+
+@foreach (ProfileInformation profileAttribute in lstProfileInformation) {
+    <label for="@profileAttribute.RESOURCE_NAME">@profileAttribute.RESOURCE_NAME</label>
+    <input type="number" id="@profileAttribute.RESOURCE_NAME" min="1" @bind="@profileAttribute.LIMIT">
+    <br/>
+}
 
 <select @bind="profileName">
     @foreach (string pro in profiles)
@@ -44,11 +56,11 @@
 
 
 
-<button @onclick="taoProfile" style=" color: white; margin: 50px; font-weight: bold; width: 250px; height: 30px; border-radius:5px; border: none; background: url('https://cdn.pixabay.com/photo/2019/03/10/01/12/planet-4045330_960_720.jpg'); background-size: cover;">
-    Lưu
+<button @onclick="updateProfile" style=" color: white; margin: 50px; font-weight: bold; width: 250px; height: 30px; border-radius:5px; border: none; background: url('https://cdn.pixabay.com/photo/2019/03/10/01/12/planet-4045330_960_720.jpg'); background-size: cover;">
+    Cập nhật
 </button>
 
- <h1 style="font-size:200px; color:red;">Xấu quá trời!!!</h1>
+  @* <h1 style="font-size:200px; color:red;">Xấu quá trời!!!</h1> *@
 
 @code {
     private List<string> profiles = new List<string>();
@@ -59,9 +71,27 @@
     private string value = "";
 
 
+    //Danh sách thuộc tính profile cần cập nhật
+    List<ProfileInformation> lstProfileInformation = new List<ProfileInformation>();
+
+
     protected override async Task OnInitializedAsync()
     {
+        user.username = "sys";
+        user.password = "sys";
+
         profiles = await profileSerVice.getAllProfileName();
+
+        //Lấy tên profile được truyền vào từ form bên kia
+        var uri = new Uri(nav.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        if (query.TryGetValue("data", out var encodedData))
+        {
+            profileName = Uri.UnescapeDataString(encodedData);
+        }
+        lstProfileInformation = await profileSerVice.GetProfileInformation(profileName);
+
+       
     }
 
     private async void addAProfileAttribute()
@@ -92,24 +122,38 @@
         }
     }
 
-    private async void taoProfile()
+    private async void updateProfile()
     {
+        foreach (ProfileInformation profileAttribute in lstProfileInformation)
+        {
+            thuocTinhProfile += " " + profileAttribute.RESOURCE_NAME + " " + profileAttribute.LIMIT + " ";
+        }
         if (!String.IsNullOrEmpty(thuocTinhProfile))
         {
-            if (await profileSerVice.createProfile(profileName, thuocTinhProfile))
-            {
-                // khanhBang += "thành công!";
-                nav.NavigateTo("quanlyprofile");
-            }
-            else
-            {
-                // khanhBang += "thất công!";
-            }
+            // if (thuocTinhProfile.Contains(profileAttribute))
+            // {
+            //     int index = thuocTinhProfile.IndexOf(profileAttribute) + 1;
+            //     if (index != -1)
+            //     {
+            //         string pattern = @"(" + profileAttribute + @"\s+)\d+";
+            //         thuocTinhProfile = Regex.Replace(thuocTinhProfile, pattern, $"${{1}}{value}");
+            //         thuocTinhProfileHienThi = Regex.Replace(thuocTinhProfile, pattern, $"${{1}}{value}");
+            //     }
+           
+            if (await profileSerVice.UpdateProfile(profileName, thuocTinhProfile))
+                {
+                    // khanhBang += "thành công!";
+                    nav.NavigateTo("quanlyprofile");
+                }
+                else
+                {
+                    // khanhBang += "thất công!";
+                }
+            // }
         }
         else
         {
             await JsRuntime.InvokeVoidAsync("alert", "Vui lòng nhập đầy đủ thông tin hợp lệ cho profile!");
         }
     }
-
 }

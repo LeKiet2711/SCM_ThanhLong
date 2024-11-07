@@ -67,7 +67,7 @@ namespace SCM_ThanhLong_Group.Service
                 {
                     await conn.OpenAsync();
                     OracleCommand command = new OracleCommand();
-                    command.CommandType = CommandType.Text;
+                    //command.CommandType = CommandType.Text;
                     command.CommandText = "sp_getAllProfile";
                     command.Connection = conn;
                     //Thiếu loại hành động cũng lỗi
@@ -75,7 +75,7 @@ namespace SCM_ThanhLong_Group.Service
 
                     //Cách 1 (ngắn gọn)
                     command.Parameters.Add("tableProfile", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-                   
+
 
                     //Cách 2
                     //OracleParameter outPara = new OracleParameter();
@@ -137,10 +137,11 @@ namespace SCM_ThanhLong_Group.Service
                     kn.Close();
                     return true;
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
                     return false;
                 }
-            }    
+            }
         }
 
         public async Task<List<string>> getAllUser()
@@ -222,7 +223,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task<bool> AssignProfileForUser(string userName, string profileName)
         {
-            if(userName.Trim().Length>0 || profileName.Trim().Length>0)
+            if (userName.Trim().Length > 0 || profileName.Trim().Length > 0)
             {
                 string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
 
@@ -245,11 +246,97 @@ namespace SCM_ThanhLong_Group.Service
                     {
                         return false;
                     }
-                }    
+                }
             }
             return false;
         }
 
+        //Cập nhật thông tin profile
+        public async Task<List<ProfileInformation>> GetProfileInformation(string profileName)
+        {
+            List<ProfileInformation> lst = new List<ProfileInformation>();
+            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
 
+            using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+            {
+                using (OracleCommand oracleCommand = new OracleCommand())
+                {
+                    string sqlStoprocedure = "sp_getProfileAttributeFromName";
+                    oracleCommand.Connection = kn;
+                    oracleCommand.CommandText = sqlStoprocedure;
+                    oracleCommand.CommandType = CommandType.StoredProcedure;
+                    oracleCommand.Parameters.Add("tenprofile", OracleDbType.Varchar2).Value = profileName;
+                    oracleCommand.Parameters.Add("thuocTinhProfileTable", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    kn.OpenAsync();
+                    OracleDataReader data = oracleCommand.ExecuteReader();
+                    if (data.HasRows)
+                    {
+                        while (data.Read())
+                        {
+                            lst.Add(new ProfileInformation(data["RESOURCE_NAME"].ToString(), data["LIMIT"].ToString()));
+                        }
+                    }
+                    kn.CloseAsync();
+                }
+            }
+            return lst;
+        }
+
+
+        public async Task<bool> UpdateProfile(string profileName, string thuocTinhProfile)
+        {
+            bool result = false;
+            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+
+            try
+            {
+                using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+                {
+                    string sqlProcedureUpdate = "sp_updateProfile";
+                    OracleCommand oracleCommand = new OracleCommand();
+                    oracleCommand.Connection = kn;
+                    oracleCommand.CommandText = sqlProcedureUpdate;
+                    oracleCommand.CommandType = CommandType.StoredProcedure;
+                    oracleCommand.Parameters.Add("tenProfile", OracleDbType.Varchar2).Value = profileName;
+                    oracleCommand.Parameters.Add("thuocTinhProFile", OracleDbType.Varchar2).Value = thuocTinhProfile;
+                    kn.OpenAsync();
+                    oracleCommand.ExecuteNonQuery();
+                    kn.CloseAsync();
+                }
+                result = true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result;
+        }
+
+        public async Task<bool> DropProfile(string profileName)
+        {
+            bool result = false;
+            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+
+            try
+            {
+                using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+                {
+                    string sqlProcedure = "sp_dropProfile";
+                    OracleCommand oracleCommand = new OracleCommand();
+                    oracleCommand.Connection = kn;
+                    oracleCommand.CommandText = sqlProcedure;
+                    oracleCommand.CommandType = CommandType.StoredProcedure;
+                    oracleCommand.Parameters.Add("profileName", OracleDbType.Varchar2).Value = profileName;
+                    kn.OpenAsync();
+                    oracleCommand.ExecuteNonQuery();
+                    kn.CloseAsync();
+                }
+                result= true;
+            }
+            catch (Exception ex)
+            {
+            }
+            return result;
+        }
     }
 }
