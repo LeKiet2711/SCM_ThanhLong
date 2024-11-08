@@ -69,7 +69,7 @@ else
                     </div>
                     <div class="form-group">
                         <label for="MaKhuVuc" class="control-label"><b>Mã khu vực: </b></label>
-                        <InputSelect class="" @bind-Value="@hoTrong.KhuVucTrongID">
+                        <InputSelect class="form-control" @bind-Value="@hoTrong.KhuVucTrongID">
                             <option value="">-- Chọn khu vực trồng --</option>
                             @foreach (var item in khuVucTrongList)
                             {

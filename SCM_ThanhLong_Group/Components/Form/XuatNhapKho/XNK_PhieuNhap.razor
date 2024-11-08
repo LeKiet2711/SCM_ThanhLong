@@ -255,7 +255,7 @@ else
             user.password = await Users_Service.GetCurrentPassWord();
             hoTrongList = await PhieuNhap_Service.getHoTrongData();
             khoList = await PhieuNhap_Service.getKhoData();
-            dataList = await PhieuNhap_Service.getAllData(khoId);
+            //dataList = await PhieuNhap_Service.getAllData(khoId, user.username);
             loThanhLongList = await PhieuNhap_Service.getLoThanhLongData();
             //await LoadData(khoId);
         }
@@ -274,7 +274,7 @@ else
 
     private async Task LoadData(int maKho)
     {
-        dataList = await PhieuNhap_Service.getAllData(maKho);
+        dataList = await PhieuNhap_Service.getAllData(maKho, user.username);
     }
 
     private void OpenAddModal()
@@ -368,7 +368,7 @@ else
                     ctpn.SoPhieuNhap = phieuNhap.Auto_ID;
                     await ChiTietPhieuNhap_Service.addData(ctpn);
                 }
-                dataList = await PhieuNhap_Service.getAllData(khoId);
+                dataList = await PhieuNhap_Service.getAllData(khoId,user.username);
                 CloseAddModal();
                 ToastService.ShowSuccess("Thêm phiếu nhập thành công!");
                 StateHasChanged();
@@ -393,7 +393,7 @@ else
             {
                 phieuNhap.KhoID = khoId;
                 await PhieuNhap_Service.updateData(phieuNhap);
-                dataList = await PhieuNhap_Service.getAllData(khoId);
+                dataList = await PhieuNhap_Service.getAllData(khoId, user.username);
                 CloseEditModal();
                 ToastService.ShowSuccess("Sửa phiếu nhập thành công!");
                 StateHasChanged();
@@ -412,7 +412,7 @@ else
         {
             await PhieuNhap_Service.deleteData(phieuNhap.Auto_ID.ToString());
             await ChiTietPhieuNhap_Service.deleteData(phieuNhap.Auto_ID);
-            dataList = await PhieuNhap_Service.getAllData(khoId);
+            dataList = await PhieuNhap_Service.getAllData(khoId, user.username);
             CloseDeleteModal();
             ToastService.ShowSuccess("Xóa phiếu nhập thành công!");
             StateHasChanged();

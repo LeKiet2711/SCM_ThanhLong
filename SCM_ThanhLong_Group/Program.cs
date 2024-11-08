@@ -38,6 +38,7 @@ builder.Services.AddScoped<ChucNang_Service>();
 builder.Services.AddScoped<KhuVucTrong_Service>();
 builder.Services.AddScoped<HoTrong_Service>();
 builder.Services.AddScoped<Kho_Service>();
+builder.Services.AddScoped<KhoUser_Service>();
 builder.Services.AddScoped<PhieuNhap_Service>();
 builder.Services.AddScoped<PhieuXuat_Service>();
 builder.Services.AddScoped<ChiTietPhieuNhap_Service>();

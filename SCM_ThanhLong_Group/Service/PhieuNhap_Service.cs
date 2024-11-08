@@ -17,21 +17,22 @@ namespace SCM_ThanhLong_Group.Service
             _user = user;
         }
 
-        public async Task<List<PhieuNhap>> getAllData(int? maKho = null)
+        public async Task<List<PhieuNhap>> getAllData(int khoId, string userId)
         {
             List<PhieuNhap> dataList = new List<PhieuNhap>();
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
-                conn.Open();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllPhieuNhap", conn))
+                await conn.OpenAsync();
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GETALLPHIEUNHAP", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Value = maKho.HasValue ? (object)maKho.Value : DBNull.Value;
+                    cmd.Parameters.Add("p_khoId", OracleDbType.Int32).Value = khoId;
+                    cmd.Parameters.Add("p_userId", OracleDbType.Varchar2).Value = userId;
 
-                    using (OracleDataReader reader = cmd.ExecuteReader())
+                    using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             var data = new PhieuNhap
                             {
@@ -48,6 +49,8 @@ namespace SCM_ThanhLong_Group.Service
             }
             return dataList;
         }
+
+
 
         public async Task<List<HoTrong>> getHoTrongData()
         {

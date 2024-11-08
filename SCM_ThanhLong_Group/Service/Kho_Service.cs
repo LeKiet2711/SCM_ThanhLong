@@ -18,8 +18,8 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task<List<Kho>> getAllData()
         {
-            List<Kho> dataList=new List<Kho>();
-            using (OracleConnection conn = _dbConnection.GetConnection(_user.username,_user.password))
+            List<Kho> dataList = new List<Kho>();
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 conn.Open();
                 using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllKho", conn))
