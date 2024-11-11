@@ -4,17 +4,18 @@
 @inject Users_Service user_Service
 @inject ChucNang_Service chucNangService
 @inject IToastService toastService
-@inject Users users
+@inject Users user
 @inject NavigationManager NavigationManager
 
 <TelerikComboBox Data="@lstUser"
-                 @bind-Value="@user.username"
+                 @Value="@user.username"
                  Filterable="true"
                  FilterOperator="@StringFilterOperator.Contains"
                  ValueField="username"
                  TextField="username"
                  Placeholder="Chọn user"
-                 Width="340px">
+                 Width="340px"
+                 ValueChanged="@(async args=>await OnUserSelected(args))">
     <ComboBoxSettings>
         <ComboBoxPopupSettings Height="250px" MaxHeight="300px" MinHeight="75px" />
     </ComboBoxSettings>
@@ -37,7 +38,7 @@
                 {
                     <tr>
                         <td>@tablePermission.TableName</td>
-                        <td>
+                        @* <td>
                             <input type="checkbox" checked="@tablePermission.Xem" @onchange="async (e) => await UpdatePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
                         </td>
                         <td>
@@ -48,7 +49,7 @@
                         </td>
                         <td>
                             <input type="checkbox" checked="@tablePermission.Xoa" @onchange="async (e) => await UpdatePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
-                        </td>
+                        </td> *@
                     </tr>
                 }
             </tbody>
@@ -60,7 +61,7 @@
 @code {
     private List<Users> lstUser = new List<Users>();
     private List<TablePermission> lstTables = new List<TablePermission>();
-    Users user = new Users();
+    Users userGet = new Users();
     private string[] permissions = { "Xem", "Them", "Sua", "Xoa" };
     private string? selectedPermission;
 
@@ -73,16 +74,25 @@
     private string deleteModalClass = "";
     private string deleteModalDisplayStyle = "display:none";
 
-    private string username = string.Empty;
-    private string password = string.Empty;
+    private string username;
+    private string password;
 
     protected override async Task OnInitializedAsync()
     {
-        user.username = "C##" + await user_Service.GetCurrentUserName();
-        user.password = await user_Service.GetCurrentPassWord();
-        lstUser = await user_Service.getAllData();
-        InitializeTablePermissions();
+        try
+        {
+            user.username = "C##" + await user_Service.GetCurrentUserName();
+            user.password = await user_Service.GetCurrentPassWord();
+            lstUser = await user_Service.getAllData();
+            InitializeTablePermissions();
+        }
+        catch (Exception ex)
+        {
+            // Xử lý lỗi nếu cần thiết
+            NavigationManager.NavigateTo("/Error");
+        }
     }
+
 
     private void InitializeTablePermissions()
     {
@@ -95,60 +105,57 @@
         };
     }
 
-    private async Task UpdatePermission(TablePermission tablePermission, bool isGranted)
-    {
-        if (user.username == null)
-        {
-            toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
-            return;
-        }
+    // private async Task UpdatePermission(TablePermission tablePermission, bool isGranted)
+    // {
+    //     if (user.username == null)
+    //     {
+    //         toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
+    //         return;
+    //     }
 
-        string[] storedProcedures = GetStoredProceduresForTable(tablePermission.TableName);
-        foreach (var procedure in storedProcedures)
-        {
-            string sqlCommand = isGranted
-                ? $"GRANT EXECUTE ON C##Admin.{procedure} TO {user.username};"
-                : $"REVOKE EXECUTE ON C##Admin.{procedure} FROM {user.username};";
+    //     string[] storedProcedures = GetStoredProceduresForTable(tablePermission.TableName);
+    //     foreach (var procedure in storedProcedures)
+    //     {
+    //         string sqlCommand = isGranted
+    //             ? $"GRANT EXECUTE ON C##Admin.{procedure} TO {user.username};"
+    //             : $"REVOKE EXECUTE ON C##Admin.{procedure} FROM {user.username};";
 
-            await user_Service.ExecuteSqlCommand(sqlCommand);
-        }
-    }
+    //         await user_Service.ExecuteSqlCommand(sqlCommand);
+    //     }
 
-    private string[] GetStoredProceduresForTable(string tableName)
-    {
-        if (tableName == "KHUVUCTRONG")
-        {
-            return new[] { "GetAllKhuVucTrong", "AddKhuVucTrong", "UpdateKhuVucTrong", "DeleteKhuVucTrong" };
-        }
-        else if (tableName == "KHO")
-        {
-            return new[] { "GetAllKho", "AddKho", "UpdateKho", "DeleteKho" };
-        }
-        else if (tableName == "HOTRONG")
-        {
-            return new[] { "GetAllHoTrong", "AddHoTrong", "UpdateHoTrong", "DeleteHoTrong" };
-        }
-        else if (tableName == "LOTHANHLONG")
-        {
-            return new[] { "GetAllLoThanhLong", "AddLoThanhLong", "UpdateLoThanhLong", "DeleteLoThanhLong" };
-        }
-        else
-        {
-            return Array.Empty<string>();
-        }
-    }
+    //     await InvokeAsync(StateHasChanged);
+    // }
+
+
+    // private string[] GetStoredProceduresForTable(string tableName)
+    // {
+    //     if (tableName == "KHUVUCTRONG")
+    //     {
+    //         return new[] { "GetAllKhuVucTrong", "AddKhuVucTrong", "UpdateKhuVucTrong", "DeleteKhuVucTrong" };
+    //     }
+    //     else if (tableName == "KHO")
+    //     {
+    //         return new[] { "GetAllKho", "AddKho", "UpdateKho", "DeleteKho" };
+    //     }
+    //     else if (tableName == "HOTRONG")
+    //     {
+    //         return new[] { "GetAllHoTrong", "AddHoTrong", "UpdateHoTrong", "DeleteHoTrong" };
+    //     }
+    //     else if (tableName == "LOTHANHLONG")
+    //     {
+    //         return new[] { "GetAllLoThanhLong", "AddLoThanhLong", "UpdateLoThanhLong", "DeleteLoThanhLong" };
+    //     }
+    //     else
+    //     {
+    //         return Array.Empty<string>();
+    //     }
+    // }
 
     private async Task OnUserSelected(ChangeEventArgs e)
     {
-        if (e.Value != null && lstUser != null)
-        {
-            user.username = lstUser.FirstOrDefault(u => u.username == e.Value.ToString())?.username;
-            if (user.username != null)
-            {
-                await InvokeAsync(StateHasChanged);
-            }
-        }
+        
     }
+
 
 
 }
