@@ -28,10 +28,12 @@ builder.Services.TryAddSingleton<IReportServiceConfiguration>(sp => new ReportSe
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddBlazoredToast();
+
 builder.Services.AddSingleton<ConnectionStringManager>();
 builder.Services.AddScoped<OracleDbConnection>();
 builder.Services.AddControllers();
-
+builder.Services.AddScoped<KeyValidationService>();
 builder.Services.AddScoped<Users_Service>();
 builder.Services.AddScoped<Users>();
 builder.Services.AddScoped<ChucNang_Service>();
@@ -45,7 +47,7 @@ builder.Services.AddScoped<ChiTietPhieuNhap_Service>();
 builder.Services.AddScoped<ChiTietPhieuXuat_Service>();
 builder.Services.AddScoped<Profile_Service>();
 builder.Services.AddScoped<LoThanhLong_Service>();
-builder.Services.AddScoped<XacThucService>();
+
 builder.Services.AddScoped<NhomQuyen_Service>();
 
 builder.Services.AddBlazoredSessionStorage();
