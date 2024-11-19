@@ -258,5 +258,28 @@ namespace SCM_ThanhLong_Group.Service
             }
             return false;
         }
+
+        public async Task<string> GetSoPhieuNhapById(int nhapKhoId)
+        {
+            string soPhieuNhap = string.Empty;
+
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+            {
+                await conn.OpenAsync();
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetPhieuNhapByID", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = nhapKhoId;
+                    cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
+
+                    await cmd.ExecuteNonQueryAsync();
+
+                    soPhieuNhap = cmd.Parameters["p_SoPhieuNhap"].Value?.ToString() ?? string.Empty;
+                }
+            }
+
+            return soPhieuNhap;
+        }
+
     }
 }

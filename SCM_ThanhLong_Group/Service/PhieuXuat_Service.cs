@@ -225,5 +225,48 @@ namespace SCM_ThanhLong_Group.Service
             return false;
         }
 
+        public async Task<string> GetSoPhieuXuatByID(int xuatkhoid)
+        {
+            string soPhieuXuat = "";
+
+            using(OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+            {
+                await conn.OpenAsync();
+                using(OracleCommand cmd=new OracleCommand("C##Admin.GetSoPhieuXuatByID", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = xuatkhoid;
+                    cmd.Parameters.Add("p_SoPhieuXuat", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
+
+                    await cmd.ExecuteNonQueryAsync();
+
+                    soPhieuXuat = cmd.Parameters["p_SoPhieuXuat"].Value?.ToString() ?? string.Empty;
+                }
+            }
+            return soPhieuXuat;
+        }
+
+        public async Task<double> GetSoKgByID(int xuatKhoId)
+        {
+            double soKG = 0;
+
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+            {
+                await conn.OpenAsync();
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetSoKgByID", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = xuatKhoId;
+                    cmd.Parameters.Add("p_SLXuat", OracleDbType.Int32).Direction = ParameterDirection.Output;
+
+                    await cmd.ExecuteNonQueryAsync();
+
+                    soKG = Convert.ToDouble(cmd.Parameters["p_SLXuat"].Value.ToString());
+                }
+            }
+
+            return soKG;
+        }
+
     }
 }

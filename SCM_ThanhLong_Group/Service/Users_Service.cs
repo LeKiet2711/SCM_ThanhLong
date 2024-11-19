@@ -133,6 +133,31 @@ namespace SCM_ThanhLong_Group.Service
             }
         }
 
+        public async Task<List<TablePermission>> GetUserPermissions(string username)
+        {
+            List<TablePermission> permissions = new List<TablePermission>();
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin", "oracle"))
+            {
+                conn.Open();
+                string query = $"SELECT TABLE_NAME FROM SYS.USER_TAB_PRIVS WHERE GRANTEE = '{username}' AND PRIVILEGE = 'EXECUTE'";
+                using (OracleCommand cmd = new OracleCommand(query, conn))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            string procedureName = reader["TABLE_NAME"].ToString();
+                            var tablePermission = new TablePermission { TableName = procedureName };
+                            permissions.Add(tablePermission);
+                        }
+                    }
+                }
+            }
+            return permissions;
+        }
+
+
 
     }
 }

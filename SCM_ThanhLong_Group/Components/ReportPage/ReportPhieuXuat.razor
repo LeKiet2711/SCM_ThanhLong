@@ -1,4 +1,5 @@
 ﻿@page "/reportxuatkho/{XUATKHO_ID}"
+@inject PhieuXuat_Service phieuXuatService
 
 <PageTitle>Report Viewer</PageTitle>
 
@@ -16,6 +17,14 @@
               ServiceType="@ReportViewerServiceType.REST"
               Height="900px"
               Width="100%">
+    <ReportViewerSettings>
+        <SendEmailDialogSettings From="lgklgk2711@gmail.com"
+                                 Cc=""
+                                 Subject="Hóa đơn"
+                                 Format="CSV"
+                                 Body="@EmailBody">
+        </SendEmailDialogSettings>
+    </ReportViewerSettings>
 </ReportViewer>
 
 @code {
@@ -24,17 +33,66 @@
     public bool ParametersAreaVisible { get; set; }
     public bool DocumentMapVisible { get; set; }
     public double Scale { get; set; } = 1.0;
+    public DateTime Date;
+    public double SoKG;
 
     [Parameter]
     public string XUATKHO_ID { get; set; }
 
+    public string EmailBody { get; set; }
+
     public ReportSourceOptions ReportSource { get; set; } = new ReportSourceOptions("ReportPhieuXuat_1.trdp", new Dictionary<string, object>
     {
-       
+
     });
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        Date = DateTime.Now;
+        SoKG = await phieuXuatService.GetSoKgByID(Int32.Parse(XUATKHO_ID));
+
         ReportSource.Parameters.Add("XUATKHO_ID", XUATKHO_ID);
+        ReportSource.Parameters.Add("SoKG", SoKG);
+        ReportSource.Parameters.Add("strSoKG", chuyenSoThanhChu(SoKG));
+        EmailBody = $"Hóa đơn phiếu xuất {phieuXuatService.GetSoPhieuXuatByID(Int32.Parse(XUATKHO_ID))} ngày {Date.ToString("dd/MM/yyyy")}";
+    }
+
+    static string chuyenSoThanhChu(double number)
+    {
+        string[] ones = { "", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
+        string[] teens = { "mười", "mười một", "mười hai", "mười ba", "mười bốn", "mười lăm", "mười sáu", "mười bảy", "mười tám", "mười chín" };
+        string[] tens = { "", "mười", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi" };
+
+        int intPart = (int)number;
+        int decimalPart = (int)((number - intPart) * 100);
+
+        string intPartStr = chuyenSoThanhChu(intPart);
+        string decimalPartStr = chuyenSoThanhChu(decimalPart);
+
+        return $"{intPartStr} phẩy {decimalPartStr}";
+    }
+
+    static string chuyenSoThanhChu(int number)
+    {
+        string[] ones = { "", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
+        string[] teens = { "mười", "mười một", "mười hai", "mười ba", "mười bốn", "mười lăm", "mười sáu", "mười bảy", "mười tám", "mười chín" };
+        string[] tens = { "", "mười", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi" };
+
+        if (number < 10)
+        {
+            return ones[number];
+        }
+        else if (number < 20)
+        {
+            return teens[number - 10];
+        }
+        else if (number < 100)
+        {
+            return tens[number / 10] + " " + ones[number % 10];
+        }
+        else
+        {
+            return "Out of range";
+        }
     }
 }
