@@ -225,7 +225,7 @@ input::placeholder {
 	position: absolute;
 	bottom: 10px;
 	left: 50%;
-	transform: translateX(-67px);
+	transform: translateX(-50px);
 	color: white !important;
 	text-shadow: 2px 2px 2px #6524eb;
 	text-align: center;

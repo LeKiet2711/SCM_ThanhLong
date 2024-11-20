@@ -1,0 +1,86 @@
+﻿@page "/create-user"
+@using SCM_ThanhLong_Group.Components.Layout
+@rendermode InteractiveServer
+@layout LoginLayout
+@inject Profile_Service profileService
+@inject IJSRuntime iJsRuntime
+@inject NavigationManager navigation
+
+<link href="mahacss/styledangnhap.css" rel="stylesheet" />
+
+<div class="moi"></div>
+
+<div class="giua dangky">
+    <div class="trentrai"></div>
+    <span style="font-size: 40px; font-weight: bold; display: block; text-align: center; width: 100%;">
+        Tạo tài khoản
+    </span>
+
+        <input class="textbox custom-input" type="text" @bind="userName" placeholder="Tên đăng nhập">
+        <i class="fa-solid fa-user"></i>
+
+        <input class="textbox custom-input" type="text" @bind="passWord" placeholder="Mật khẩu">
+
+        <input class="textbox custom-input" type="text" placeholder="Xác nhận mật khẩu">
+
+    <select class="textbox custom-input" @bind="profileName">
+        @foreach (string name in profiles)
+        {
+            <option>@name</option>
+        }
+    </select>
+
+
+        <button @onclick="handleCreateUser" type="submit" class="nut-dang-nhap">Tạo tài khoản</button>
+
+        <div class="text-dang-ky-thanh-vien">
+            <a href="/Home">Trở về</a>
+        </div>
+        
+        <div class="duoiphai"></div>
+
+    <div class="duoiphai"></div>
+
+</div>
+
+<div class="moi giua"></div>
+<div class="moi trai"></div>
+
+<div class="thanhlong"></div>
+<div class="thanhlong2"></div>
+
+
+
+
+<img class="nho" src="./img/decor-7-DjmEjkAr.png" alt="">
+<img class="nho giuan" src="./img/decor-7-DjmEjkAr.png" alt="">
+
+<img class="kich-thuoc" src="./img/duoi.png" alt="">
+
+
+
+@code {
+    private List<string> profiles = new List<string>();
+    private string userName { get; set; }
+    private string passWord { get; set; }
+    private string profileName { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        profiles = await profileService.getAllProfileName();
+    }
+
+    private async Task handleCreateUser()
+    {
+        if(await profileService.CreateUser(userName, passWord, profileName))
+        {
+            await iJsRuntime.InvokeVoidAsync("alert", "Tạo user thành công!");
+            navigation.NavigateTo("/Home");
+        }
+        else
+        {
+            await iJsRuntime.InvokeVoidAsync("alert", "Lỗi tạo mới người dùng! Tên người dùng phải là không dấu");
+        }
+    }
+}

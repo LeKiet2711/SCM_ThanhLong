@@ -4,6 +4,10 @@
 @inject IToastService ToastService
 @inject Users user
 
+@inject NavigationManager nav
+@inject IJSRuntime iJSRuntime
+
+
 <style>
     .modal {
         background-color: rgba(0, 0, 0, 0.5);
@@ -18,14 +22,40 @@ else
 {
     <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
         <GridColumns>
-            <GridColumn Field="@nameof(Profile.ProfileName)" Title="Profile Name" Width="100px" />
+            <GridColumn Field="@nameof(Profile.ProfileName)" Title="Profile Name" Width="100px" /> @*@onclick="@(()=>updateProfile(Profile.ProfileName))"*@
             <GridColumn Field="@nameof(Profile.ResourceName)" Title="Resource Name" Width="100px" />
             <GridColumn Field="@nameof(Profile.ResourceType)" Title="Resource Type" Width="100px" />
             <GridColumn Field="@nameof(Profile.Limit)" Title="Limit" Width="100px" />
             <GridColumn Field="@nameof(Profile.Common)" Title="Common" Width="100px" />
+
+      
+
+
+                <GridCommandColumn Title="Cập nhật" Width="100px">
+                    <GridCommandButton  OnClick="() => UpdateProfile((context as Profile))">
+                        <span class="oi oi-pencil"></span> Cập nhật
+                    </GridCommandButton>
+                </GridCommandColumn>
+
+            <GridCommandColumn Title="Xóa" Width="100px">
+                <GridCommandButton  OnClick="() => DropProfile((context as Profile))">
+                    <span class="oi oi-pencil"></span> Xóa
+                </GridCommandButton>
+            </GridCommandColumn>
+                
+
         </GridColumns>
     </TelerikGrid>
+
+    <button @onclick="themProfile">Thêm Profile</button>
+    <button @onclick="assignProfile">Gán Profile cho user</button>
+    
+     @* <button @onclick="@(()=>updateProfile("C##THUNGHIEM"))">Cập nhật Profile</button> *@
+   @* <button @onclick="updateProfile">Tạo mới User</button>
+    <button @onclick="updateProfile">Cập nhật User</button> *@
+    
 }
+
 
 
 
@@ -36,7 +66,43 @@ else
     {
         user.username = "sys";
         user.password = "sys";
-        dataList = await profile_Service.GetAllProfiles();
+        dataList = await profile_Service.GetAllProfilesSP();
     }
 
+    protected void themProfile()
+    {
+        nav.NavigateTo("themprofile");
+    }
+
+    protected void assignProfile()
+    {
+        nav.NavigateTo("assignprofile");
+    }
+
+    // protected void updateProfile()
+    // {
+    //     nav.NavigateTo("capnhatprofile");
+    // }
+
+    protected void UpdateProfile(Profile profileName)
+    {
+        //Truyền chuỗi với các ký tự đặc biệt
+        string name = profileName.ProfileName;
+         string encodedData = Uri.EscapeDataString(profileName.ProfileName);
+        nav.NavigateTo($"/capnhatprofile?data={encodedData}");
+    }
+
+    protected async void DropProfile(Profile profileName)
+    {
+        bool result = await profile_Service.DropProfile(profileName.ProfileName);
+        if(result)
+        {
+            await iJSRuntime.InvokeVoidAsync("alert", "Xóa thành công");
+            dataList = await profile_Service.GetAllProfilesSP();
+        }
+        else
+        {
+            await iJSRuntime.InvokeVoidAsync("alert", "Xóa thất bại hoặc profile chưa tồn tại!!!");
+        }
+    }
 }

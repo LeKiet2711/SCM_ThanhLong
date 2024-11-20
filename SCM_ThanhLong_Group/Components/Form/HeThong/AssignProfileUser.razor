@@ -1,0 +1,55 @@
+﻿@page "/assignprofile"
+@rendermode InteractiveServer
+@inject Profile_Service profileService
+@inject IJSRuntime iJSRuntime
+@inject Users_Service userService
+
+<h3>Đặt profile cho người dùng</h3>
+
+<select @bind="userName">
+    @foreach (string name in users)
+    {
+        <option>@name</option>
+    }
+</select>
+
+<select @bind="profileName">
+    @foreach (string pro in profiles)
+    {
+        <option>@pro</option>
+    }
+</select>
+
+
+<button @onclick="assignProfileForUser">Gán profile</button>
+
+@code {
+    private List<string> users = new List<string>();
+    private List<string> profiles = new List<string>();
+    private string userName { get; set; }
+    private string profileName { get; set; }
+
+    private string kq = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var currentUserName = await userService.GetCurrentUserName();
+        users = await profileService.getAllUser();
+        profiles = await profileService.getAllProfileName();
+    }
+
+    private async void assignProfileForUser()
+    {
+        if (await profileService.AssignProfileForUser(userName, profileName))
+        {
+            // kq = "Thành công!";
+            await iJSRuntime.InvokeVoidAsync("alert", $"Gán profile: {profileName} cho user: {userName} thành công!!!");
+        }
+        else
+        {
+            await iJSRuntime.InvokeVoidAsync("alert", $"Lỗi khi gán profile cho user!!! Vui lòng chọn user và profile trước khi gán");
+        }
+    }
+
+
+}

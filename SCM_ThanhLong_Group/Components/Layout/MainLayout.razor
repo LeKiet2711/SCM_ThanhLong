@@ -3,6 +3,7 @@
 @using Blazored.Toast.Configuration
 @inject NavigationManager Navigation
 @inject SCM_ThanhLong_Group.Service.Users_Service UserService
+@inject Profile_Service profileService
 
 <BlazoredToasts Position="ToastPosition.BottomRight"
                 Timeout="3"
@@ -57,6 +58,8 @@
 
     private async Task HandleLogout()
     {
+        string userName = UserService.currentUserName;
+        await profileService.killSession(userName);
         await UserService.Logout();
         Navigation.NavigateTo("/");
         StateHasChanged();
