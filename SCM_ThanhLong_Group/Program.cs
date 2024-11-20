@@ -29,7 +29,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddBlazoredToast();
-
+builder.Services.AddScoped<VerificationService>();
 builder.Services.AddSingleton<ConnectionStringManager>();
 builder.Services.AddScoped<OracleDbConnection>();
 builder.Services.AddControllers();
@@ -47,6 +47,7 @@ builder.Services.AddScoped<ChiTietPhieuNhap_Service>();
 builder.Services.AddScoped<ChiTietPhieuXuat_Service>();
 builder.Services.AddScoped<Profile_Service>();
 builder.Services.AddScoped<LoThanhLong_Service>();
+
 
 builder.Services.AddScoped<NhomQuyen_Service>();
 

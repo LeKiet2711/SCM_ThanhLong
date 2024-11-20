@@ -52,7 +52,7 @@ namespace SCM_ThanhLong_Group.Service
                         var oracleDecimal = (Oracle.ManagedDataAccess.Types.OracleDecimal)outputParameter.Value;
                         int result = oracleDecimal.ToInt32(); // Chuyển đổi sang int
                         isValid = result == 1;
-                        Console.WriteLine($"Kết quả kiểm tra: {result}");
+                        Console.WriteLine($"Kết quả kiểm tra KHOA: {result}");
                     }
                 }
 
@@ -64,5 +64,6 @@ namespace SCM_ThanhLong_Group.Service
                 return false;
             }
         }
+      
     }
 }
