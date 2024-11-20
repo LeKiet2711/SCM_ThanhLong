@@ -81,7 +81,7 @@ else
                         <ValidationMessage For="@(() => phieuXuat.SoPhieuXuat)" />
                     </div>
                     <div class="form-group">
-                        <label for="NgayXuatKho" class="control-label"><b>Ngày nhập kho: </b></label>
+                        <label for="NgayXuatKho" class="control-label"><b>Ngày xuất kho: </b></label>
                         <InputDate class="form-control" @bind-Value="@phieuXuat.NgayXuat" format="dd/MM/yyyy" />
                         <ValidationMessage For="@(()=>phieuXuat.NgayXuat)" />
                     </div>
@@ -123,7 +123,7 @@ else
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background:#2f8f3a; color:#dedcd8">
-                <h5 class="modal-title"><b>Sửa phiếu nhập</b></h5>
+                <h5 class="modal-title"><b>Sửa phiếu xuất</b></h5>
                 <button type="button" class="close" @onclick="CloseEditModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -132,12 +132,12 @@ else
                 <EditForm Model="@phieuXuat" OnValidSubmit="updatePhieuXuat">
                     <DataAnnotationsValidator />
                     <div class="form-group">
-                        <label for="SoPhieuXuat" class="control-label"><b>Số phiếu nhập: </b></label>
+                        <label for="SoPhieuXuat" class="control-label"><b>Số phiếu xuất: </b></label>
                         <InputText class="form-control" @bind-Value=@phieuXuat.SoPhieuXuat />
                         <ValidationMessage For="@(() => phieuXuat.SoPhieuXuat)" />
                     </div>
                     <div class="form-group">
-                        <label for="NgayXuatKho" class="control-label"><b>Ngày nhập kho: </b></label>
+                        <label for="NgayXuatKho" class="control-label"><b>Ngày xuất kho: </b></label>
                         <InputDate class="form-control" @bind-Value="@phieuXuat.NgayXuat" format="dd/MM/yyyy" />
                         <ValidationMessage For="@(()=>phieuXuat.NgayXuat)" />
                     </div>

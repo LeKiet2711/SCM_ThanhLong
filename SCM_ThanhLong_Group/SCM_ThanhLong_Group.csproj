@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Key\**" />
+    <Content Remove="wwwroot\Key\**" />
+    <EmbeddedResource Remove="wwwroot\Key\**" />
+    <None Remove="wwwroot\Key\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Reports\ReportPhieuNhap_1.trdp" />
   </ItemGroup>
 
@@ -31,6 +38,9 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="wwwroot\Invoices\" />
+    <Folder Include="wwwroot\PrivateKey\" />
+    <Folder Include="wwwroot\SignedInvoices\" />
   </ItemGroup>
 
 </Project>

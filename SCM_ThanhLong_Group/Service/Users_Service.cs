@@ -1,4 +1,5 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿
+using Oracle.ManagedDataAccess.Client;
 using SCM_ThanhLong_Group.Components.Connection;
 using SCM_ThanhLong_Group.Model;
 using System.Data;
@@ -26,8 +27,8 @@ namespace SCM_ThanhLong_Group.Service
             {
                 return false; 
             }
-            //string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
-            string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/chkb;";
+            string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
+            //string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/chkb;";
             if(string.Compare(username,"sys", true)==0)
             {
                 connectionString += "DBA Privilege=SYSDBA;";

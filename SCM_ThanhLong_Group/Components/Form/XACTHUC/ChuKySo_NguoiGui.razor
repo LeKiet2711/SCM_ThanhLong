@@ -1,0 +1,91 @@
+﻿@page "/nguoiguichukyso"
+@using SCM_ThanhLong_Group.Service
+@inject IToastService toastService
+@inject NavigationManager Navigation
+
+<h3>Ký số hóa đơn</h3>
+
+<div class="form-group">
+    <button class="btn btn-primary" @onclick="GenerateKeys">Tạo cặp khóa RSA</button>
+    <p>Public Key: @publicKey</p>
+    <p>Private Key: @privateKey</p>
+</div>
+
+<div class="form-group">
+    <InputFile OnChange="UploadFile" />
+    <p>@uploadedFileName</p>
+</div>
+
+<div class="form-group">
+    <button class="btn btn-success" @onclick="SignInvoice" disabled="@(uploadedFile == null)">Ký số</button>
+</div>
+
+@if (!string.IsNullOrEmpty(signedFilePath))
+{
+    <div class="form-group">
+        <a class="btn btn-info" href="@signedFilePath" download>Download Hóa đơn đã ký</a>
+    </div>
+}
+
+
+@code {
+    private RSA_ChuKySo_Service rsaService = new RSA_ChuKySo_Service();
+    private string publicKey;
+    private string privateKey;
+    private IBrowserFile uploadedFile;
+    private string uploadedFileName;
+    private string signedFilePath;
+
+    // Tạo cặp khóa RSA
+    private void GenerateKeys()
+    {
+        var keys = rsaService.GenerateKeys();
+        publicKey = keys.PublicKey;
+        privateKey = keys.PrivateKey;
+        toastService.ShowSuccess("Cặp khóa RSA đã được tạo thành công!");
+    }
+
+    // Xử lý khi người dùng tải file PDF lên
+    private async Task UploadFile(InputFileChangeEventArgs e)
+    {
+        uploadedFile = e.File;
+        uploadedFileName = uploadedFile.Name;
+        toastService.ShowInfo($"File {uploadedFileName} đã được tải lên.");
+    }
+
+    // Thực hiện ký số
+    private async Task SignInvoice()
+    {
+        if (uploadedFile == null)
+        {
+            toastService.ShowError("Vui lòng tải lên file hóa đơn trước!");
+            return;
+        }
+
+        try
+        {
+            // Đọc nội dung file PDF
+            using var memoryStream = new MemoryStream();
+            await uploadedFile.OpenReadStream().CopyToAsync(memoryStream);
+            var fileContent = memoryStream.ToArray();
+
+            // Tạo giá trị hash từ file PDF
+            var hash = rsaService.ComputeHash(fileContent);
+
+            // Mã hóa hash bằng khóa bí mật
+            var signature = rsaService.SignData(hash, privateKey);
+
+            // Lưu file đã ký
+            var outputFilePath = Path.Combine("wwwroot", "SignedInvoices", $"{uploadedFileName}_Signed.pdf");
+            Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+            rsaService.SaveSignedFile(fileContent, signature, outputFilePath);
+
+            signedFilePath = $"/SignedInvoices/{uploadedFileName}_Signed.pdf";
+            toastService.ShowSuccess("Hóa đơn đã được ký thành công!");
+        }
+        catch (Exception ex)
+        {
+            toastService.ShowError($"Lỗi khi ký số: {ex.Message}");
+        }
+    }
+}
