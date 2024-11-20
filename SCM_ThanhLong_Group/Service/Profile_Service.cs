@@ -74,23 +74,7 @@ namespace SCM_ThanhLong_Group.Service
                     //Thiếu loại hành động cũng lỗi
                     command.CommandType = CommandType.StoredProcedure;
 
-                    //Cách 1 (ngắn gọn)
                     command.Parameters.Add("tableProfile", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-
-
-                    //Cách 2
-                    //OracleParameter outPara = new OracleParameter();
-                    //outPara.ParameterName = "tableProfile";
-                    //outPara.OracleDbType = OracleDbType.RefCursor;
-                    //outPara.Direction = ParameterDirection.Output;
-                    //command.Parameters.Add(outPara);
-                    //==hết cách 2
-
-                    //cách 3
-                    //OracleParameter parameter = new OracleParameter("tableProfile", OracleDbType.RefCursor);
-                    //parameter.Direction = ParameterDirection.Output;
-                    //command.Parameters.Add(parameter);
-                    //=== hết cách 3
 
                     OracleDataReader read = command.ExecuteReader();
                     if (read.HasRows)
