@@ -6,41 +6,40 @@ using System.Data;
 
 namespace SCM_ThanhLong_Group.Service
 {
-    public class PhieuNhap_Service
+    public class PhieuXuat_Service
     {
         private readonly OracleDbConnection _dbConnection;
         private readonly Users _user;
 
-        public PhieuNhap_Service(OracleDbConnection dbConnection, Users user)
+        public PhieuXuat_Service(OracleDbConnection dbConnection, Users user)
         {
             _dbConnection = dbConnection;
             _user = user;
         }
 
-        public async Task<List<PhieuNhap>> getAllData(int khoId, string userId)
+        public async Task<List<PhieuXuat>> getAllData(int? maKho = null)
         {
-            List<PhieuNhap> dataList = new List<PhieuNhap>();
+            List<PhieuXuat> dataList = new List<PhieuXuat>();
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.GETALLPHIEUNHAP", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllPhieuXuat", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_khoId", OracleDbType.Int32).Value = khoId;
-                    cmd.Parameters.Add("p_userId", OracleDbType.Varchar2).Value = userId;
+                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Value = maKho.HasValue ? (object)maKho.Value : DBNull.Value;
 
                     using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
-                            var data = new PhieuNhap
+                            var data = new PhieuXuat
                             {
                                 Auto_ID = int.Parse(reader["AUTO_ID"].ToString()),
-                                SoPhieuNhap = reader["SOPHIEUNHAP"].ToString(),
+                                SoPhieuXuat = reader["SOPHIEUXUAT"].ToString(),
                                 KhoID = int.Parse(reader["MAKHO"].ToString()),
                                 TenKho = reader["TENKHO"].ToString(),
-                                NgayNhap = DateTime.Parse(reader["NGAYNHAP"].ToString()),
+                                NgayXuat = DateTime.Parse(reader["NGAYXUAT"].ToString()),
                             };
                             dataList.Add(data);
                         }
@@ -49,7 +48,6 @@ namespace SCM_ThanhLong_Group.Service
             }
             return dataList;
         }
-
 
 
         public async Task<List<HoTrong>> getHoTrongData()
@@ -116,43 +114,6 @@ namespace SCM_ThanhLong_Group.Service
             return dataList;
         }
 
-        public PhieuNhap getDataByID(int id)
-        {
-            PhieuNhap data = new PhieuNhap();
-
-            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
-            {
-                conn.Open();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.GetPhieuNhapByID", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    // Thêm tham số đầu vào
-                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = id;
-
-                    // Thêm các tham số đầu ra
-                    cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_TenHoTrong", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_NgayNhap", OracleDbType.Date).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_MaHoTrong", OracleDbType.Int32).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Direction = ParameterDirection.Output;
-
-                    cmd.ExecuteNonQuery();
-
-                    data.Auto_ID = id;
-                    data.SoPhieuNhap = cmd.Parameters["p_SoPhieuNhap"].Value?.ToString() ?? string.Empty;
-                    data.NgayNhap = DateTime.Parse(cmd.Parameters["p_NgayNhap"].Value?.ToString() ?? string.Empty);
-
-                    if (cmd.Parameters["p_NgayNhap"].Value != DBNull.Value)
-                    {
-                        Oracle.ManagedDataAccess.Types.OracleDate oracleDate = (Oracle.ManagedDataAccess.Types.OracleDate)cmd.Parameters["p_NgayNhap"].Value;
-                        data.NgayNhap = oracleDate.Value;
-                    }
-                }
-            }
-            return data;
-        }
-
         public async Task<List<LoThanhLong>> getLoThanhLongData()
         {
             List<LoThanhLong> loThanhLongList = new List<LoThanhLong>();
@@ -189,96 +150,122 @@ namespace SCM_ThanhLong_Group.Service
 
             return loThanhLongList;
         }
-
-        public async Task<int> addData(PhieuNhap phieuNhap)
+        public async Task<int> addData(PhieuXuat phieuXuat)
         {
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.AddPhieuNhap", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.ADDPHIEUXUAT", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.SoPhieuNhap;
-                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Value = phieuNhap.KhoID;
-                    cmd.Parameters.Add("p_NgayNhap", OracleDbType.Date).Value = phieuNhap.NgayNhap;
 
+                    // Thêm tham số vào stored procedure
+                    cmd.Parameters.Add("p_SoPhieuXuat", OracleDbType.Varchar2).Value = phieuXuat.SoPhieuXuat;
+                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Value = phieuXuat.KhoID;
+                    cmd.Parameters.Add("p_NgayXuat", OracleDbType.Date).Value = phieuXuat.NgayXuat;
                     cmd.Parameters.Add("p_TongTien", OracleDbType.Decimal).Value = 0;
+
+                    // Thêm tham số đầu ra
                     var autoIDParam = new OracleParameter("p_AUTO_ID", OracleDbType.Decimal)
                     {
                         Direction = ParameterDirection.Output
                     };
                     cmd.Parameters.Add(autoIDParam);
+
                     await cmd.ExecuteNonQueryAsync();
 
-                    // Chuyển đổi OracleDecimal sang int
+                    // Kiểm tra giá trị trả về
                     OracleDecimal autoIDDecimal = (OracleDecimal)autoIDParam.Value;
-                    return autoIDDecimal.ToInt32();  // Chuyển đổi OracleDecimal thành int
+                    int autoID = autoIDDecimal.ToInt32();  // Chuyển đổi OracleDecimal sang int
+                    return autoID;
                 }
             }
         }
 
-
-
-        public async Task updateData(PhieuNhap phieuNhap)
+        public async Task updateData(PhieuXuat phieuXuat)
         {
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.UPDATEPHIEUNHAP", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.UPDATEPHIEUXUAT", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = phieuNhap.Auto_ID;
-                    cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Value = phieuNhap.SoPhieuNhap;
-                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32, 50).Value = phieuNhap.KhoID;
-                    cmd.Parameters.Add("p_NgayNhap", OracleDbType.Date).Value = phieuNhap.NgayNhap;
+
+                    // Thêm tham số vào stored procedure
+                    cmd.Parameters.Add("p_AUTO_ID", OracleDbType.Int32).Value = phieuXuat.Auto_ID;
+                    cmd.Parameters.Add("p_SoPhieuXuat", OracleDbType.Varchar2).Value = phieuXuat.SoPhieuXuat;
+                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Value = phieuXuat.KhoID;
+                    cmd.Parameters.Add("p_NgayXuat", OracleDbType.Date).Value = phieuXuat.NgayXuat;
+
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
         }
 
-        public async Task deleteData(string id)
+        public async Task deleteData(int autoID)
         {
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.DELETEPHIEUNHAP", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.DELETEPHIEUXUAT", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = int.Parse(id);
+                    cmd.Parameters.Add("p_AUTO_ID", OracleDbType.Int32).Value = autoID;
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
         }
 
-        public async Task<bool> isSoPhieuNhapExist(PhieuNhap phieuNhap, List<PhieuNhap> lstData, string ma) 
+        public async Task<bool> isSoPhieuXuatExist(PhieuXuat phieuXuat, List<PhieuXuat> lstData, string ma)
         {
-            if (lstData.Any(k => k.SoPhieuNhap == phieuNhap.SoPhieuNhap && phieuNhap.SoPhieuNhap != ma))
+            if (lstData.Any(k => k.SoPhieuXuat == phieuXuat.SoPhieuXuat && phieuXuat.SoPhieuXuat != ma))
             {
                 return true;
             }
             return false;
         }
-         
-        public async Task<string> GetSoPhieuNhapById(int nhapKhoId)
+
+        public async Task<string> GetSoPhieuXuatByID(int xuatkhoid)
         {
-            string soPhieuNhap = string.Empty;
+            string soPhieuXuat = "";
+
+            using(OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+            {
+                await conn.OpenAsync();
+                using(OracleCommand cmd=new OracleCommand("C##Admin.GetSoPhieuXuatByID", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = xuatkhoid;
+                    cmd.Parameters.Add("p_SoPhieuXuat", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
+
+                    await cmd.ExecuteNonQueryAsync();
+
+                    soPhieuXuat = cmd.Parameters["p_SoPhieuXuat"].Value?.ToString() ?? string.Empty;
+                }
+            }
+            return soPhieuXuat;
+        }
+
+        public async Task<double> GetSoKgByID(int xuatKhoId)
+        {
+            double soKG = 0;
 
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.GetPhieuNhapByID", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetSoKgByID", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = nhapKhoId;
-                    cmd.Parameters.Add("p_SoPhieuNhap", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = xuatKhoId;
+                    cmd.Parameters.Add("p_SLXuat", OracleDbType.Int32).Direction = ParameterDirection.Output;
 
                     await cmd.ExecuteNonQueryAsync();
 
-                    soPhieuNhap = cmd.Parameters["p_SoPhieuNhap"].Value?.ToString() ?? string.Empty;
+                    soKG = Convert.ToDouble(cmd.Parameters["p_SLXuat"].Value.ToString());
                 }
             }
 
-            return soPhieuNhap;
+            return soKG;
         }
 
     }

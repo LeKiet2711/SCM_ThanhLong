@@ -11,6 +11,7 @@ using Telerik.Reporting.Services;
 using Telerik.Reporting.Cache.File;
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages().AddNewtonsoftJson();
 builder.Services.AddControllers();
@@ -27,21 +28,27 @@ builder.Services.TryAddSingleton<IReportServiceConfiguration>(sp => new ReportSe
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddBlazoredToast();
+
 builder.Services.AddSingleton<ConnectionStringManager>();
 builder.Services.AddScoped<OracleDbConnection>();
 builder.Services.AddControllers();
-
+builder.Services.AddScoped<KeyValidationService>();
 builder.Services.AddScoped<Users_Service>();
 builder.Services.AddScoped<Users>();
 builder.Services.AddScoped<ChucNang_Service>();
 builder.Services.AddScoped<KhuVucTrong_Service>();
-builder.Services.AddScoped<LoaiThanhLong_Service>();
 builder.Services.AddScoped<HoTrong_Service>();
 builder.Services.AddScoped<Kho_Service>();
+builder.Services.AddScoped<KhoUser_Service>();
 builder.Services.AddScoped<PhieuNhap_Service>();
+builder.Services.AddScoped<PhieuXuat_Service>();
 builder.Services.AddScoped<ChiTietPhieuNhap_Service>();
+builder.Services.AddScoped<ChiTietPhieuXuat_Service>();
 builder.Services.AddScoped<Profile_Service>();
+builder.Services.AddScoped<LoThanhLong_Service>();
 
+builder.Services.AddScoped<NhomQuyen_Service>();
 
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredToast();
@@ -52,9 +59,11 @@ app.UseRouting();
 app.UseAntiforgery();
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllers();
-    // ... 
+	endpoints.MapControllers();
+	// ... 
 });
+app.UseAntiforgery();
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -67,13 +76,21 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapControllers(); // Use top-level route registration
 
 app.Run();
 
 static string GetReportsDir(IServiceProvider sp)
 {
-    return Path.Combine(sp.GetService<IWebHostEnvironment>().ContentRootPath, "Reports");
+    var env = sp.GetService<IWebHostEnvironment>();
+    if (env == null)
+    {
+        throw new InvalidOperationException("IWebHostEnvironment is not available.");
+    }
+    return Path.Combine(env.ContentRootPath, "Reports");
 }

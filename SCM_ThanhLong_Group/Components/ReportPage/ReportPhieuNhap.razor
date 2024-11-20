@@ -1,4 +1,5 @@
 ﻿@page "/reportnhapkho/{NHAPKHO_ID}"
+@inject PhieuNhap_Service phieuNhapService
 
 <PageTitle>Report Viewer</PageTitle>
 
@@ -16,6 +17,14 @@
               ServiceType="@ReportViewerServiceType.REST"
               Height="900px"
               Width="100%">
+       <ReportViewerSettings>
+        <SendEmailDialogSettings
+            From="lgklgk2711@gmail.com"
+            Cc=""
+            Subject="Hóa đơn"
+            Body="@EmailBody">
+        </SendEmailDialogSettings>
+    </ReportViewerSettings>
 </ReportViewer>
 
 @code {
@@ -24,9 +33,13 @@
     public bool ParametersAreaVisible { get; set; }
     public bool DocumentMapVisible { get; set; }
     public double Scale { get; set; } = 1.0;
+    
+    public DateTime Date;
 
     [Parameter]
     public string NHAPKHO_ID{ get; set; }
+
+    public string EmailBody { get; set; }
 
     public ReportSourceOptions ReportSource { get; set; } = new ReportSourceOptions("ReportPhieuNhap_1.trdp", new Dictionary<string, object>
     {
@@ -35,6 +48,44 @@
 
     protected override void OnInitialized()
     {
+        Date = DateTime.Now;
         ReportSource.Parameters.Add("NHAPKHO_ID", NHAPKHO_ID);
+
+        EmailBody = $"Hóa đơn phiếu nhập {phieuNhapService.GetSoPhieuNhapById(Int32.Parse(NHAPKHO_ID))} ngày {Date.ToString("dd/MM/yyyy")}";
+    }
+
+    static string chuyenSoSangChu(double number)
+    {
+        if (number == 0)
+            return "Không";
+
+        string[] donVi = { "", "mươi", "trăm", "nghìn", "triệu", "tỷ" };
+        string[] so = { "không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
+
+        string strNumber = number.ToString();
+        string result = "";
+
+        for (int i = 0; i < strNumber.Length; i++)
+        {
+            int num = int.Parse(strNumber[i].ToString());
+            int pos = strNumber.Length - i - 1;
+
+            if (num != 0)
+            {
+                if (num == 1 && (pos % 3 == 1 || pos == 0))
+                    result += "mười ";
+                else if (num == 5 && pos == 0)
+                    result += "lăm ";
+                else
+                    result += so[num] + " ";
+            }
+
+            if (pos % 3 != 0)
+                result += donVi[pos % 3] + " ";
+            else if (pos > 0)
+                result += donVi[3 + pos / 3] + " ";
+        }
+
+        return result.Trim();
     }
 }

@@ -1,17 +1,21 @@
 ﻿@page "/phanquyenkho"
 @using SCM_ThanhLong_Group.Model
 @inject Kho_Service khoService
+@inject KhoUser_Service khoUserService
 @inject Users_Service userService
 @inject IToastService toastService
+@inject NavigationManager Navigation
+@inject Users user
 
 <TelerikComboBox Data="@lstKho"
-                 @bind-Value="@khoId"
+                 Value="@khoId"
                  Filterable="true"
                  FilterOperator="@StringFilterOperator.Contains"
                  ValueField="Auto_ID"
                  TextField="TenKho"
                  Placeholder="Chọn kho"
-                 Width="340px">
+                 Width="340px"
+                 ValueChanged="@(async (int args) => await ValueChanged(args))">
     <ComboBoxSettings>
         <ComboBoxPopupSettings Height="250px" MaxHeight="300px" MinHeight="75px" />
     </ComboBoxSettings>
@@ -31,13 +35,13 @@
                 </button>
             </div>
             <div class="modal-body" style="background:#e5d2b8; color:brown">
-                <EditForm Model="@user" OnValidSubmit="AddUserToKho">
+                <EditForm Model="@userGet" OnValidSubmit="AddUserToKho">
                     <DataAnnotationsValidator />
                     <div class="form-group">
                         <label for="MaDangNhap" class="control-label"><b>Mã đăng nhập: </b></label>
-                        <InputSelect class="" @bind-Value="@user.username">
+                        <InputSelect class="" @bind-Value="@userGet.username">
                             <option value="">-- Chọn user --</option>
-                            @foreach (var item in lstUser)
+                            @foreach (var item in filteredUsers)
                             {
                                 <option value="@item.username">@item.username</option>
                             }
@@ -53,17 +57,24 @@
     </div>
 </div>
 
-<TelerikGrid Data="@lstUser" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
+<TelerikGrid Data="@lstKhoUser" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
     <GridColumns>
-        <GridColumn Field="name" Title="Mã đăng nhập"/>
+        <GridColumn Field="UserId" Title="Mã đăng nhập" />
+        <GridColumn>
+            <Template>
+                <button class="btn btn-danger" @onclick="@(async () => await DeleteUserFromKho((context as KhoUser).UserId))">Xóa</button>
+            </Template>
+        </GridColumn>
     </GridColumns>
 </TelerikGrid>
 
 @code {
-    List<Kho> lstKho=new List<Kho>();
+    List<Kho> lstKho = new List<Kho>();
+    List<KhoUser> lstKhoUser = new List<KhoUser>();
     private List<Users> lstUser = new List<Users>();
-    Users user =new Users();
+    private List<Users> filteredUsers = new List<Users>();
     private int khoId;
+    Users userGet = new Users();
 
     private string addModalClass = "";
     private string addModalDisplayStyle = "display:none";
@@ -72,12 +83,42 @@
     private string deleteModalClass = "";
     private string deleteModalDisplayStyle = "display:none";
 
+    private string username;
+    private string password;
+
     protected override async Task OnInitializedAsync()
     {
-        lstKho = await khoService.getAllData();
-        lstUser = await userService.getAllData();
+        try
+        {
+            user.username = "C##" + await userService.GetCurrentUserName();
+            user.password = await userService.GetCurrentPassWord();
+            lstKho = await khoService.getAllData();
+            lstUser = await userService.getAllData();
+        }
+        catch
+        {
+            Navigation.NavigateTo("/Error");
+        }
     }
-    
+
+    private async Task ValueChanged(int args)
+    {
+        khoId = args;
+        await LoadData(khoId);
+        await FilterUsers();
+    }
+
+    private async Task LoadData(int maKho)
+    {
+        lstKhoUser = await khoUserService.getAllData(khoId);
+    }
+
+    private async Task FilterUsers()
+    {
+        var assignedUsers = await khoUserService.GetUsersByKhoId(khoId);
+        filteredUsers = lstUser.Where(u => !assignedUsers.Contains(u.username)).ToList();
+    }
+
     private void OpenAddModal()
     {
         addModalClass = "show";
@@ -93,7 +134,32 @@
 
     private async Task AddUserToKho()
     {
-        
-        
+        if (khoId > 0 && !string.IsNullOrEmpty(userGet.username))
+        {
+            await khoUserService.AddUserToKho(khoId, userGet.username);
+            await LoadData(khoId);
+            await FilterUsers();
+            CloseAddModal();
+            toastService.ShowSuccess("Thành công thêm user vào Kho");
+        }
+        else
+        {
+            toastService.ShowError("Vui lòng chọn kho muốn cấp quyền cho user !");
+        }
+    }
+
+    private async Task DeleteUserFromKho(string userId)
+    {
+        if (khoId > 0 && !string.IsNullOrEmpty(userId))
+        {
+            await khoUserService.DeleteUserFromKho(khoId, userId);
+            await LoadData(khoId);
+            await FilterUsers();
+            toastService.ShowSuccess("Thành công xóa user khỏi Kho");
+        }
+        else
+        {
+            toastService.ShowError("Vui lòng chọn kho và user muốn xóa !");
+        }
     }
 }

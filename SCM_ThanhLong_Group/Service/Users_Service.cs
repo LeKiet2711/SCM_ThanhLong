@@ -97,7 +97,6 @@ namespace SCM_ThanhLong_Group.Service
             //string connectionString = $"User Id=C##{username};Password={oldPassword};Data Source=localhost:1521/orcl1;";
             string connectionString = $"User Id={username};Password={oldPassword};Data Source=localhost:1521/chkb;";
 
-
             using (var conn = new OracleConnection(connectionString))
             {
                 try
@@ -124,7 +123,7 @@ namespace SCM_ThanhLong_Group.Service
             using (OracleConnection conn = _dbConnection.GetConnection("C##Admin","oracle"))
             {
                 conn.Open();
-                using (OracleCommand cmd = new OracleCommand("SELECT * FROM SYS.ALL_USERS", conn))
+                using (OracleCommand cmd = new OracleCommand("SELECT * FROM SYS.ALL_USERS WHERE USERNAME LIKE 'C##%'", conn))
                 {
                     cmd.CommandType = CommandType.Text;
 
@@ -163,6 +162,45 @@ namespace SCM_ThanhLong_Group.Service
             currentUserName = null;
             currentPassWord = null;
         }
+
+        public async Task ExecuteSqlCommand(string sqlCommand)
+        {
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin", "oracle"))
+            {
+                conn.Open();
+                using (OracleCommand cmd = new OracleCommand(sqlCommand, conn))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        public async Task<List<TablePermission>> GetUserPermissions(string username)
+        {
+            List<TablePermission> permissions = new List<TablePermission>();
+            using (OracleConnection conn = _dbConnection.GetConnection("C##Admin", "oracle"))
+            {
+                conn.Open();
+                string query = $"SELECT TABLE_NAME FROM SYS.USER_TAB_PRIVS WHERE GRANTEE = '{username}' AND PRIVILEGE = 'EXECUTE'";
+                using (OracleCommand cmd = new OracleCommand(query, conn))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            string procedureName = reader["TABLE_NAME"].ToString();
+                            var tablePermission = new TablePermission { TableName = procedureName };
+                            permissions.Add(tablePermission);
+                        }
+                    }
+                }
+            }
+            return permissions;
+        }
+
+
 
     }
 }

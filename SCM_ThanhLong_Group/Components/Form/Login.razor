@@ -9,6 +9,7 @@
 @inject Profile_Service profileService
 @inject Users_Service userService
 
+
 <link href="mahacss/styledangnhap.css" rel="stylesheet" />
 @* <link href="css/login.css" rel="stylesheet" /> *@
 
@@ -44,7 +45,6 @@
         </div>
 
         <div class="duoiphai"></div>
-     @* </div> *@
 </EditForm> 
 
 
@@ -54,6 +54,7 @@
     <span style="font-size: 40px; font-weight: bold; display: block; text-align: center; width: 100%;">
         Đăng
         nhập
+
     </span>
     <h2 style="text-align: center;">Xin Chào!</h2>
     <input class="textbox custom-input" type="text" placeholder="Vui lòng nhập tên ..."> *@
@@ -68,18 +69,10 @@
 <div class="thanhlong2"></div>
 
 
-<!-- <div class="home_homeMenuItemBorder__FwstZ"><a target="_blank" class="home_homeMenuItem__bJo0f relative"
-        href="/vi/aigenerator"><span class="home_homeMenuIcon__rzXGU"><i class="liblibfont icon-a-AIGenerator_n"
-                style="color: rgb(255, 255, 255); font-size: 16px;"></i></span><span
-            class="home_homeMenuTitle__42ktv overflow-hidden text-ellipsis">Bộ tạo AI</span><span
-            class="home_tool__0wH7Y home_action__yftZm absolute right-[1px] top-[1px]"></span></a></div> -->
-
-
 <img class="nho" src="./img/decor-7-DjmEjkAr.png" alt="">
 <img class="nho giuan" src="./img/decor-7-DjmEjkAr.png" alt="">
 
 <img class="kich-thuoc" src="./img/duoi.png" alt="">
-@* <img class="kich-thuoc2" src="./img/cac_trai_thanh_long.png" /> *@
 
 
 @code {
@@ -94,8 +87,8 @@
         {
             Users_Service.currentUserName = loginModel.username;
             Users_Service.currentPassWord = loginModel.password;
-            ToastService.ShowSuccess("Đăng nhập thành công!");
-            Navigation.NavigateTo("/Home");
+            // ToastService.ShowSuccess("Đăng nhập thành công!");
+            Navigation.NavigateTo("/validate-key");
         }
         else
         {

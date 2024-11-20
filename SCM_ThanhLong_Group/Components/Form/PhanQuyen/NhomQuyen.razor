@@ -1,0 +1,45 @@
+﻿@page "/Nhomquyen"
+@inject NhomQuyen_Service nhomQuyenService
+@inject IToastService toastService
+@inject Users_Service Users_Service
+@inject Users user
+
+<h3>NhomQuyen</h3>
+
+<div>
+    <label for="roleName">Role Name:</label>
+    <input type="text" id="roleName" @bind="roleName" />
+    <button @onclick="CreateRole">Create Role</button>
+</div>
+
+@code {
+    private string roleName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user.username = "sys";
+        user.password = "sys";
+    }
+
+    private async Task CreateRole()
+    {
+        if (!string.IsNullOrEmpty(roleName))
+        {
+            try
+            {
+                // Thêm tiền tố "C##" vào tên role theo CDB
+                string validRoleName = $"C##{roleName.ToUpper()}";
+                await nhomQuyenService.CreateRole(validRoleName);
+                toastService.ShowSuccess("Tạo nhóm quyền thành công!");
+            }
+            catch (Exception ex)
+            {
+                toastService.ShowError($"Có lỗi xảy ra khi tạo nhóm quyền: {ex.Message}");
+            }
+        }
+        else
+        {
+            toastService.ShowWarning("Không được bỏ trống nhóm quyền !");
+        }
+    }
+}

@@ -1,0 +1,198 @@
+﻿@page "/validate-key"
+@inject KeyValidationService ValidationService
+@inject NavigationManager NavigationManager
+@* @rendermode InteractiveServer *@
+@inject KeyValidationService ValidationService
+@using SCM_ThanhLong_Group.Components.Layout
+@layout LoginLayout
+@inject IToastService ToastService
+@inject Users_Service Users_Service
+@inject Users user
+@inject NavigationManager NavigationManager
+@inject NavigationManager Navigation
+<link href="css/Xacthuc.css" rel="stylesheet" />
+@* <script src="~/js/slider.js"defer></script> *@
+
+<div class="container">
+    <div class="content-box">
+        @if (IsLocked && LockEndTime.HasValue && LockEndTime.Value > DateTime.Now)
+        {
+            var remainingTime = LockEndTime.Value - DateTime.Now;
+            <p style="color: red;">Tài khoản đang bị khóa. Thử lại sau @($"{remainingTime.Minutes}:{remainingTime.Seconds}")</p>
+        }
+        <h2 class="title">Xác Thực Người Dùng</h2>
+
+        <!-- Form Nhập khóa -->
+        <div class="input-section">
+            <label for="userKey">Nhập khóa:</label>
+            <input type="password" id="userKey" @bind="UserKey" placeholder="Nhập khóa..." class="input-key" disabled="@IsLocked" />
+            <button @onclick="ValidateKey" class="btn-validate" disabled="@IsLocked">Kiểm tra</button>
+            <button @onclick="ForgotKey" class="btn-forgot">Quên khóa</button>
+        </div>
+
+        <!-- Hiển thị thông báo -->
+        @if (!string.IsNullOrEmpty(NotificationMessage))
+        {
+            <div class="notification @(NotificationType)">
+                @NotificationMessage
+            </div>
+        }
+
+        @* <!-- Kết quả hiển thị -->
+        @if (IsEmpty)
+        {
+            <div class="result invalid-key">Không được để trống ô nhập khóa!</div>
+        }
+        @if (IsInvalidLength)
+        {
+            <div class="result invalid-key">Khóa phải đủ 8 ký tự!</div>
+        } *@
+        @if (IsValid.HasValue)
+        {
+            <div class="result" style="color: @(IsValid.Value ? "green" : "red")">
+                @if (IsValid.Value)
+                {
+                    <p>Khóa hợp lệ! Chuyển trang sau: <span>@Countdown</span>s...</p>
+                }
+                else
+                {
+                    <p>Khóa không hợp lệ! Bạn còn @RemainingAttempts lần thử.</p>
+                }
+            </div>
+        }
+
+        <!-- Slider Thanh Long -->
+        <div class=".dragon-fruit-slider">
+            <div class="slider">
+                <div class="slide">
+                    <img src="./images/THANHLONG.jpg" alt="" />
+                </div>
+                <div class="slide">
+                    <img src="./images/THANHLONK.jpg" alt="" />
+                </div>
+                <div class="slide">
+                    <img src="./images/tl.jpg" alt="" />
+                </div>
+            </div>
+            <div class="description">
+                <h3>Trái Thanh Long</h3>
+                <p>Thanh long là một loại trái cây nhiệt đới có hương vị ngọt dịu và nhiều chất dinh dưỡng. Thích hợp để ăn trực tiếp hoặc chế biến thành các món ăn ngon.</p>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+@code {
+    private string UserKey { get; set; } = "";
+    private bool? IsValid { get; set; } = null;
+    private bool IsEmpty { get; set; } = false;
+    private bool IsInvalidLength { get; set; } = false;
+    private int RemainingAttempts { get; set; } = 3;
+    private bool IsLocked { get; set; } = false;
+    private int LockDurationSeconds { get; set; } = 180; // 3 phút
+    private int Countdown { get; set; } = 3;
+    private Timer countdownTimer;
+    private Timer lockTimer;
+
+    private DateTime? LockEndTime { get; set; }
+    private string NotificationMessage { get; set; } = string.Empty;
+    private string NotificationType { get; set; } = string.Empty; // success, error, warning, info
+
+    protected override async Task OnInitializedAsync()
+    {
+        user.username = "C##" + await Users_Service.GetCurrentUserName();
+        user.password = await Users_Service.GetCurrentPassWord();
+    }
+    private async Task ValidateKey()
+    {
+
+        IsEmpty = false;
+        IsValid = await ValidationService.ValidateKey(UserKey);
+        if (IsLocked && LockEndTime.HasValue && LockEndTime.Value > DateTime.Now)
+        {
+            var remainingTime = LockEndTime.Value - DateTime.Now;
+            ToastService.ShowError($"Tài khoản bị khóa! Vui lòng thử lại sau {remainingTime.Minutes}:{remainingTime.Seconds}.");
+            return;
+        }
+
+        // Reset khóa nếu hết thời gian
+        if (IsLocked && LockEndTime.HasValue && LockEndTime.Value <= DateTime.Now)
+        {
+            IsLocked = false;
+            RemainingAttempts = 3;
+        }
+      
+        if (string.IsNullOrWhiteSpace(UserKey))
+        {
+            IsEmpty = true;
+            IsInvalidLength = false;
+            IsValid = null;
+            SetNotification("Không được để trống ô nhập khóa!", "warning");
+            return;
+        }
+
+        if (UserKey.Length != 8)
+        {
+            IsInvalidLength = true;
+            IsEmpty = false;
+            IsValid = null;
+            SetNotification("Khóa phải đủ 8 ký tự!", "warning");
+            return;
+        }
+
+        IsEmpty = false;
+        IsInvalidLength = false;
+        IsValid = await ValidationService.ValidateKey(UserKey);
+
+        if (IsValid.Value)
+        {
+            SetNotification("Khóa hợp lệ! Chuyển trang sau 3 giây...", "success");
+            StartCountdown();
+        }
+        else
+        {
+            RemainingAttempts--;
+            SetNotification($"Khóa không hợp lệ! Bạn còn {RemainingAttempts} lần thử.", "error");
+            if (RemainingAttempts <= 0) LockInputField();
+           
+        }
+    }
+   
+    private async Task StartCountdown()
+    {
+        for (Countdown = 3; Countdown > 0; Countdown--)
+        {
+            await InvokeAsync(StateHasChanged);
+            await Task.Delay(1000);
+        }
+        NavigationManager.NavigateTo("/Home");
+    }
+
+    private async Task LockInputField()
+    {
+        SetNotification("Tài khoản đã bị khóa trong 3 phút. Vui lòng thử lại sau!", "error");
+        IsLocked = true;
+        RemainingAttempts = 0; // Hết lượt thử
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(LockDurationSeconds * 1000); // Tạm khóa trong 3 phút
+        
+        IsLocked = false;
+        RemainingAttempts = 3; // Reset lượt thử
+        await InvokeAsync(StateHasChanged);
+        
+    }
+
+    private void ForgotKey()
+    {
+        SetNotification("Liên hệ quản trị viên để được cấp lại khóa!", "info");
+    }
+
+    private void SetNotification(string message, string type)
+    {
+        NotificationMessage = message;
+        NotificationType = type;
+        StateHasChanged();
+    }
+}

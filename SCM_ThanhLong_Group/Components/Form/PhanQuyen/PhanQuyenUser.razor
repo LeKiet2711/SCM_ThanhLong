@@ -1,64 +1,69 @@
 ﻿@page "/phanquyenuser"
 @using SCM_ThanhLong_Group.Model
 @inject Kho_Service khoService
-@inject Users_Service userService
+@inject Users_Service user_Service
 @inject ChucNang_Service chucNangService
 @inject IToastService toastService
-
+@inject Users user
+@inject NavigationManager NavigationManager
 
 <TelerikComboBox Data="@lstUser"
-                 @bind-Value="@user.username"
+                 Value="@userGet.username"
                  Filterable="true"
                  FilterOperator="@StringFilterOperator.Contains"
-                 ValueField="name"
-                 TextField="name"
+                 ValueField="username"
+                 TextField="username"
                  Placeholder="Chọn user"
-                 Width="340px">
+                 Width="340px"
+                 ValueChanged="@(async (string args)=>await OnUserSelected(args))">
     <ComboBoxSettings>
         <ComboBoxPopupSettings Height="250px" MaxHeight="300px" MinHeight="75px" />
     </ComboBoxSettings>
 </TelerikComboBox>
-    
 
 <div style="overflow-x: auto; white-space: nowrap; margin-top:40px">
     <div style="display: inline-block; width: 900px;margin-right:20px">
-        <TelerikGrid Data="@lstChucNang" Pageable="true" Sortable="true">
-            <GridColumns>
-                <GridColumn Field="MaCN" Title="Mã CN" />
-                <GridColumn Field="TenCN" Title="Tên Chức Năng" />
-                <GridColumn Field="Xem" Title="Xem">
-                    <Template>
-                        <TelerikSwitch @bind-Value="(context as ChucNang).Xem" />
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="Them" Title="Thêm">
-                    <Template>
-                        <TelerikSwitch @bind-Value="(context as ChucNang).Them"/>
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="Sua" Title="Sửa">
-                    <Template>
-                        <TelerikSwitch @bind-Value="(context as ChucNang).Sua" />
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="Xoa" Title="Xóa">
-                    <Template>
-                        <TelerikSwitch @bind-Value="(context as ChucNang).Xoa" />
-                    </Template>
-                </GridColumn>
-            </GridColumns>
-        </TelerikGrid>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Table Name</th>
+                    <th>Xem</th>
+                    <th>Them</th>
+                    <th>Sua</th>
+                    <th>Xoa</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tablePermission in lstTables)
+                {
+                    <tr>
+                        <td>@tablePermission.TableName</td>
+                        <td>
+                            <input type="checkbox" checked="@tablePermission.Xem" @onchange="async (e) => await ViewPermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        </td>
+                        <td>
+                            <input type="checkbox" checked="@tablePermission.Them" @onchange="async (e) => await AddPermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        </td>
+                        <td>
+                            <input type="checkbox" checked="@tablePermission.Sua" @onchange="async (e) => await UpdatePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        </td>
+                        <td>
+                            <input type="checkbox" checked="@tablePermission.Xoa" @onchange="async (e) => await DeletePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 
-<button class="btn btn-success" @onclick="@UpdateAllPermissions" style="margin-top:30px">
-    <span class="oi oi-plus" aria-hidden="true">Cập nhật</span>
-</button>
 
 @code {
     private List<Users> lstUser = new List<Users>();
-    private List<ChucNang> lstChucNang = new List<ChucNang>();
-    Users user = new Users();
+    private List<TablePermission> lstTables = new List<TablePermission>();
+    Users userGet = new Users();
+    private string[] permissions = { "Xem", "Them", "Sua", "Xoa" };
+    private string? selectedPermission;
 
     private bool isUserActive;
 
@@ -69,33 +74,303 @@
     private string deleteModalClass = "";
     private string deleteModalDisplayStyle = "display:none";
 
+    private string username;
+    private string password;
+
     protected override async Task OnInitializedAsync()
     {
-        lstUser = await userService.getAllData();
-        lstChucNang = await chucNangService.getAllData();
-    }
-
-    private void OpenAddModal()
-    {
-        addModalClass = "show";
-        addModalDisplayStyle = "display:block";
-    }
-
-    private void CloseAddModal()
-    {
-        addModalClass = "";
-        addModalDisplayStyle = "display:none";
-        StateHasChanged();
-    }
-
-    private async Task UpdateAllPermissions()
-    {
-        foreach (var chucNang in lstChucNang)
+        try
         {
-            await chucNangService.updateData(chucNang);
+            user.username = "C##" + await user_Service.GetCurrentUserName();
+            user.password = await user_Service.GetCurrentPassWord();
+            lstUser = await user_Service.getAllData();
+            InitializeTablePermissions();
+           
         }
-        toastService.ShowSuccess("Tất cả quyền đã được cập nhật thành công.");
+        catch (Exception ex)
+        {
+            // Xử lý lỗi nếu cần thiết
+            NavigationManager.NavigateTo("/Error");
+        }
     }
+
+
+    private void InitializeTablePermissions()
+    {
+        lstTables = new List<TablePermission>
+        {
+            new TablePermission { TableName = "KHUVUCTRONG" },
+            new TablePermission { TableName = "KHO" },
+            new TablePermission { TableName = "HOTRONG" },
+            new TablePermission { TableName = "NHAPHANPHOI" },
+            new TablePermission { TableName = "LOTHANHLONG" }
+        };
+    }
+
+    private Dictionary<string, string> procedureToTableMap = new Dictionary<string, string>
+    {
+        { "GETALLKHUVUCTRONG", "KHUVUCTRONG" },
+        { "ADDKHUVUCTRONG", "KHUVUCTRONG" },
+        { "UPDATEKHUVUCTRONG", "KHUVUCTRONG" },
+        { "DELETEKHUVUCTRONG", "KHUVUCTRONG" },
+        { "GETALLKHO", "KHO" },
+        { "ADDKHO", "KHO" },
+        { "UPDATEKHO", "KHO" },
+        { "DELETEKHO", "KHO" },
+        { "GETALLNHAPHANPHOI", "NHAPHANPHOI" },
+        { "ADDNHAPHANPHOI", "NHAPHANPHOI" },
+        { "UPDATENHAPHANPHOI", "NHAPHANPHOI" },
+        { "DELETENHAPHANPHOI", "NHAPHANPHOI" },
+        { "GETALLHOTRONG", "HOTRONG" },
+        { "ADDHOTRONG", "HOTRONG" },
+        { "UPDATEHOTRONG", "HOTRONG" },
+        { "DELETEHOTRONG", "HOTRONG" },
+        { "GETALLLOTHANHLONG", "LOTHANHLONG" },
+        { "ADDLOTHANHLONG", "LOTHANHLONG" },
+        { "UPDATELOTHANHLONG", "LOTHANHLONG" },
+        { "DELETELOTHANHLONG", "LOTHANHLONG" }
+    };
+
+    private async Task LoadUserPermissions()
+    {
+        if (userGet.username != null)
+        {
+            var userPermissions = await user_Service.GetUserPermissions(userGet.username);
+            foreach (var tablePermission in lstTables)
+            {
+                foreach (var userPermission in userPermissions)
+                {
+                    if (procedureToTableMap.TryGetValue(userPermission.TableName, out string tableName) && tableName == tablePermission.TableName)
+                    {
+                        if (userPermission.TableName.StartsWith("GETALL"))
+                        {
+                            tablePermission.Xem = true;
+                        }
+                        else if (userPermission.TableName.StartsWith("ADD"))
+                        {
+                            tablePermission.Them = true;
+                        }
+                        else if (userPermission.TableName.StartsWith("UPDATE"))
+                        {
+                            tablePermission.Sua = true;
+                        }
+                        else if (userPermission.TableName.StartsWith("DELETE"))
+                        {
+                            tablePermission.Xoa = true;
+                        }
+                    }
+                }
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+
+    private async Task ViewPermission(TablePermission tablePermission, bool isGranted)
+    {
+        string sql = "";
+        if (user.username == null)
+        {
+            toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
+            return;
+        }
+
+        if(tablePermission.TableName == "KHUVUCTRONG")
+        {
+            //isGranted dùng để lưu trữ lại trạng thái của checkbox. Nếu được check thì isGranted = true, ngược lại isGranted = false
+            sql = isGranted ?
+             "GRANT EXECUTE ON C##Admin.GetAllKhuVucTrong TO " + userGet.username :
+             "REVOKE EXECUTE ON C##Admin.GetAllKhuVucTrong FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "NHAPHANPHOI")
+        {
+            sql = isGranted ?
+             "GRANT EXECUTE ON C##Admin.GetAllNhaPhanPhoi " + userGet.username :
+             "REVOKE EXECUTE ON C##Admin.GetAllNhaPhanPhoi FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "KHO")
+        {
+            sql = isGranted ?
+             "GRANT EXECUTE ON C##Admin.GETALLKHO " + userGet.username :
+             "REVOKE EXECUTE ON C##Admin.GETALLKHO FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "HOTRONG")
+        {
+            sql = isGranted ?
+             "GRANT EXECUTE ON C##Admin.GETALLHOTRONG " + userGet.username :
+             "REVOKE EXECUTE ON C##Admin.GETALLHOTRONG FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "LOTHANHLONG")
+        {
+            sql = isGranted ?
+             "GRANT EXECUTE ON C##Admin.GETALLLOTHANHLONG " + userGet.username :
+             "REVOKE EXECUTE ON C##Admin.GETALLLOTHANHLONG FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task AddPermission(TablePermission tablePermission, bool isGranted)
+    {
+        string sql = "";
+        if (user.username == null)
+        {
+            toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
+            return;
+        }
+
+        if (tablePermission.TableName == "KHUVUCTRONG")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.ADDKhuVucTrong TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.ADDKhuVucTrong FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "KHO")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.ADDKHO TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.ADDKHO FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if(tablePermission.TableName=="NHAPHANPHOI")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.AddNhaPhanPhoi TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.AddNhaPhanPhoi FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "HOTRONG")
+        {
+            sql = isGranted ?
+             "GRANT EXECUTE ON C##Admin.ADDHOTRONG TO " + userGet.username :
+             "REVOKE EXECUTE ON C##Admin.ADDHOTRONG FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "LOTHANHLONG")
+        {
+            sql = isGranted ?
+             "GRANT EXECUTE ON C##Admin.AddLoThanhLong TO " + userGet.username :
+             "REVOKE EXECUTE ON C##Admin.AddLoThanhLong FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    private async Task UpdatePermission(TablePermission tablePermission, bool isGranted)
+    {
+        string sql = "";
+        if (user.username == null)
+        {
+            toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
+            return;
+        }
+
+        if (tablePermission.TableName == "KHUVUCTRONG")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.UpdateKhuVucTrong TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.UpdateKhuVucTrong FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "KHO")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.UPDATEKHO TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.UPDATEKHO FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "NHAPHANPHOI")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.UpdateNhaPhanPhoi TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.UpdateNhaPhanPhoi FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "HOTRONG")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.UpdateHoTrong TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.UpdateHoTrong FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "LOTHANHLONG")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.UpdateLoThanhLong TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.UpdateLoThanhLong FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task DeletePermission(TablePermission tablePermission, bool isGranted)
+    {
+        string sql = "";
+        if (user.username == null)
+        {
+            toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
+            return;
+        }
+
+        if (tablePermission.TableName == "KHUVUCTRONG")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.DeleteKhuVucTrong TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.DeleteKhuVucTrong FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "KHO")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.DELETEKHO TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.DELETEKHO FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "NHAPHANPHOI")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.DeleteNhaPhanPhoi TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.DeleteNhaPhanPhoi FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "HOTRONG")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.DELETEHOTRONG TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.DELETEHOTRONG FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        if (tablePermission.TableName == "LOTHANHLONG")
+        {
+            sql = isGranted ?
+              "GRANT EXECUTE ON C##Admin.DeleteLoThanhLong TO " + userGet.username :
+              "REVOKE EXECUTE ON C##Admin.DeleteLoThanhLong FROM " + userGet.username;
+            await user_Service.ExecuteSqlCommand(sql);
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+    
+
+    private async Task OnUserSelected(string args)
+    {
+        if (args != null && lstUser != null)
+        {
+            userGet.username = lstUser.FirstOrDefault(u => u.username == args.ToString())?.username;
+            if (user.username != null)
+            {
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        await LoadUserPermissions();
+    }
+
+
 
 
 }
