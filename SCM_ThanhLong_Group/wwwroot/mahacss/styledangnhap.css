@@ -257,3 +257,61 @@ a, .btn-link {
 	width: 95vw;
 	height: auto;
 }
+
+.combobox_custom {
+	height: 30px;
+	border-radius: 5px;
+	border-color: rgb(12 215 48);
+	color: #5f39f9;
+}
+
+.buttom_custom {
+	height: 30px;
+	border-radius: 21px;
+	border-color: none;
+	background: linear-gradient(45deg, #f71bff, #2ae0b6);
+	border: 0 solid;
+	color: white;
+	font-weight: bold;
+	padding: 5px;
+	box-sizing: border-box;
+}
+
+.text_gradient {
+	background: linear-gradient(to right, #9b30d0 0%, #4bf4df 100%);
+	background-clip: text;
+	color: transparent;
+}
+
+/*--combobox
+height: 30px;
+border-radius: 5px;
+border-color: rgb(12 215 48);
+color: #5f39f9;*/
+
+/*
+	nút
+	height: 30px;
+border-radius: 21px;
+border-color: none;
+background: linear-gradient(45deg, #f71bff, #2ae0b6);
+border: 0 solid;
+color: white;
+font-weight: bold;
+padding: 5px;
+box-sizing: border-box;*/
+
+/*
+	Chữ gradient
+
+	background: linear-gradient(to right, #9b30d0 0%, #4bf4df 100%);
+background-clip: text;
+color: transparent;*/
+
+/*background: linear-gradient(to right, #9b30d0 0%, #4bf4df 100%);
+background-clip: text;
+color: transparent;
+height: 30px;
+border-radius: 5px;*/
+
+/*background: linear-gradient(45deg, #e400ff, #25ebc5); tham khảo*/

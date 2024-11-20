@@ -1,0 +1,57 @@
+﻿body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background-color: #f8f9fa;
+	margin: 0;
+	padding: 0;
+}
+
+.table-container {
+	width: 90%;
+	max-width: 1200px;
+	margin: 20px auto;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.audit-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: #fff;
+}
+
+	.audit-table thead {
+		background-color: #4CAF50;
+		color: white;
+	}
+
+	.audit-table th,
+	.audit-table td {
+		padding: 12px 15px;
+		border: 1px solid #ddd;
+		text-align: left;
+		transition: background-color 0.3s ease-in-out;
+	}
+
+	.audit-table th {
+		font-size: 1.1em;
+	}
+
+	.audit-table tbody tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+
+	.audit-table tbody tr:hover {
+		background-color: #d1e7dd;
+	}
+
+	.audit-table td {
+		word-wrap: break-word;
+		max-width: 300px;
+	}
+
+	.audit-table caption {
+		padding: 10px;
+		font-size: 1.5em;
+		color: #333;
+	}

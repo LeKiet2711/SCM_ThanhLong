@@ -4,16 +4,19 @@
 @inject IJSRuntime iJSRuntime
 @inject Users_Service userService
 
+
+<link href="mahacss/styledangnhap.css" rel="stylesheet" />
+
 <h3>Đặt profile cho người dùng</h3>
 
-<select @bind="userName">
+<select class="combobox_custom" @bind="userName">
     @foreach (string name in users)
     {
         <option>@name</option>
     }
 </select>
 
-<select @bind="profileName">
+<select class="combobox_custom" @bind="profileName">
     @foreach (string pro in profiles)
     {
         <option>@pro</option>
@@ -21,7 +24,7 @@
 </select>
 
 
-<button @onclick="assignProfileForUser">Gán profile</button>
+<button class="buttom_custom" @onclick="assignProfileForUser">Gán profile</button>
 
 @code {
     private List<string> users = new List<string>();

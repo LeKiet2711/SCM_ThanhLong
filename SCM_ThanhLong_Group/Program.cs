@@ -47,6 +47,7 @@ builder.Services.AddScoped<ChiTietPhieuNhap_Service>();
 builder.Services.AddScoped<ChiTietPhieuXuat_Service>();
 builder.Services.AddScoped<Profile_Service>();
 builder.Services.AddScoped<LoThanhLong_Service>();
+builder.Services.AddScoped<Audit_Service>();
 
 builder.Services.AddScoped<NhomQuyen_Service>();
 

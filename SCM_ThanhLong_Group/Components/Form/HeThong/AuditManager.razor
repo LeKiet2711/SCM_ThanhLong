@@ -1,0 +1,68 @@
+﻿@page "/audit-manager"
+@rendermode InteractiveServer
+@inject SCM_ThanhLong_Group.Service.Audit_Service auditService
+@* @inject Audit_Service auditService *@
+
+<link href="mahacss/styleaudit.css" rel="stylesheet" />
+
+
+<br/>
+
+<div class="table-container">
+    <select @onchange="HandleSelectChange">
+        <option value="ALL" selected>Tất cả</option>
+        <option value="UPDATE">Update</option>
+        <option value="DELETE">Delete</option>
+        <option value="GRANT">Grant</option>
+    </select>
+
+    <table class="audit-table">
+        <thead>
+            <tr>
+                <th>DBUSERNAME</th>
+                <th>ACTION_NAME</th>
+                <th>OBJECT_SCHEMA</th>
+                <th>OBJECT_NAME</th>
+                <th>EVENT_TIMESTAMP</th>
+                <th>SQL_TEXT</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (lst != null)
+            {
+                @foreach (UnifiedAuditTrail audit in lst)
+                {
+                    <tr>
+                        <td>@audit.DBUSERNAME</td>
+                        <td>@audit.ACTION_NAME</td>
+                        <td>@audit.OBJECT_SCHEMA</td>
+                        <td>@audit.OBJECT_NAME</td>
+                        <td>@audit.EVENT_TIMESTAMP</td>
+                        <td>@audit.SQL_TEXT</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6">Không có dữ liệu hiển thị</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    List<UnifiedAuditTrail> lst = new List<UnifiedAuditTrail>();
+    private string auditType = "ALL";
+
+    protected override async Task OnInitializedAsync()
+    {
+        lst = await auditService.GetAuditKhuVucTrong(auditType);
+    }
+
+    private async void HandleSelectChange(ChangeEventArgs e)
+    {
+        lst = await auditService.GetAuditKhuVucTrong(e.Value.ToString());
+    }
+}
