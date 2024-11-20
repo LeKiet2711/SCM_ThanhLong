@@ -69,7 +69,6 @@ namespace SCM_ThanhLong_Group.Service
             return userList;
         }
 
-
         public async Task AddUserToKho(int khoId, string userId)
         {
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
@@ -101,6 +100,5 @@ namespace SCM_ThanhLong_Group.Service
                 }
             }
         }
-
     }
 }
