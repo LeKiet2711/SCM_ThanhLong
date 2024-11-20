@@ -148,8 +148,11 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<string>> getAllUser()
         {
             List<string> users = new List<string>();
-            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
-
+            string dbaPrivilege = null; //Chỉ sys mới thực hiện được
+            if (_user.username != null)
+            {
+                dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+            }
             using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
             {
                 string sqlProcedure = "getAllUser";
@@ -224,7 +227,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task<bool> AssignProfileForUser(string userName, string profileName)
         {
-            if (userName.Trim().Length > 0 || profileName.Trim().Length > 0)
+            if (!string.IsNullOrEmpty(userName) || !string.IsNullOrEmpty(profileName))
             {
                 string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
 
@@ -369,6 +372,36 @@ namespace SCM_ThanhLong_Group.Service
             }
         }
 
+        
+
+        public async Task<bool> CreateUser(string userName, string password, string profile)
+        {
+            bool result = false;
+            try
+            {
+                using (OracleConnection kn = _dbConnection.GetConnection("sys", "sys", "SYSDBA"))
+                {
+                    string sql = "createUser.createUserDefault";
+                    OracleCommand oracleCommand = new OracleCommand();
+                    oracleCommand.Connection = kn;
+                    oracleCommand.CommandText = sql;
+                    oracleCommand.CommandType = CommandType.StoredProcedure;
+
+                    oracleCommand.Parameters.Add("userNameIn", OracleDbType.Varchar2).Value = userName;
+                    oracleCommand.Parameters.Add("passWordDefault", OracleDbType.Varchar2).Value = password;
+                    oracleCommand.Parameters.Add("profileName", OracleDbType.Varchar2).Value = profile;
+                    //kn.OpenAsync();
+                    kn.Open();
+                    oracleCommand.ExecuteNonQuery();
+                    result = true;
+                    kn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return result;
+        }
 
     }
 }

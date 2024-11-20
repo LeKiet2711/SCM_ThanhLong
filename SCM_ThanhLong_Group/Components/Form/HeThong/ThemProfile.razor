@@ -227,12 +227,12 @@
         {
             if (await profileService.createProfile(tenProfile, thuocTinhProfile))
             {
-                khanhBang += "thành công!";
+                await JsRuntime.InvokeVoidAsync("alert", $"Tạo profile {tenProfile} thành công!");
                 nav.NavigateTo("quanlyprofile");
             }
             else
             {
-                khanhBang += "thất công!";
+                await JsRuntime.InvokeVoidAsync("alert", "Tạo profile thất bại!");
             }
         }
         else

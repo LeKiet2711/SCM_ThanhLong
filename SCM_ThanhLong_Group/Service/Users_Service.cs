@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.Common;
 using Blazored.SessionStorage;
 using Telerik.SvgIcons;
+using SCM_ThanhLong_Group.Service;
 
 namespace SCM_ThanhLong_Group.Service
 {
@@ -21,8 +22,12 @@ namespace SCM_ThanhLong_Group.Service
         }   
         public async Task<bool> AuthenticateUser(string username, string password)
         {
+            if (await isTheUserLocked(username))
+            {
+                return false; 
+            }
             //string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
-            string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/chkb;";
+            string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/chkb;";
             if(string.Compare(username,"sys", true)==0)
             {
                 connectionString += "DBA Privilege=SYSDBA;";
@@ -47,6 +52,44 @@ namespace SCM_ThanhLong_Group.Service
                     return false;
                 }
             }
+        }
+
+        public async Task<bool> isTheUserLocked(string userName)
+        {
+            bool result = false;
+            try
+            {
+                using (OracleConnection kn = _dbConnection.GetConnection("sys", "sys", "SYSDBA"))
+                {
+                    string sqlKillSession = "isTheUserLocked";
+                    OracleCommand oracleCommand = new OracleCommand();
+                    oracleCommand.Connection = kn;
+                    oracleCommand.CommandText = sqlKillSession;
+                    oracleCommand.CommandType = CommandType.StoredProcedure;
+
+                    oracleCommand.Parameters.Add("userNameIn", OracleDbType.Varchar2).Value = userName;
+                    oracleCommand.Parameters.Add("tableInfo", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    kn.OpenAsync();
+                    //kn.Open();
+                    OracleDataReader read = oracleCommand.ExecuteReader();
+                    if (read.HasRows)
+                    {
+                        while (read.Read())
+                        {
+                            string name = read["USERNAME"].ToString();
+                            string status = read["ACCOUNT_STATUS"].ToString();
+                            result = true;  
+                        }
+                    }
+
+                    kn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result;
         }
 
         public async Task<bool> ChangePassword(string username, string oldPassword, string newPassword)

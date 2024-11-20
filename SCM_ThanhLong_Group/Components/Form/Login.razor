@@ -6,6 +6,8 @@
 @inject IToastService ToastService
 @inject Users_Service Users_Service
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject Profile_Service profileService
+@inject Users_Service userService
 
 <link href="mahacss/styledangnhap.css" rel="stylesheet" />
 @* <link href="css/login.css" rel="stylesheet" /> *@
@@ -86,7 +88,7 @@
 
     private async Task HandleLogin()
     {
-        var result = await Users_Service.AuthenticateUser(loginModel.username, loginModel.password);
+        var result = await userService.AuthenticateUser(loginModel.username, loginModel.password);
 
         if (result)
         {
@@ -97,7 +99,14 @@
         }
         else
         {
-            ToastService.ShowError("Sai thông tin tài khoản hoặc mật khẩu!");
+            if ((await userService.isTheUserLocked(loginModel.username)))
+            {
+                ToastService.ShowError("Tài khoản này hiện đang bị khóa! vui lòng liên hệ quản trị viên để cấp lại!");
+            }
+            else
+            {
+                ToastService.ShowError("Sai thông tin tài khoản hoặc mật khẩu!");
+            }
         }
     }
 
