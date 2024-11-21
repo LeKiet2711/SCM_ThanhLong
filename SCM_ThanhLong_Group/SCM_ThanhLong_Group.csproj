@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorDownloadFile" Version="2.4.0.2" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
     <PackageReference Include="Blazored.Toast" Version="4.2.1" />
     <PackageReference Include="iTextSharp" Version="5.5.13.4" />

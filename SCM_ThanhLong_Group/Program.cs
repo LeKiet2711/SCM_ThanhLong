@@ -9,7 +9,7 @@ using SCM_ThanhLong_Group.Model;
 using SCM_ThanhLong_Group.Service;
 using Telerik.Reporting.Services;
 using Telerik.Reporting.Cache.File;
-
+using BlazorDownloadFile;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +29,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddBlazoredToast();
+builder.Services.AddBlazorDownloadFile();
 
 builder.Services.AddSingleton<ConnectionStringManager>();
 builder.Services.AddScoped<OracleDbConnection>();
