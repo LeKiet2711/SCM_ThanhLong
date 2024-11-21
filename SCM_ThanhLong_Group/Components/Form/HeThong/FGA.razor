@@ -1,0 +1,91 @@
+﻿@page "/audit-policies"
+@inject OracleAuditService AuditService
+@using SCM_ThanhLong_Group.Components.Layout
+@layout LoginLayout
+@inject NavigationManager NavigationManager
+@inject checkEmail checkmailService
+@inject NavigationManager Navigation
+@inject Users_Service Users_Service
+@inject Users user
+@using Oracle.ManagedDataAccess.Client;
+@using SCM_ThanhLong_Group.Components.Connection;
+@using SCM_ThanhLong_Group.Model;
+@using System.Data;
+@using System.Text
+<h3>Audit Policies</h3>
+
+@if (auditPolicies != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Schema</th>
+                <th>Table/View</th>
+                <th>Policy Name</th>
+                <th>Audit Column</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var policy in auditPolicies)
+            {
+                <tr>
+                    <td>@policy.ObjectSchema</td>
+                    <td>@policy.ObjectName</td>
+                    <td>@policy.PolicyName</td>
+                    <td>@policy.AuditColumn</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h3>Add FGA Policy</h3>
+
+<EditForm Model="@newPolicy" OnValidSubmit="HandleAddPolicy">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Object Schema:</label>
+        <InputText @bind-Value="newPolicy.ObjectSchema" />
+    </div>
+    <div>
+        <label>Object Name:</label>
+        <InputText @bind-Value="newPolicy.ObjectName" />
+    </div>
+    <div>
+        <label>Policy Name:</label>
+        <InputText @bind-Value="newPolicy.PolicyName" />
+    </div>
+    <div>
+        <label>Audit Column:</label>
+        <InputText @bind-Value="newPolicy.AuditColumn" />
+    </div>
+    <div>
+        <label>Condition (Optional):</label>
+        <InputText @bind-Value="newPolicy.Condition" />
+    </div>
+
+    <button type="submit">Add Policy</button>
+</EditForm>
+
+@code {
+    private List<AuditPolicy> auditPolicies;
+    private AuditPolicy newPolicy = new AuditPolicy();
+
+    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        user.username = "sys";
+        user.password = "sys";
+        auditPolicies = await AuditService.GetAuditPoliciesAsync();
+        
+    }
+
+    private async Task HandleAddPolicy()
+    {
+        await AuditService.AddFGAAsync(newPolicy.ObjectSchema, newPolicy.ObjectName, newPolicy.PolicyName, newPolicy.AuditColumn, newPolicy.Condition);
+        auditPolicies = await AuditService.GetAuditPoliciesAsync(); // Refresh the list
+    }
+}

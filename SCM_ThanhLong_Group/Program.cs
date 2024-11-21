@@ -31,7 +31,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<checkEmail>();
 builder.Services.AddBlazoredToast();
 builder.Services.AddBlazorDownloadFile();
-
+builder.Services.AddScoped<OracleAuditService>();
 builder.Services.AddSingleton<ConnectionStringManager>();
 builder.Services.AddScoped<OracleDbConnection>();
 builder.Services.AddControllers();

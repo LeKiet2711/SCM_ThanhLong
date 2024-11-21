@@ -95,7 +95,7 @@
     private bool? isVerified { get; set; } = null;
     private bool IsEmpty { get; set; } = false;
     private bool IsInvalidLength { get; set; } = false;
-  
+
     private int RemainingAttempts { get; set; } = 3;
     private bool IsLocked { get; set; } = false;
     private int LockDurationSeconds { get; set; } = 180; // 3 phút
@@ -109,8 +109,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        user.username = "C##" + await Users_Service.GetCurrentUserName();
-        user.password = await Users_Service.GetCurrentPassWord();
+        user.username = "sys";
+        user.password = "sys";
     }
     // private async Task VerifyCode()
     // {

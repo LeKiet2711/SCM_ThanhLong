@@ -27,7 +27,7 @@ namespace SCM_ThanhLong_Group.Service
             {
                 return false; 
             }
-            string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
+            string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl;";
             //string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/chkb;";
             if(string.Compare(username,"sys", true)==0)
             {
@@ -95,8 +95,8 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task<bool> ChangePassword(string username, string oldPassword, string newPassword)
         {
-            //string connectionString = $"User Id=C##{username};Password={oldPassword};Data Source=localhost:1521/orcl1;";
-            string connectionString = $"User Id={username};Password={oldPassword};Data Source=localhost:1521/chkb;";
+            string connectionString = $"User Id=C##{username};Password={oldPassword};Data Source=localhost:1521/orcl;";
+            //string connectionString = $"User Id={username};Password={oldPassword};Data Source=localhost:1521/chkb;";
 
             using (var conn = new OracleConnection(connectionString))
             {
