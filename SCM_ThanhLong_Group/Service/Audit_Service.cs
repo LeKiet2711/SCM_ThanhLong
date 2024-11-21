@@ -34,9 +34,9 @@ namespace SCM_ThanhLong_Group.Service
 
                     kn.Open();
                     OracleDataReader read = oracleCommand.ExecuteReader();
-                    if(read.HasRows)
+                    if (read.HasRows)
                     {
-                        while(read.Read())
+                        while (read.Read())
                         {
                             UnifiedAuditTrail audit = new UnifiedAuditTrail();
                             audit.EVENT_TIMESTAMP = read["EVENT_TIMESTAMP"].ToString();
@@ -46,8 +46,8 @@ namespace SCM_ThanhLong_Group.Service
                             audit.ACTION_NAME = read["ACTION_NAME"].ToString();
                             audit.DBUSERNAME = read["DBUSERNAME"].ToString();
                             lst.Add(audit);
-                        }    
-                    }    
+                        }
+                    }
                     kn.Close();
                 }
             }
@@ -58,5 +58,52 @@ namespace SCM_ThanhLong_Group.Service
             return lst;
         }
 
+        public async Task<List<KhuVucTrongAudit>> GetTriggerAuditKhuVucTrong()
+        {
+            List<KhuVucTrongAudit> lst = new List<KhuVucTrongAudit>();
+            try
+            {
+                using (OracleConnection kn = _dbConnection.GetConnection("sys", "sys", "SYSDBA"))
+                {
+                    string sqlKillSession = "GetTriggerAuditKhuVucTrong";
+                    OracleCommand oracleCommand = new OracleCommand();
+                    oracleCommand.Connection = kn;
+                    oracleCommand.CommandText = sqlKillSession;
+                    oracleCommand.CommandType = CommandType.StoredProcedure;
+
+                    oracleCommand.Parameters.Add("tableInfor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    kn.OpenAsync();
+                    OracleDataReader read = oracleCommand.ExecuteReader();
+
+                    if (read.HasRows)
+                    {
+                        while (read.Read())
+                        {
+                            KhuVucTrongAudit audit = new KhuVucTrongAudit();
+                            audit.AUDIT_ID = read["AUDIT_ID"].ToString();
+                            audit.USER_NAME = read["USER_NAME"].ToString();
+                            audit.ACTION = read["ACTION"].ToString();
+                            audit.OLD_MAKHV = read["OLD_MAKHV"].ToString();
+                            audit.NEW_MAKHV = read["NEW_MAKHV"].ToString();
+                            audit.OLD_TENKV = read["OLD_TENKV"].ToString();
+                            audit.NEW_TENKV = read["NEW_TENKV"].ToString();
+                            audit.OLD_MOTA = read["OLD_MOTA"].ToString();
+                            audit.NEW_MOTA = read["NEW_MOTA"].ToString();
+                            audit.OLD_ISDELETED = read["OLD_ISDELETED"].ToString();
+                            audit.NEW_ISDELETED = read["NEW_ISDELETED"].ToString();
+                            audit.CHANGE_DATE = read["CHANGE_DATE"].ToString();
+                            lst.Add(audit);
+                        }
+                    }
+                    kn.CloseAsync();
+
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+            return lst;
+        }
     }
 }

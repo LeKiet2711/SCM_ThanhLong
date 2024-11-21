@@ -52,13 +52,59 @@
     </table>
 </div>
 
+<h3>Thông tin kiểm toán khi cập nhật khu vực trồng</h3>
+<div class="table-container">
+    <table class="audit-table" >
+        <tr>
+            <th>AUDIT_ID</th>
+            <th>USER_NAME</th>
+            <th>ACTION</th>
+            <th>OLD_MAKHV</th>
+            <th>NEW_MAKHV</th>
+            <th>OLD_TENKHV</th>
+            <th>NEW_TENKHV</th>
+            <th>OLD_MOTA</th>
+            <th>NEW_MOTA</th>
+            <th>OLD_ISDELETED</th>
+            <th>NEW_ISDELETED</th>
+            <th>CHANGE_DATE</th>
+        </tr>
+        @if (lstKhuVucTrong != null)
+        {
+            foreach (KhuVucTrongAudit khuVucTrong in lstKhuVucTrong)
+            {
+                <tr>
+                    <td>@khuVucTrong.AUDIT_ID</td>
+                    <td>@khuVucTrong.USER_NAME</td>
+                    <td>@khuVucTrong.ACTION</td>
+                    <td>@khuVucTrong.OLD_MAKHV</td>
+                    <td>@khuVucTrong.NEW_MAKHV</td>
+                    <td>@khuVucTrong.OLD_TENKV</td>
+                    <td>@khuVucTrong.NEW_TENKV</td>
+                    <td>@khuVucTrong.OLD_MOTA</td>
+                    <td>@khuVucTrong.NEW_MOTA</td>
+                    <td>@khuVucTrong.OLD_ISDELETED</td>
+                    <td>@khuVucTrong.NEW_ISDELETED</td>
+                    <td>@khuVucTrong.CHANGE_DATE</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <h3>Chưa có thông tin kiểm toán nào</h3>
+        }
+    </table>
+</div>
+
 @code {
     List<UnifiedAuditTrail> lst = new List<UnifiedAuditTrail>();
+    List<KhuVucTrongAudit> lstKhuVucTrong = new List<KhuVucTrongAudit>();
     private string auditType = "ALL";
 
     protected override async Task OnInitializedAsync()
     {
         lst = await auditService.GetAuditKhuVucTrong(auditType);
+        lstKhuVucTrong = await auditService.GetTriggerAuditKhuVucTrong();
     }
 
     private async void HandleSelectChange(ChangeEventArgs e)

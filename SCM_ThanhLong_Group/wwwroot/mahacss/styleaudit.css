@@ -12,12 +12,16 @@
 	border-radius: 8px;
 	overflow: hidden;
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+
+
 }
 
 .audit-table {
 	width: 100%;
 	border-collapse: collapse;
 	background: #fff;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 
 	.audit-table thead {
