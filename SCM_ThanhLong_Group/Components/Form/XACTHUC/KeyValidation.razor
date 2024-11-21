@@ -4,14 +4,24 @@
 @* @rendermode InteractiveServer *@
 @inject KeyValidationService ValidationService
 @inject VerificationService verificationService
-
+@inject checkEmail checkmail
 @using SCM_ThanhLong_Group.Components.Layout
 @layout LoginLayout
 @inject IToastService ToastService
 @inject Users_Service Users_Service
 @inject Users user
+@inject Users user1
 @inject NavigationManager NavigationManager
 @inject NavigationManager Navigation
+@using System.Net.Mail;
+
+@using Oracle.ManagedDataAccess.Client;
+@using SCM_ThanhLong_Group.Components.Connection;
+@using SCM_ThanhLong_Group.Model;
+@using System.Data;
+@using System.Text
+@using SCM_ThanhLong_Group.Components
+@inject OracleDbConnection DbConnection
 <link href="css/Xacthuc.css" rel="stylesheet" />
 @* <script src="~/js/slider.js"defer></script> *@
 
@@ -23,8 +33,7 @@
             <p style="color: red;">Tài khoản đang bị khóa. Thử lại sau @($"{remainingTime.Minutes}:{remainingTime.Seconds}")</p>
         }
         <h2 class="title">Xác Thực Người Dùng</h2>
-
-        <!-- Form Nhập khóa -->
+        <p style="color:forestgreen">@Message</p>
         <div class="input-section">
             <label for="userKey">Nhập Mã:</label>
             <input type="text" id="userKey" @bind="matext" class="input-key"/>
@@ -32,6 +41,7 @@
             <input type="password" id="userKey" @bind="UserKey" placeholder="Nhập khóa..." class="input-key" disabled="@IsLocked" />
 
             <button @onclick="ValidateKey" class="btn-validate" disabled="@IsLocked">Kiểm tra</button>
+            <button @onclick="SendGmail" class="btn-validate" disabled="@IsLocked">Lấy Mã</button>
             <button @onclick="ForgotKey" class="btn-forgot">Quên khóa</button>
         </div>
 
@@ -89,13 +99,15 @@
 </div>
 
 @code {
+    private string Message { get; set; } = "";
     private string UserKey { get; set; } = "";
     private string matext { get; set; } = "";
     private bool? IsValid { get; set; } = null;
     private bool? isVerified { get; set; } = null;
+    private bool? isGmail { get; set; } = null;
     private bool IsEmpty { get; set; } = false;
     private bool IsInvalidLength { get; set; } = false;
-
+    private bool? IsGrantEmail { get; set; } = null;
     private int RemainingAttempts { get; set; } = 3;
     private bool IsLocked { get; set; } = false;
     private int LockDurationSeconds { get; set; } = 180; // 3 phút
@@ -106,11 +118,13 @@
     private DateTime? LockEndTime { get; set; }
     private string NotificationMessage { get; set; } = string.Empty;
     private string NotificationType { get; set; } = string.Empty; // success, error, warning, info
+    private readonly OracleDbConnection _dbConnection;
 
     protected override async Task OnInitializedAsync()
     {
         user.username = "sys";
         user.password = "sys";
+
     }
     // private async Task VerifyCode()
     // {
@@ -137,6 +151,97 @@
     //         ToastService.ShowError("Mã xác minh không hợp lệ!");
     //     }
     // }
+
+    private async Task SendGmail()
+    {
+        string currentUser = await Users_Service.GetCurrentUserName();
+        string usergrant = ("C##" + currentUser).ToUpper();
+
+        string encryptionKey = "TLADMIN1";
+        string generatedCode = "";
+        string gmail = "";
+        IsGrantEmail = await checkmail.GrantUserAccess(usergrant);
+        if(IsGrantEmail.Value)
+        {
+            gmail = await checkmail.layGmail(usergrant);
+            Console.WriteLine("lay gmail thanh cong");
+        }
+       
+        try
+        {
+            
+            string dbaPrivilege = user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+            using (OracleConnection conn = DbConnection.GetConnection(user.username, user.password, dbaPrivilege))
+            {
+                if (conn == null)
+                {
+                    Message= "Không thể kết nối đến cơ sở dữ liệu.";
+                    return;
+                }
+
+                await conn.OpenAsync();
+
+                // 1. Gọi thủ tục tạo mã
+                using (var cmdGenerate = new OracleCommand("C##Admin.generate_verification_code", conn))
+                {
+                    cmdGenerate.CommandType = CommandType.StoredProcedure;
+                    cmdGenerate.Parameters.Add("p_code", OracleDbType.Varchar2, 20).Direction = ParameterDirection.Output;
+
+                    await cmdGenerate.ExecuteNonQueryAsync();
+
+                    // Kiểm tra xem giá trị của p_code có null không
+                    if (cmdGenerate.Parameters["p_code"].Value != null)
+                    {
+                        generatedCode = cmdGenerate.Parameters["p_code"].Value.ToString();
+                    }
+                    else
+                    {
+                        Message="Không tạo được mã xác thực.";
+                        return;
+                    }
+                }
+                if (encryptionKey.Length != 8)
+                {
+                    Message="Khóa DES phải có chiều dài chính xác 8 ký tự.";
+                    return;
+                }
+
+                isGmail = await checkmail.checkEmailUser(gmail);
+                if (isGmail.Value)
+                {
+                    
+                    // 3. Gửi email
+                    using (MailMessage mail = new MailMessage())
+                    {
+                        mail.From = new MailAddress("ledinhquy.thd@gmail.com");
+                        mail.To.Add($"{gmail}");
+                        mail.Subject = "Xác thực người dùng";
+                        mail.Body = $"<h1>Mã của bạn: {generatedCode}</h1>";
+                        mail.IsBodyHtml = true;
+
+                        using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                        {
+                            smtp.Credentials = new System.Net.NetworkCredential("ledinhquy.thd@gmail.com", "znzutistuyojriqk");
+                            smtp.EnableSsl = true;
+                            smtp.Send(mail);
+                        }
+                    }
+
+                    Message = $"Vui lòng kiểm tra email {gmail}của bạn để lấy Mã Xác Thực! có hiệu lực 60s";
+                    
+                }
+                else
+                {
+                    Message="Tài khoản chưa thiết lập gmail";
+                   
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = $"Lỗi: {ex.Message}";
+        }
+    }
     private async Task ValidateKey()
     {
 
