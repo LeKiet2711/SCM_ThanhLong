@@ -25,8 +25,8 @@ namespace SCM_ThanhLong_Group.Service
             try
             {
                 bool isValid = false;
-
-                using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+                string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+                using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
                 {
                     await conn.OpenAsync();
                     if (conn == null)
