@@ -1,0 +1,104 @@
+﻿@page "/xacthucchukyso"
+@using SCM_ThanhLong_Group.Service
+@using SCM_ThanhLong_Group.Components.Layout
+@inject IToastService toastService
+@rendermode InteractiveServer
+@layout LoginLayout
+
+<h3>Xác thực chữ ký số hóa đơn</h3>
+
+<div class="form-group">
+    <InputFile OnChange="UploadSignedFile" />
+    <p>@uploadedSignedFileName</p>
+</div>
+
+<div class="form-group">
+    <button class="btn btn-success" @onclick="VerifySignature" disabled="@(uploadedSignedFile == null)">Xác thực chữ ký</button>
+</div>
+
+<div class="form-group">
+    <label for="publicKeyText">Dán Public Key vào đây:</label>
+    <InputText @bind-Value="publicKey" class="form-control" id="publicKeyText" />
+</div>
+
+<div class="form-group">
+    <label for="publicKeyFile">Hoặc tải file key công khai (.txt):</label>
+    <InputFile OnChange="UploadPublicKeyFile" class="form-control" id="publicKeyFile" />
+</div>
+
+@if (isSignatureValid != null)
+{
+    <div class="form-group">
+        <p>@(isSignatureValid == true ? "Chữ ký hợp lệ!" : "Chữ ký không hợp lệ!")</p>
+    </div>
+}
+
+@code {
+    private RSA_ChuKySo_Service rsaService = new RSA_ChuKySo_Service();
+    private IBrowserFile uploadedSignedFile;
+    private string uploadedSignedFileName;
+    private bool? isSignatureValid;
+    private string publicKey; // Dùng để lưu public key dán vào hoặc từ file
+    private string uploadedPublicKeyFileName; // Dùng để lưu tên file public key đã tải lên
+
+    // Xử lý khi người nhận tải file đã ký lên
+    private async Task UploadSignedFile(InputFileChangeEventArgs e)
+    {
+        uploadedSignedFile = e.File;
+        uploadedSignedFileName = uploadedSignedFile.Name;
+        toastService.ShowInfo($"File {uploadedSignedFileName} đã được tải lên.");
+    }
+
+    // Xử lý khi tải lên file chứa public key
+    private async Task UploadPublicKeyFile(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        uploadedPublicKeyFileName = file.Name;
+
+        using var memoryStream = new MemoryStream();
+        await file.OpenReadStream().CopyToAsync(memoryStream);
+        publicKey = System.Text.Encoding.UTF8.GetString(memoryStream.ToArray()); // Chuyển đổi nội dung file txt thành string
+
+        toastService.ShowInfo($"Public Key từ file {uploadedPublicKeyFileName} đã được tải lên.");
+    }
+
+    // Xác thực chữ ký
+    private async Task VerifySignature()
+    {
+        if (uploadedSignedFile == null)
+        {
+            toastService.ShowError("Vui lòng tải lên file đã ký!");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(publicKey))
+        {
+            toastService.ShowError("Vui lòng nhập hoặc tải lên Public Key!");
+            return;
+        }
+
+        try
+        {
+            // Đọc nội dung file PDF đã ký
+            using var memoryStream = new MemoryStream();
+            await uploadedSignedFile.OpenReadStream().CopyToAsync(memoryStream);
+            var signedFileContent = memoryStream.ToArray();
+
+            // Tách chữ ký từ file (trong ví dụ này, chữ ký nằm ở cuối file)
+            var signature = signedFileContent[(signedFileContent.Length - 256)..];
+            var fileContent = signedFileContent[0..(signedFileContent.Length - 256)].ToArray();
+
+            // Tạo giá trị hash từ nội dung file
+            var hash = rsaService.ComputeHash(fileContent);
+
+            // Kiểm tra tính hợp lệ của chữ ký
+            isSignatureValid = rsaService.VerifySignature(hash, signature, publicKey);
+
+            toastService.ShowSuccess(isSignatureValid == true ? "Chữ ký hợp lệ!" : "Chữ ký không hợp lệ!");
+        }
+        catch (Exception ex)
+        {
+            toastService.ShowError($"Lỗi khi xác thực chữ ký: {ex.Message}");
+        }
+    }
+}

@@ -1,24 +1,24 @@
-﻿* {
+﻿/** {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
+}*/
 
-body {
+/*body {
     display: flex;
     justify-content: center;
     min-height: 100vh;
-    align-items: center;
+    align-items: center;*/
     /*background: linear-gradient(to right, rgb(220, 219, 200), rgb(205, 99, 227)), url('../images/chuoi-cung-ung.jpg');*/
-    background: url('../images/khothanhlong.jpg');
-    background-size: cover; /* Để hình nền bao phủ toàn bộ */
-    background-position: center; /* Đặt hình nền ở giữa */
-    background-repeat: no-repeat; /* Không lặp lại hình nền */
-}
+    /*background: url('../images/khothanhlong.jpg');
+    background-size: cover;*/ /* Để hình nền bao phủ toàn bộ */
+    /*background-position: center;*/ /* Đặt hình nền ở giữa */
+    /*background-repeat: no-repeat;*/ /* Không lặp lại hình nền */
+/*}*/
 
 
-.containerr {
+/*.containerr {
     width: 420px;
     background: transparent;
     border-radius: 10px;
@@ -100,4 +100,4 @@ label input {
 
     .register a:hover {
         color: rgb(20, 102, 141);
-    }
+    }*/

@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Key\**" />
+    <Content Remove="wwwroot\Key\**" />
+    <EmbeddedResource Remove="wwwroot\Key\**" />
+    <None Remove="wwwroot\Key\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Reports\ReportPhieuNhap_1.trdp" />
   </ItemGroup>
 
@@ -17,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorDownloadFile" Version="2.4.0.2" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
     <PackageReference Include="Blazored.Toast" Version="4.2.1" />
     <PackageReference Include="iTextSharp" Version="5.5.13.4" />
@@ -27,6 +35,13 @@
     <PackageReference Include="Telerik.Reporting.Services.AspNetCore" Version="18.0.24.305" />
     <PackageReference Include="Telerik.ReportViewer.BlazorNative" Version="18.0.24.305" />
     <PackageReference Include="Telerik.UI.for.Blazor" Version="5.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="wwwroot\Invoices\" />
+    <Folder Include="wwwroot\PrivateKey\" />
+    <Folder Include="wwwroot\SignedInvoices\" />
   </ItemGroup>
 
 </Project>

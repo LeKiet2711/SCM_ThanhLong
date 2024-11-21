@@ -21,11 +21,14 @@
         <SendEmailDialogSettings From="lgklgk2711@gmail.com"
                                  Cc=""
                                  Subject="Hóa đơn"
-                                 Format="CSV"
                                  Body="@EmailBody">
         </SendEmailDialogSettings>
     </ReportViewerSettings>
 </ReportViewer>
+
+<button class="btn btn-primary d-flex align-items-center" onclick="location.href='nguoiguichukyso'">
+    <span aria-hidden="true"></span> Chuyển đến trang ký số
+</button>
 
 @code {
     public ScaleMode ScaleMode { get; set; } = ScaleMode.Specific;

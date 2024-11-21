@@ -258,7 +258,7 @@ namespace SCM_ThanhLong_Group.Service
             }
             return false;
         }
-
+         
         public async Task<string> GetSoPhieuNhapById(int nhapKhoId)
         {
             string soPhieuNhap = string.Empty;
