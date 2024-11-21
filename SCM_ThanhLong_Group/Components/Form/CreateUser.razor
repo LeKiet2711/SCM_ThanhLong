@@ -5,6 +5,7 @@
 @inject Profile_Service profileService
 @inject IJSRuntime iJsRuntime
 @inject NavigationManager navigation
+@inject Users user
 
 <link href="mahacss/styledangnhap.css" rel="stylesheet" />
 
@@ -68,6 +69,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        user.username = "sys";
+        user.password = "sys";
         profiles = await profileService.getAllProfileName();
     }
 
