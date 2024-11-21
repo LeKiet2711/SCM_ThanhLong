@@ -3,6 +3,7 @@
 @using SCM_ThanhLong_Group.Components.Layout
 @layout LoginLayout
 @inject NavigationManager NavigationManager
+@inject checkEmail checkmailService
 @inject NavigationManager Navigation
 @inject Users_Service Users_Service
 @inject Users user
@@ -64,24 +65,38 @@
     <button class="btn btn-primary" @onclick="ChuyenTrang">Tiếp tục</button>
     
 </div>
+<div>
 
+    <label>Nhập Gmail:</label>
+    <input type="text" id="" @bind="data" class="input-key" />
+ 
+</div>
 
 @code {
     private string Message { get; set; } = "";
     private readonly OracleDbConnection _dbConnection;
-    private readonly Users _user;
-
-
-
+    private string gmail { get; set; }
+    private string data { get; set; }
+    private string username{ get; set; }
+    private string tk { get; set; }
+    private bool? IsEmail { get; set; } = null;
+    private bool IsEmpty { get; set; } = false;
+    protected override async Task OnInitializedAsync()
+    {
+        user.username = "sys";
+        user.password = "sys";
+    }
     private async Task SendGmail()
     {
+        string gmail = data;
         string generatedCode = "";
         string encryptedCode = "";
         string encryptionKey = "TLADMIN1"; // Khóa DES cần 8 ký tự.
-
+        string taikhoan = tk;
         try
         {
-            using (OracleConnection conn = DbConnection.GetConnection("C##Admin", "oracle"))
+            string dbaPrivilege = user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+            using (OracleConnection conn = DbConnection.GetConnection(user.username, user.password, dbaPrivilege))
             {
                 if (conn == null)
                 {
@@ -153,26 +168,33 @@
                 //         return;
                 //     }
                 // }
-               
-
-                // 3. Gửi email
-                using (MailMessage mail = new MailMessage())
+                IsEmail = await checkmailService.checkEmailUser(gmail);
+                if (IsEmail.Value)
                 {
-                    mail.From = new MailAddress("ledinhquy.thd@gmail.com");
-                    mail.To.Add("ledinhquy1509@gmail.com");
-                    mail.Subject = "Xác thực người dùng";
-                    mail.Body = $"<h1>Mã của bạn (mã hóa): {generatedCode}</h1>";
-                    mail.IsBodyHtml = true;
 
-                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                    // 3. Gửi email
+                    using (MailMessage mail = new MailMessage())
                     {
-                        smtp.Credentials = new System.Net.NetworkCredential("ledinhquy.thd@gmail.com", "znzutistuyojriqk");
-                        smtp.EnableSsl = true;
-                        smtp.Send(mail);
-                    }
-                }
+                        mail.From = new MailAddress("ledinhquy.thd@gmail.com");
+                        mail.To.Add($"{gmail}");
+                        mail.Subject = "Xác thực người dùng";
+                        mail.Body = $"<h1>Mã của bạn (mã hóa): {generatedCode}</h1>";
+                        mail.IsBodyHtml = true;
 
-                Message = "Hãy kiểm tra Gmail của bạn.";
+                        using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                        {
+                            smtp.Credentials = new System.Net.NetworkCredential("ledinhquy.thd@gmail.com", "znzutistuyojriqk");
+                            smtp.EnableSsl = true;
+                            smtp.Send(mail);
+                        }
+                    }
+
+                    Message = "Hãy kiểm tra Gmail của bạn.";
+                }
+                else
+                {
+                    Message = "Vui long kiểm tra Gmail của bạn";
+                }
             }
         }
         catch (Exception ex)
@@ -180,6 +202,7 @@
             Message = $"Lỗi: {ex.Message}";
         }
     }
+    
     private void ChuyenTrang()
     {
         NavigationManager.NavigateTo("/validate-key");

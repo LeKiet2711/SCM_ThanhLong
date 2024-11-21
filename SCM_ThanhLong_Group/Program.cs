@@ -28,6 +28,7 @@ builder.Services.TryAddSingleton<IReportServiceConfiguration>(sp => new ReportSe
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddScoped<checkEmail>();
 builder.Services.AddBlazoredToast();
 builder.Services.AddScoped<VerificationService>();
 builder.Services.AddSingleton<ConnectionStringManager>();
