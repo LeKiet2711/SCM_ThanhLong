@@ -27,7 +27,7 @@ namespace SCM_ThanhLong_Group.Service
             {
                 return false; 
             }
-            string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl;";
+            string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
             //string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/chkb;";
             if(string.Compare(username,"sys", true)==0)
             {
