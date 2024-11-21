@@ -36,6 +36,7 @@ builder.Services.AddSingleton<ConnectionStringManager>();
 builder.Services.AddScoped<OracleDbConnection>();
 builder.Services.AddControllers();
 builder.Services.AddScoped<KeyValidationService>();
+builder.Services.AddScoped<VerificationService>();
 builder.Services.AddScoped<Users_Service>();
 builder.Services.AddScoped<Users>();
 builder.Services.AddScoped<ChucNang_Service>();
