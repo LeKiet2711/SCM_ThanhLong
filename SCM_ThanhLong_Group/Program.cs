@@ -49,6 +49,7 @@ builder.Services.AddScoped<ChiTietPhieuXuat_Service>();
 builder.Services.AddScoped<Profile_Service>();
 builder.Services.AddScoped<LoThanhLong_Service>();
 
+
 builder.Services.AddScoped<NhomQuyen_Service>();
 
 builder.Services.AddBlazoredSessionStorage();
