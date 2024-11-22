@@ -81,18 +81,18 @@
 
     private async Task HandleLogin()
     {
-        var result = await userService.AuthenticateUser(loginModel.username, loginModel.password);
+        var result = await userService.AuthenticateUser(loginModel.username.ToUpper(), loginModel.password.ToUpper());
 
         if (result)
         {
             Users_Service.currentUserName = loginModel.username;
             Users_Service.currentPassWord = loginModel.password;
             // ToastService.ShowSuccess("Đăng nhập thành công!");
-            Navigation.NavigateTo("/validate-key");
+            Navigation.NavigateTo("/Email");
         }
         else
         {
-            if ((await userService.isTheUserLocked(loginModel.username)))
+            if ((await userService.isTheUserLocked("C##"+ (loginModel.username.ToUpper())) ))
             {
                 ToastService.ShowError("Tài khoản này hiện đang bị khóa! vui lòng liên hệ quản trị viên để cấp lại!");
             }

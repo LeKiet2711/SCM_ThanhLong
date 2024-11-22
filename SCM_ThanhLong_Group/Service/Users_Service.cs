@@ -68,18 +68,18 @@ namespace SCM_ThanhLong_Group.Service
                     oracleCommand.CommandText = sqlKillSession;
                     oracleCommand.CommandType = CommandType.StoredProcedure;
 
-                    oracleCommand.Parameters.Add("userNameIn", OracleDbType.Varchar2).Value = userName;
+                    // Chuyển đổi tên người dùng thành chữ hoa
+                    oracleCommand.Parameters.Add("userNameIn", OracleDbType.Varchar2).Value = userName.ToUpper();
                     oracleCommand.Parameters.Add("tableInfo", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-                    kn.OpenAsync();
-                    //kn.Open();
-                    OracleDataReader read = oracleCommand.ExecuteReader();
+                    await kn.OpenAsync();
+                    OracleDataReader read = await oracleCommand.ExecuteReaderAsync();
                     if (read.HasRows)
                     {
-                        while (read.Read())
+                        while (await read.ReadAsync())
                         {
                             string name = read["USERNAME"].ToString();
                             string status = read["ACCOUNT_STATUS"].ToString();
-                            result = true;  
+                            result = true;
                         }
                     }
 
@@ -88,15 +88,16 @@ namespace SCM_ThanhLong_Group.Service
             }
             catch (Exception ex)
             {
-
+                // Xử lý ngoại lệ nếu cần
             }
             return result;
         }
 
+
         public async Task<bool> ChangePassword(string username, string oldPassword, string newPassword)
         {
-            //string connectionString = $"User Id=C##{username};Password={oldPassword};Data Source=localhost:1521/orcl1;";
-            string connectionString = $"User Id={username};Password={oldPassword};Data Source=localhost:1521/chkb;";
+            string connectionString = $"User Id=C##{username};Password={oldPassword};Data Source=localhost:1521/orcl;";
+            //string connectionString = $"User Id={username};Password={oldPassword};Data Source=localhost:1521/chkb;";
 
             using (var conn = new OracleConnection(connectionString))
             {

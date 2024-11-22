@@ -211,22 +211,24 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task<bool> AssignProfileForUser(string userName, string profileName)
         {
-            if (!string.IsNullOrEmpty(userName) || !string.IsNullOrEmpty(profileName))
+            if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(profileName))
             {
                 string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
 
                 using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
                 {
-                    kn.OpenAsync();
-                    OracleCommand hd = new OracleCommand();
-                    hd.Connection = kn;
-                    hd.CommandText = "sp_AssignProfileToUser";
-                    hd.CommandType = CommandType.StoredProcedure;
+                    await kn.OpenAsync();
+                    OracleCommand hd = new OracleCommand
+                    {
+                        Connection = kn,
+                        CommandText = "sp_AssignProfileToUser",
+                        CommandType = CommandType.StoredProcedure
+                    };
                     hd.Parameters.Add("userName", OracleDbType.Varchar2).Value = userName;
                     hd.Parameters.Add("profileName", OracleDbType.Varchar2).Value = profileName;
                     try
                     {
-                        hd.ExecuteNonQuery();
+                        await hd.ExecuteNonQueryAsync();
                         kn.Close();
                         return true;
                     }
@@ -238,6 +240,7 @@ namespace SCM_ThanhLong_Group.Service
             }
             return false;
         }
+
 
         //Cập nhật thông tin profile
         public async Task<List<ProfileInformation>> GetProfileInformation(string profileName)

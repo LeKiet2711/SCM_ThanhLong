@@ -9,7 +9,7 @@ using SCM_ThanhLong_Group.Model;
 using SCM_ThanhLong_Group.Service;
 using Telerik.Reporting.Services;
 using Telerik.Reporting.Cache.File;
-
+using BlazorDownloadFile;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,12 +28,15 @@ builder.Services.TryAddSingleton<IReportServiceConfiguration>(sp => new ReportSe
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddScoped<checkEmail>();
 builder.Services.AddBlazoredToast();
-
+builder.Services.AddBlazorDownloadFile();
+builder.Services.AddScoped<OracleAuditService>();
 builder.Services.AddSingleton<ConnectionStringManager>();
 builder.Services.AddScoped<OracleDbConnection>();
 builder.Services.AddControllers();
 builder.Services.AddScoped<KeyValidationService>();
+builder.Services.AddScoped<VerificationService>();
 builder.Services.AddScoped<Users_Service>();
 builder.Services.AddScoped<Users>();
 builder.Services.AddScoped<ChucNang_Service>();
@@ -48,6 +51,7 @@ builder.Services.AddScoped<ChiTietPhieuXuat_Service>();
 builder.Services.AddScoped<Profile_Service>();
 builder.Services.AddScoped<LoThanhLong_Service>();
 builder.Services.AddScoped<Audit_Service>();
+
 
 builder.Services.AddScoped<NhomQuyen_Service>();
 

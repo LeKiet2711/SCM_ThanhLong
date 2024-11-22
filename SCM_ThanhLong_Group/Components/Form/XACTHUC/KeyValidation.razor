@@ -3,6 +3,8 @@
 @inject NavigationManager NavigationManager
 @* @rendermode InteractiveServer *@
 @inject KeyValidationService ValidationService
+@inject VerificationService verificationService
+
 @using SCM_ThanhLong_Group.Components.Layout
 @layout LoginLayout
 @inject IToastService ToastService
@@ -24,8 +26,11 @@
 
         <!-- Form Nhập khóa -->
         <div class="input-section">
+            <label for="userKey">Nhập Mã:</label>
+            <input type="text" id="userKey" @bind="matext" class="input-key"/>
             <label for="userKey">Nhập khóa:</label>
             <input type="password" id="userKey" @bind="UserKey" placeholder="Nhập khóa..." class="input-key" disabled="@IsLocked" />
+
             <button @onclick="ValidateKey" class="btn-validate" disabled="@IsLocked">Kiểm tra</button>
             <button @onclick="ForgotKey" class="btn-forgot">Quên khóa</button>
         </div>
@@ -47,20 +52,20 @@
         {
             <div class="result invalid-key">Khóa phải đủ 8 ký tự!</div>
         } *@
-        @if (IsValid.HasValue)
+      @*   @if (IsValid.HasValue && isVerified.HasValue)
         {
             <div class="result" style="color: @(IsValid.Value ? "green" : "red")">
                 @if (IsValid.Value)
                 {
-                    <p>Khóa hợp lệ! Chuyển trang sau: <span>@Countdown</span>s...</p>
+                    <p>!Thanh cong: Chuyển trang sau: <span>@Countdown</span>s...</p>
                 }
                 else
                 {
                     <p>Khóa không hợp lệ! Bạn còn @RemainingAttempts lần thử.</p>
                 }
             </div>
-        }
-
+        } *@
+      
         <!-- Slider Thanh Long -->
         <div class=".dragon-fruit-slider">
             <div class="slider">
@@ -85,9 +90,12 @@
 
 @code {
     private string UserKey { get; set; } = "";
+    private string matext { get; set; } = "";
     private bool? IsValid { get; set; } = null;
+    private bool? isVerified { get; set; } = null;
     private bool IsEmpty { get; set; } = false;
     private bool IsInvalidLength { get; set; } = false;
+
     private int RemainingAttempts { get; set; } = 3;
     private bool IsLocked { get; set; } = false;
     private int LockDurationSeconds { get; set; } = 180; // 3 phút
@@ -101,28 +109,62 @@
 
     protected override async Task OnInitializedAsync()
     {
-        user.username = "C##" + await Users_Service.GetCurrentUserName();
-        user.password = await Users_Service.GetCurrentPassWord();
+        user.username = "sys";
+        user.password = "sys";
     }
+    // private async Task VerifyCode()
+    // {
+    //     // Mã hóa mã xác minh mới
+
+    //     IsEmpty = false;
+    //     if (string.IsNullOrWhiteSpace(matext))
+    //     {
+    //         IsEmpty = true;
+    //         IsInvalidLength = false;
+    //         isVerified = null;
+    //         SetNotification("Không được để trống ô MA XAC MINH!", "warning");
+    //         return;
+    //     }
+    //     // Kiểm tra mã xác minh người dùng nhập vào
+    //     isVerified = await verificationService.CheckVerificationCodeAsync(matext);
+
+    //     if (isVerified.Value)
+    //     {
+    //         ToastService.ShowSuccess("Mã xác minh hợp lệ!");
+    //     }
+    //     else
+    //     {
+    //         ToastService.ShowError("Mã xác minh không hợp lệ!");
+    //     }
+    // }
     private async Task ValidateKey()
     {
 
         IsEmpty = false;
         IsValid = await ValidationService.ValidateKey(UserKey);
+        isVerified = await verificationService.CheckVerificationCodeAsync(matext);
+
         if (IsLocked && LockEndTime.HasValue && LockEndTime.Value > DateTime.Now)
         {
             var remainingTime = LockEndTime.Value - DateTime.Now;
             ToastService.ShowError($"Tài khoản bị khóa! Vui lòng thử lại sau {remainingTime.Minutes}:{remainingTime.Seconds}.");
             return;
         }
-
+        if (string.IsNullOrWhiteSpace(matext))
+        {
+            IsEmpty = true;
+            IsInvalidLength = false;
+            isVerified = null;
+            SetNotification("Không được để trống ô MA XAC MINH!", "warning");
+            return;
+        }
         // Reset khóa nếu hết thời gian
         if (IsLocked && LockEndTime.HasValue && LockEndTime.Value <= DateTime.Now)
         {
             IsLocked = false;
             RemainingAttempts = 3;
         }
-      
+
         if (string.IsNullOrWhiteSpace(UserKey))
         {
             IsEmpty = true;
@@ -131,7 +173,11 @@
             SetNotification("Không được để trống ô nhập khóa!", "warning");
             return;
         }
-
+        if(!isVerified.Value)
+        {
+            SetNotification("MA XAC MINH KHONG DUNG!", "warning");
+            return;
+        }
         if (UserKey.Length != 8)
         {
             IsInvalidLength = true;
@@ -144,19 +190,22 @@
         IsEmpty = false;
         IsInvalidLength = false;
         IsValid = await ValidationService.ValidateKey(UserKey);
-
-        if (IsValid.Value)
+        isVerified = await verificationService.CheckVerificationCodeAsync(matext);
+       
+        if (IsValid.HasValue && isVerified.HasValue && IsValid.Value && isVerified.Value)
         {
-            SetNotification("Khóa hợp lệ! Chuyển trang sau 3 giây...", "success");
+            SetNotification("Thanh cong! Chuyển trang sau 3 giây...", "success");
             StartCountdown();
         }
         else
         {
             RemainingAttempts--;
-            SetNotification($"Khóa không hợp lệ! Bạn còn {RemainingAttempts} lần thử.", "error");
+            SetNotification($"That bai! Bạn còn {RemainingAttempts} lần thử.", "error");
             if (RemainingAttempts <= 0) LockInputField();
            
         }
+       
+
     }
    
     private async Task StartCountdown()
