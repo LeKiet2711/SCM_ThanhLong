@@ -81,7 +81,7 @@
 
     private async Task HandleLogin()
     {
-        var result = await userService.AuthenticateUser(loginModel.username.ToUpper(), loginModel.password.ToUpper());
+        var result = await userService.AuthenticateUser(loginModel.username.ToUpper(), loginModel.password);
 
         if (result)
         {
