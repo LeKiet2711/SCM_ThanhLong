@@ -61,6 +61,82 @@ namespace SCM_ThanhLong_Group.Service
                 return false;
             }
         }
+        public async Task<bool> GrantUserAccess(string username)
+        {
+            
+            try
+            {
+                string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+                using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+                {
+                    await conn.OpenAsync();
+
+                    using (OracleCommand command = new OracleCommand("grant_user_access", conn))
+                    {
+                        command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        // Thêm tham số đầu vào (username)
+                        command.Parameters.Add(new OracleParameter("p_username", OracleDbType.Varchar2)
+                        {
+                            Value = username
+                        });
+
+                        await command.ExecuteNonQueryAsync();
+                        Console.WriteLine($"Cấp quyền thành công cho người dùng: {username}");
+                        
+                    }
+                  
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (username == null)
+                {
+                    Console.WriteLine($"gia tri user băng null {ex.Message}");
+                }
+                Console.WriteLine($"Lỗi khi cấp quyền: {ex.Message}");
+                return false;
+            }
+            
+        }
+        public async Task<string> layGmail(string username)
+        {
+            string email = string.Empty;
+            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+            {
+                await conn.OpenAsync();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandText = "C##Admin.get_user_email";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Thêm tham số đầu vào
+                    var usernameParam = new OracleParameter("p_username", OracleDbType.Varchar2, 50)
+                    {
+                        Value = username,
+                        Direction = ParameterDirection.Input
+                    };
+                    command.Parameters.Add(usernameParam);
+
+                    // Thêm tham số đầu ra
+                    var emailParam = new OracleParameter("p_email", OracleDbType.Varchar2, 100)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(emailParam);
+
+                    // Thực thi thủ tục
+                    await command.ExecuteNonQueryAsync();
+
+                    // Lấy kết quả từ tham số đầu ra
+                    email = emailParam.Value?.ToString() ?? "Không có dữ liệu";
+                    Console.WriteLine($"da lay duoc gmail:{email}");
+                }
+            }
+            return email;
+        }
     }
 }
     
