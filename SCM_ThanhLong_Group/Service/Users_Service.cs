@@ -20,7 +20,8 @@ namespace SCM_ThanhLong_Group.Service
         {
             _dbConnection = dbConnection;
             _sessionStorage = sessionStorage;
-        }   
+        }
+
         public async Task<bool> AuthenticateUser(string username, string password)
         {
             string connectionString;
@@ -28,26 +29,29 @@ namespace SCM_ThanhLong_Group.Service
             if (string.Compare(username, "sys", true) == 0 || string.Compare(username, "system", true) == 0)
             {
                 connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/chkb;";
+                //connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/orcl1;";
             }
             else
             {
                 connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/chkb;";
+                //connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
             }
             if(string.Compare(username,"sys", true)==0)
             {
                 connectionString += "DBA Privilege=SYSDBA;";
-            }    
+            } 
             using (var conn = new OracleConnection(connectionString))
             {
                 try
                 {
-                    conn.Open(); 
+                    conn.Open();
                     string query = "SELECT 1 FROM DUAL";
                     using (var cmd = new OracleCommand(query, conn))
                     {
                         cmd.CommandType = CommandType.Text;
                         await cmd.ExecuteScalarAsync();
                     }
+
                     await _sessionStorage.SetItemAsync("currentUserName", username);
                     await _sessionStorage.SetItemAsync("currentPassWord", password);
                     return true;
@@ -98,7 +102,6 @@ namespace SCM_ThanhLong_Group.Service
             }
             return result;
         }
-
 
         public async Task<bool> ChangePassword(string username, string oldPassword, string newPassword)
         {
@@ -165,11 +168,13 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task Logout()
         {
+            string username = await _sessionStorage.GetItemAsync<string>("currentUserName");
             await _sessionStorage.RemoveItemAsync("currentUserName");
-            await _sessionStorage.RemoveItemAsync("currentPassword");
+            await _sessionStorage.RemoveItemAsync("currentPassWord");
             currentUserName = null;
             currentPassWord = null;
         }
+
 
         public async Task ExecuteSqlCommand(string sqlCommand)
         {

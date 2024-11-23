@@ -14,7 +14,7 @@ namespace SCM_ThanhLong_Group.Model
         public string TenHoTrong { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn ngày thu hoạch hợp lệ")]
         public DateTime NgayThuHoach { get; set; }
-        //public string QRCode { get; set; }
+        public string QRCode { get; set; }
         public string TrangThai { get;set; }
         public string MoTa { get; set; }
         public int isDeleted { get; set; }

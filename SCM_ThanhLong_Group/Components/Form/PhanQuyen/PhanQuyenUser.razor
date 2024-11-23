@@ -142,7 +142,7 @@
                 {
                     if (procedureToTableMap.TryGetValue(userPermission.TableName, out string tableName) && tableName == tablePermission.TableName)
                     {
-                        if (userPermission.TableName.StartsWith("GETALL"))
+                        if (userPermission.TableName.StartsWith(""))
                         {
                             tablePermission.Xem = true;
                         }

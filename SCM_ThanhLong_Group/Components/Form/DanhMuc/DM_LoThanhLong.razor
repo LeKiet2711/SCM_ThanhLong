@@ -37,8 +37,10 @@ else
                 <GridCommandButton Command="Delete" OnClick="@DeleteItem">
                     <span class="oi oi-trash" Width="100px"></span> Xóa
                 </GridCommandButton>
+                <GridCommandButton OnClick="@GenerateQRCode">
+                    <span class="oi oi-barcode" Width="100px"></span> Tạo QR Code
+                </GridCommandButton>
             </GridCommandColumn>
-           
         </GridColumns>
     </TelerikGrid>
 }
@@ -66,7 +68,7 @@ else
                             <option value="">-- Chọn hộ trồng --</option>
                             @foreach (var item in lstHoTrong)
                             {
-                                <option value="@item.Auto_ID">@item.MaHoTrong - @item.TenHoTrong</option>
+                                    <option value="@item.Auto_ID">@item.MaHoTrong - @item.TenHoTrong</option>
                             }
                         </InputSelect>
                         <ValidationMessage For="@(()=>loThanhLong.HoTrongID)" />
@@ -118,7 +120,7 @@ else
                             <option value="">-- Chọn hộ trồng --</option>
                             @foreach (var item in lstHoTrong)
                             {
-                                <option value="@item.Auto_ID">@item.MaHoTrong - @item.TenHoTrong</option>
+                                    <option value="@item.Auto_ID">@item.MaHoTrong - @item.TenHoTrong</option>
                             }
                         </InputSelect>
                         <ValidationMessage For="@(()=>loThanhLong.HoTrongID)" />
@@ -192,7 +194,24 @@ else
 </div>
 
 
-
+<div class="modal fade @qrModalClass" tabindex="-1" role="dialog" style="@qrModalDisplayStyle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>QR Code</b></h5>
+                <button type="button" class="close" @onclick="CloseQRModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#dedcd8; color:brown">
+                @if (!string.IsNullOrEmpty(loThanhLong.QRCode))
+                {
+                    <img src="data:image/png;base64,@loThanhLong.QRCode" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     private List<LoThanhLong> dataList = new List<LoThanhLong>();
@@ -205,6 +224,8 @@ else
     private string editModalDisplayStyle = "display:none";
     private string deleteModalClass = "";
     private string deleteModalDisplayStyle = "display:none";
+    private string qrModalClass = "";
+    private string qrModalDisplayStyle = "display:none";
 
     private string maLo;
 
@@ -269,6 +290,19 @@ else
         StateHasChanged();
     }
 
+    private void OpenQRModal()
+    {
+        qrModalClass = "show";
+        qrModalDisplayStyle = "display:block";
+    }
+
+    private void CloseQRModal()
+    {
+        qrModalClass = "";
+        qrModalDisplayStyle = "display:none";
+        StateHasChanged();
+    }
+
     private void EditItem(GridCommandEventArgs args)
     {
         var item = (LoThanhLong)args.Item;
@@ -279,6 +313,26 @@ else
     {
         var item = (LoThanhLong)args.Item;
         OpenDeleteModal(item);
+    }
+
+    private async Task GenerateQRCode(GridCommandEventArgs args)
+    {
+        var item = (LoThanhLong)args.Item;
+        loThanhLong = item.ShallowCopy();
+
+        using (var qrGenerator = new QRCoder.QRCodeGenerator())
+        {
+            var qrCodeData = qrGenerator.CreateQrCode(loThanhLong.MaLo, QRCoder.QRCodeGenerator.ECCLevel.Q);
+
+            // Dùng PngByteQRCode để tạo QR Code dưới dạng hình ảnh PNG
+            var qrCode = new QRCoder.PngByteQRCode(qrCodeData);
+            var qrCodeBytes = qrCode.GetGraphic(20);
+
+            // Chuyển đổi hình ảnh QR Code thành Base64 để hiển thị
+            loThanhLong.QRCode = Convert.ToBase64String(qrCodeBytes);
+        }
+
+        OpenQRModal();
     }
 
 
@@ -305,12 +359,11 @@ else
         }
     }
 
-
     private async Task updateLoThanhLong()
     {
-        if (await loThanhLong_Service.isMaLoExist(loThanhLong, dataList, maLo))
+        if (await loThanhLong_Service.isMaLoExist(loThanhLong, dataList, "ORACLE"))
         {
-            ToastService.ShowError("Mã lô hàng đã tồn tại!");
+            ToastService.ShowError("Mã lô đã tồn tại!");
         }
         else
         {
@@ -339,7 +392,7 @@ else
             ToastService.ShowSuccess("Xóa lô hàng thành công!");
             StateHasChanged();
         }
-        catch (Exception)
+        catch (Exception e)
         {
             ToastService.ShowError("Có lỗi xảy ra!");
         }
