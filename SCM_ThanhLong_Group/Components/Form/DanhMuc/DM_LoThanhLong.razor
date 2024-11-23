@@ -319,21 +319,22 @@ else
     {
         var item = (LoThanhLong)args.Item;
         loThanhLong = item.ShallowCopy();
-
+        string linkQR = await loThanhLong_Service.GetLinkQRByLoThanhLongID(loThanhLong.Auto_ID);
         using (var qrGenerator = new QRCoder.QRCodeGenerator())
         {
-            var qrCodeData = qrGenerator.CreateQrCode(loThanhLong.MaLo, QRCoder.QRCodeGenerator.ECCLevel.Q);
+            var qrCodeData = qrGenerator.CreateQrCode(linkQR, QRCoder.QRCodeGenerator.ECCLevel.Q);
 
-            // Dùng PngByteQRCode để tạo QR Code dưới dạng hình ảnh PNG
+            // PngByteQRCode generate 
             var qrCode = new QRCoder.PngByteQRCode(qrCodeData);
             var qrCodeBytes = qrCode.GetGraphic(20);
 
-            // Chuyển đổi hình ảnh QR Code thành Base64 để hiển thị
+            // Convert QR Code image to Base64 to display
             loThanhLong.QRCode = Convert.ToBase64String(qrCodeBytes);
         }
 
         OpenQRModal();
     }
+
 
 
     private async Task createLoThanhLong()

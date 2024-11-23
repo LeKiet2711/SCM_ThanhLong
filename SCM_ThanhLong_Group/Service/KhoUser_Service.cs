@@ -34,7 +34,7 @@ namespace SCM_ThanhLong_Group.Service
                         {
                             var data = new KhoUser
                             {
-                                UserId = reader["UserId"].ToString(),
+                                UserId = reader["UserId"].ToString().ToUpper(),
                                 KhoID = int.Parse(reader["khoId"].ToString()),
                             };
                             dataList.Add(data);
@@ -61,7 +61,7 @@ namespace SCM_ThanhLong_Group.Service
                     {
                         while (await reader.ReadAsync())
                         {
-                            userList.Add(reader["UserId"].ToString());
+                            userList.Add(reader["UserId"].ToString().ToUpper());
                         }
                     }
                 }

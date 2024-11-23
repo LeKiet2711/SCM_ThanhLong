@@ -39,7 +39,6 @@ namespace SCM_ThanhLong_Group.Service
                                 HoTrongID = int.Parse(reader["MaHoTrong"].ToString()),
                                 TenHoTrong = reader["TenHoTrong"].ToString(),
                                 NgayThuHoach = reader.GetDateTime(reader.GetOrdinal("NgayThuHoach")),
-                                //QRCode = reader["QRCode"].ToString(),
                                 TrangThai = reader["TrangThai"].ToString(),
                                 MoTa = reader["Mota"].ToString(),
                             };
@@ -143,6 +142,27 @@ namespace SCM_ThanhLong_Group.Service
                 }
             }
         }
+
+        public async Task<string> GetLinkQRByLoThanhLongID(int loThanhLongID)
+        {
+            string linkQR = null;
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+            {
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetLinkQRByLoThanhLong", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("p_LoThanhLongID", OracleDbType.Int32).Value = loThanhLongID;
+                    cmd.Parameters.Add("p_linkQR", OracleDbType.Varchar2, 255).Direction = ParameterDirection.Output;
+
+                    await conn.OpenAsync();
+                    await cmd.ExecuteNonQueryAsync();
+
+                    linkQR = cmd.Parameters["p_linkQR"].Value.ToString();
+                }
+            }
+            return linkQR;
+        }
+
 
         public async Task<bool> isMaLoExist(LoThanhLong loThanhLong, List<LoThanhLong> lstData, string ma)
         {

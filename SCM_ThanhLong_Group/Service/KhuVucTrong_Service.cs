@@ -40,6 +40,7 @@ namespace SCM_ThanhLong_Group.Service
                                 MaKhuVuc = reader["MaKhuVuc"].ToString(),
                                 TenKhuVuc = reader["TenKhuVuc"].ToString(),
                                 MoTa = reader["MoTa"].ToString(),
+                                LinkQR = reader["LinkQR"].ToString()
                             };
                             dataList.Add(data);
                         }
@@ -67,6 +68,7 @@ namespace SCM_ThanhLong_Group.Service
                     cmd.Parameters.Add("p_MaKhuVuc", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("p_TenKhuVuc", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("p_MoTa", OracleDbType.Varchar2, 200).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("p_LinkQR", OracleDbType.Varchar2, 200).Direction = ParameterDirection.Output;
 
                     // Thực thi stored procedure
                     cmd.ExecuteNonQuery();
@@ -74,6 +76,7 @@ namespace SCM_ThanhLong_Group.Service
                     data.MaKhuVuc = cmd.Parameters["p_MaKhuVuc"].Value?.ToString() ?? string.Empty;
                     data.TenKhuVuc = cmd.Parameters["p_TenKhuVuc"].Value?.ToString() ?? string.Empty;
                     data.MoTa = cmd.Parameters["p_MoTa"].Value?.ToString() ?? string.Empty;
+                    data.LinkQR = cmd.Parameters["p_LinkQR"].Value?.ToString() ?? string.Empty;
                 }
             }
             return data;
@@ -91,6 +94,7 @@ namespace SCM_ThanhLong_Group.Service
                     cmd.Parameters.Add("p_MaKhuVuc", OracleDbType.Varchar2).Value = khuVucTrong.MaKhuVuc;
                     cmd.Parameters.Add("p_TenKhuVuc", OracleDbType.Varchar2).Value = khuVucTrong.TenKhuVuc;
                     cmd.Parameters.Add("p_MoTa", OracleDbType.Varchar2).Value = khuVucTrong.MoTa;
+                    cmd.Parameters.Add("p_LinkQR", OracleDbType.Varchar2).Value = khuVucTrong.LinkQR;
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
@@ -108,7 +112,7 @@ namespace SCM_ThanhLong_Group.Service
                     cmd.Parameters.Add("p_MaKhuVuc", OracleDbType.Varchar2).Value = khuVucTrong.MaKhuVuc;
                     cmd.Parameters.Add("p_TenKhuVuc", OracleDbType.Varchar2).Value = khuVucTrong.TenKhuVuc;
                     cmd.Parameters.Add("p_MoTa", OracleDbType.Varchar2).Value = khuVucTrong.MoTa;
-
+                    cmd.Parameters.Add("p_LinkQR", OracleDbType.Varchar2).Value = khuVucTrong.LinkQR;
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
