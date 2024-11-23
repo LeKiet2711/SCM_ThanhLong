@@ -68,6 +68,10 @@ else
                         <label for="MoTa" class="control-label"><b>Mô tả: </b></label>
                         <InputText class="form-control" @bind-Value=@khuVucTrong.MoTa />
                     </div>
+                    <div class="form-group">
+                        <label for="linkQR" class="control-label"><b>Địa chỉ truy cập khu vực: </b></label>
+                        <InputText class="form-control" @bind-Value=@khuVucTrong.LinkQR />
+                    </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Thêm khu vực trồng</button>
                         <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Đóng</button>
@@ -105,6 +109,11 @@ else
                         <label for="MoTa" class="control-label"><b>Mô tả: </b></label>
                         <InputText class="form-control" @bind-Value=@khuVucTrong.MoTa />
                     </div>
+                    <div class="form-group">
+                        <label for="linkQR" class="control-label"><b>Địa chỉ truy cập khu vực: </b></label>
+                        <InputText class="form-control" @bind-Value=@khuVucTrong.LinkQR />
+                    </div>
+                    <ValidationMessage For="@(() => khuVucTrong.LinkQR)" />
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Cập nhật khu vực trồng</button>
                         <button type="button" class="btn btn-secondary" @onclick="CloseEditModal">Đóng</button>
