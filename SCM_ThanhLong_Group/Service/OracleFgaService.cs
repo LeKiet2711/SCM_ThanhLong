@@ -18,7 +18,7 @@ namespace SCM_ThanhLong_Group.Service
             _dbConnection = dbConnection;
             _user = user;
         }
-       
+
 
         // 1. Thêm chính sách FGA
         public async Task AddPolicyAsync(string objectName, string policyName)
@@ -29,30 +29,38 @@ namespace SCM_ThanhLong_Group.Service
                 using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
                 {
                     await conn.OpenAsync();
-
-
-
-                    using (OracleCommand command = new OracleCommand("add_fga_policy", conn))
+                    using (OracleTransaction transaction = conn.BeginTransaction())
                     {
-                        command.CommandType = CommandType.StoredProcedure;
-                   
-
-                        command.Parameters.Add(new OracleParameter("objectName", OracleDbType.Varchar2)
-                      {
-                          Value = objectName,
-                      });
-                        command.Parameters.Add(new OracleParameter("policyName", OracleDbType.Varchar2)
+                        try
                         {
-                            Value = policyName,
-                        });
-                        await command.ExecuteNonQueryAsync();
-                        Console.WriteLine("ADD thanh cong");
+                            using (OracleCommand command = new OracleCommand("add_fga_policy", conn))
+                            {
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.Transaction = transaction;
+
+                                command.Parameters.Add(new OracleParameter("objectName", OracleDbType.Varchar2) { Value = objectName });
+                                command.Parameters.Add(new OracleParameter("policyName", OracleDbType.Varchar2) { Value = policyName });
+
+                                await command.ExecuteNonQueryAsync();
+                                Console.WriteLine("ADD thành công");
+                            }
+                            await transaction.CommitAsync();
+                        }
+                        catch
+                        {
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
                     }
-                    
                 }
-            } catch (Exception ex) { }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+            }
         }
-        
+
+
         // 2. Bật chính sách FGA
         public async Task EnablePolicyAsync(string objectName, string policyName)
         {
@@ -62,31 +70,37 @@ namespace SCM_ThanhLong_Group.Service
                 using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
                 {
                     await conn.OpenAsync();
-
-
-
-                    using (OracleCommand command = new OracleCommand("enable_fga_policy", conn))
+                    using (OracleTransaction transaction = conn.BeginTransaction())
                     {
-                        command.CommandType = CommandType.StoredProcedure;
-
-
-                        command.Parameters.Add(new OracleParameter("objectName", OracleDbType.Varchar2)
+                        try
                         {
-                            Value = objectName,
-                        });
-                        command.Parameters.Add(new OracleParameter("policyName", OracleDbType.Varchar2)
+                            using (OracleCommand command = new OracleCommand("enable_fga_policy", conn))
+                            {
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.Transaction = transaction;
+
+                                command.Parameters.Add(new OracleParameter("objectName", OracleDbType.Varchar2) { Value = objectName });
+                                command.Parameters.Add(new OracleParameter("policyName", OracleDbType.Varchar2) { Value = policyName });
+
+                                await command.ExecuteNonQueryAsync();
+                                Console.WriteLine("Bật thành công");
+                            }
+                            await transaction.CommitAsync();
+                        }
+                        catch
                         {
-                            Value = policyName,
-                        });
-                        await command.ExecuteNonQueryAsync();
-                        Console.WriteLine("bat thanh cong");
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
                     }
-
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+            }
         }
-        
+
         // 3. Tắt chính sách FGA
         public async Task DisablePolicyAsync(string objectName, string policyName)
         {
@@ -96,31 +110,38 @@ namespace SCM_ThanhLong_Group.Service
                 using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
                 {
                     await conn.OpenAsync();
-
-
-
-                    using (OracleCommand command = new OracleCommand("disable_fga_policy", conn))
+                    using (OracleTransaction transaction = conn.BeginTransaction())
                     {
-                        command.CommandType = CommandType.StoredProcedure;
-
-
-                        command.Parameters.Add(new OracleParameter("objectName", OracleDbType.Varchar2)
+                        try
                         {
-                            Value = objectName,
-                        });
-                        command.Parameters.Add(new OracleParameter("policyName", OracleDbType.Varchar2)
+                            using (OracleCommand command = new OracleCommand("disable_fga_policy", conn))
+                            {
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.Transaction = transaction;
+
+                                command.Parameters.Add(new OracleParameter("objectName", OracleDbType.Varchar2) { Value = objectName });
+                                command.Parameters.Add(new OracleParameter("policyName", OracleDbType.Varchar2) { Value = policyName });
+
+                                await command.ExecuteNonQueryAsync();
+                                Console.WriteLine("Tắt thành công");
+                            }
+                            await transaction.CommitAsync();
+                        }
+                        catch
                         {
-                            Value = policyName,
-                        });
-                        await command.ExecuteNonQueryAsync();
-                        Console.WriteLine("tat thanh cong");
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
                     }
-
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+            }
         }
-        
+
+
         // 4. Xóa chính sách FGA
         public async Task DropPolicyAsync(string objectName, string policyName)
         {
@@ -130,29 +151,35 @@ namespace SCM_ThanhLong_Group.Service
                 using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
                 {
                     await conn.OpenAsync();
-
-
-
-                    using (OracleCommand command = new OracleCommand("drop_fga_policy", conn))
+                    using (OracleTransaction transaction = conn.BeginTransaction())
                     {
-                        command.CommandType = CommandType.StoredProcedure;
-
-
-                        command.Parameters.Add(new OracleParameter("objectName", OracleDbType.Varchar2)
+                        try
                         {
-                            Value = objectName,
-                        });
-                        command.Parameters.Add(new OracleParameter("policyName", OracleDbType.Varchar2)
+                            using (OracleCommand command = new OracleCommand("drop_fga_policy", conn))
+                            {
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.Transaction = transaction;
+
+                                command.Parameters.Add(new OracleParameter("objectName", OracleDbType.Varchar2) { Value = objectName });
+                                command.Parameters.Add(new OracleParameter("policyName", OracleDbType.Varchar2) { Value = policyName });
+
+                                await command.ExecuteNonQueryAsync();
+                                Console.WriteLine("Xóa thành công");
+                            }
+                            await transaction.CommitAsync();
+                        }
+                        catch
                         {
-                            Value = policyName,
-                        });
-                        await command.ExecuteNonQueryAsync();
-                        Console.WriteLine("drop thanh cong");
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
                     }
-
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+            }
         }
 
         // 5. Lấy dữ liệu từ bảng
@@ -211,7 +238,11 @@ namespace SCM_ThanhLong_Group.Service
                         {
                             command.CommandType = CommandType.Text;
 
-                            // Sử dụng DataReader để đọc dữ liệu
+                            
+                            command.Transaction = transaction;
+
+                            // Thực thi lệnh DELETE
+                            await command.ExecuteNonQueryAsync();
 
                         }
                         await transaction.CommitAsync();
