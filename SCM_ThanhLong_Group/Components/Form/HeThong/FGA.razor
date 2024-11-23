@@ -181,12 +181,12 @@ else if (TableData == null)
         {
             if (string.IsNullOrEmpty(SelectedTable))
             {
-                StatusMessage = "Please select a table and enter a policy name.";
+                StatusMessage = "Hãy chọn Table mà bạn muốn theo dõi";
                 return;
             }
 
             await oraclefgaservice.AddPolicyAsync(SelectedTable, PolicyName);
-            StatusMessage = "Policy added successfully.";
+            StatusMessage = $"Khởi tạo chính sách giám sát {PolicyName} thành công";
         }
         catch (Exception ex)
         {
@@ -201,12 +201,12 @@ else if (TableData == null)
         {
             if (string.IsNullOrEmpty(SelectedTable))
             {
-                StatusMessage = "Please select a table and enter a policy name.";
+                StatusMessage = "Hãy chọn Table mà bạn muốn theo dõi";
                 return;
             }
 
             await oraclefgaservice.EnablePolicyAsync(SelectedTable, PolicyName);
-            StatusMessage = "Policy enabled successfully.";
+            StatusMessage = $"Bắt đầu hoạt động giám sát {PolicyName}";
         }
         catch (Exception ex)
         {
@@ -221,12 +221,12 @@ else if (TableData == null)
         {
             if (string.IsNullOrEmpty(SelectedTable))
             {
-                StatusMessage = "Please select a table and enter a policy name.";
+                StatusMessage = "Hãy chọn Table mà bạn muốn theo dõi";
                 return;
             }
 
             await oraclefgaservice.DisablePolicyAsync(SelectedTable, PolicyName);
-            StatusMessage = "Policy disabled successfully.";
+            StatusMessage = $"Dừng hoạt động giám sát {PolicyName}";
         }
         catch (Exception ex)
         {
@@ -241,12 +241,12 @@ else if (TableData == null)
         {
             if (string.IsNullOrEmpty(SelectedTable))
             {
-                StatusMessage = "Please select a table and enter a policy name.";
+                StatusMessage = "Hãy chọn Table mà bạn muốn theo dõi";
                 return;
             }
 
             await oraclefgaservice.DropPolicyAsync(SelectedTable, PolicyName);
-            StatusMessage = "Policy dropped successfully.";
+            StatusMessage = $"Xóa chính sách giám sát {PolicyName} thành công";
         }
         catch (Exception ex)
         {
@@ -272,7 +272,7 @@ else if (TableData == null)
         try
         {
             
-            StatusMessage = "Delete data successfully.";
+            StatusMessage = "Xóa dữ liệu thành công";
         }
         catch (Exception ex)
         {

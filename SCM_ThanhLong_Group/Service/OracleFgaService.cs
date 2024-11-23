@@ -243,9 +243,10 @@ namespace SCM_ThanhLong_Group.Service
 
                             // Thực thi lệnh DELETE
                             await command.ExecuteNonQueryAsync();
-
+                            
                         }
                         await transaction.CommitAsync();
+                        await FetchTableDataAsync();
                     }
                 }
                 
