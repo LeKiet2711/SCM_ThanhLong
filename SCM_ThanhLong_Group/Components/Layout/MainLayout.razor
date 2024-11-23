@@ -58,7 +58,7 @@
 
     private async Task HandleLogout()
     {
-        string userName = UserService.currentUserName;
+        string userName = "C##" + UserService.currentUserName;
         await profileService.killSession(userName);
         await UserService.Logout();
         Navigation.NavigateTo("/");

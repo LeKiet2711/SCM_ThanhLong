@@ -46,18 +46,6 @@
 
         <div class="duoiphai"></div>
 </EditForm> 
-
-
-
-
-   @*  <div class="trentrai"></div>
-    <span style="font-size: 40px; font-weight: bold; display: block; text-align: center; width: 100%;">
-        Đăng
-        nhập
-
-    </span>
-    <h2 style="text-align: center;">Xin Chào!</h2>
-    <input class="textbox custom-input" type="text" placeholder="Vui lòng nhập tên ..."> *@
     <div class="duoiphai"></div>
 
 </div>
@@ -78,11 +66,13 @@
 @code {
     private Users loginModel = new Users();
     private bool isInitialized = false;
+    private string userCur = "";
 
     private async Task HandleLogin()
     {
-        var result = await userService.AuthenticateUser(loginModel.username.ToUpper(), loginModel.password.ToUpper());
-
+        await userService.Logout();
+        var result = await userService.AuthenticateUser(loginModel.username.ToUpper(), loginModel.password);
+        userCur = "C##" + loginModel.username.ToUpper();
         if (result)
         {
             Users_Service.currentUserName = loginModel.username;
@@ -100,6 +90,7 @@
             {
                 ToastService.ShowError("Sai thông tin tài khoản hoặc mật khẩu!");
             }
+            await profileService.killSession(userCur);
         }
     }
 

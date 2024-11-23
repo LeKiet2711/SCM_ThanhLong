@@ -30,6 +30,7 @@
     <PackageReference Include="iTextSharp" Version="5.5.13.4" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.6.3" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.6.0" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
     <PackageReference Include="Telerik.Reporting" Version="18.0.24.305" />
     <PackageReference Include="Telerik.Reporting.OpenXmlRendering" Version="18.0.24.305" />
     <PackageReference Include="Telerik.Reporting.Services.AspNetCore" Version="18.0.24.305" />
