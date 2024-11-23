@@ -27,7 +27,7 @@ builder.Services.TryAddSingleton<IReportServiceConfiguration>(sp => new ReportSe
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
+builder.Services.AddScoped<OracleFgaService>();
 builder.Services.AddScoped<checkEmail>();
 builder.Services.AddBlazoredToast();
 builder.Services.AddBlazorDownloadFile();

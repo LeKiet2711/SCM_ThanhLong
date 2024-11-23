@@ -1,91 +1,282 @@
-﻿@page "/audit-policies"
-@inject OracleAuditService AuditService
-@using SCM_ThanhLong_Group.Components.Layout
-@layout LoginLayout
+﻿@page "/fga"
 @inject NavigationManager NavigationManager
-@inject checkEmail checkmailService
-@inject NavigationManager Navigation
+@inject OracleFgaService FgaService
+@using SCM_ThanhLong_Group.Model
+@inject Kho_Service khoService
 @inject Users_Service Users_Service
 @inject Users user
-@using Oracle.ManagedDataAccess.Client;
-@using SCM_ThanhLong_Group.Components.Connection;
-@using SCM_ThanhLong_Group.Model;
+@inject ChucNang_Service chucNangService
+@inject IToastService toastService
+@inject OracleFgaService oraclefgaservice
+@inject NavigationManager NavigationManager
 @using System.Data;
-@using System.Text
-<h3>Audit Policies</h3>
+<style>
+    /* Tổng thể */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9; /* Nền sáng nhẹ */
+        margin: 20px;
+    }
 
-@if (auditPolicies != null)
+    h3 {
+        text-align: center;
+        color: #4CAF50; /* Màu xanh lá đẹp */
+    }
+
+    /* Khung chứa combobox và nút */
+    .action-container {
+        background-color: #ffffff; /* Nền trắng */
+        border: 1px solid #ddd; /* Viền nhạt */
+        border-radius: 10px;
+        padding: 20px;
+        width: 50%;
+        margin: 0 auto 20px auto; /* Căn giữa và thêm khoảng cách */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+    }
+
+        /* Combobox */
+        .action-container label {
+            font-weight: bold;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .action-container select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Nút bấm */
+        .action-container button {
+            background-color: #4CAF50; /* Màu nền xanh lá */
+            color: white; /* Màu chữ */
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            .action-container button:hover {
+                background-color: #45a049; /* Màu xanh lá nhạt khi hover */
+            }
+
+    /* Bảng hiển thị */
+    table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        text-align: center;
+        background-color: #ffffff; /* Nền trắng */
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+    }
+
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f4f4f4; /* Nền tiêu đề */
+        padding: 10px;
+        color: #4CAF50; /* Màu xanh lá */
+    }
+
+    td {
+        padding: 10px;
+    }
+
+    /* Tin nhắn trạng thái */
+    p {
+        text-align: center;
+        color: #FF5722; /* Màu cam */
+        font-weight: bold;
+    }
+</style>
+
+<h3>FGA Management</h3>
+
+<!-- Khung chứa combobox và nút -->
+<div class="action-container">
+    <p>@StatusMessage</p>
+    <div>
+        <label for="tableSelect">Select Table:</label>
+        <select id="tableSelect" @bind="SelectedTable">
+            <option value="" disabled>Select a table</option>
+            @foreach (var table in Tables)
+            {
+                <option value="@table">@table</option>
+            }
+        </select>
+    </div>
+    <br />
+    <div style="text-align: center;">
+        <button @onclick="AddPolicy">Add Policy</button>
+       @*  <button @onclick="EnablePolicy">Enable Policy</button>
+        <button @onclick="DisablePolicy">Disable Policy</button> *@
+        <button @onclick="DropPolicy">Drop Policy</button>
+        <button @onclick="ViewData">View Data</button>
+        <button @onclick="DeleteData">Delete Data</button>
+    </div>
+</div>
+
+<!-- Bảng hiển thị -->
+@if (TableData != null && TableData.Rows.Count > 0)
 {
-    <table class="table">
+    <table>
         <thead>
             <tr>
-                <th>Schema</th>
-                <th>Table/View</th>
-                <th>Policy Name</th>
-                <th>Audit Column</th>
+                @foreach (DataColumn column in TableData.Columns)
+                {
+                    <th>@column.ColumnName</th>
+                }
             </tr>
         </thead>
         <tbody>
-            @foreach (var policy in auditPolicies)
+            @foreach (DataRow row in TableData.Rows)
             {
                 <tr>
-                    <td>@policy.ObjectSchema</td>
-                    <td>@policy.ObjectName</td>
-                    <td>@policy.PolicyName</td>
-                    <td>@policy.AuditColumn</td>
+                    @foreach (var item in row.ItemArray)
+                    {
+                        <td>@item</td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
 }
-
-<h3>Add FGA Policy</h3>
-
-<EditForm Model="@newPolicy" OnValidSubmit="HandleAddPolicy">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div>
-        <label>Object Schema:</label>
-        <InputText @bind-Value="newPolicy.ObjectSchema" />
-    </div>
-    <div>
-        <label>Object Name:</label>
-        <InputText @bind-Value="newPolicy.ObjectName" />
-    </div>
-    <div>
-        <label>Policy Name:</label>
-        <InputText @bind-Value="newPolicy.PolicyName" />
-    </div>
-    <div>
-        <label>Audit Column:</label>
-        <InputText @bind-Value="newPolicy.AuditColumn" />
-    </div>
-    <div>
-        <label>Condition (Optional):</label>
-        <InputText @bind-Value="newPolicy.Condition" />
-    </div>
-
-    <button type="submit">Add Policy</button>
-</EditForm>
+else if (TableData == null)
+{
+    <p>No data available.</p>
+}
 
 @code {
-    private List<AuditPolicy> auditPolicies;
-    private AuditPolicy newPolicy = new AuditPolicy();
-
-    
-    
     protected override async Task OnInitializedAsync()
     {
         user.username = "sys";
         user.password = "sys";
-        auditPolicies = await AuditService.GetAuditPoliciesAsync();
-        
+
+    }
+    private List<string> Tables = new List<string>
+    {
+        "HOTRONG",
+        "KHUVUCTRONG",
+        "KHO",
+    };
+
+    private string SelectedTable = "";
+
+
+
+    private DataTable TableData = new DataTable();
+    private string StatusMessage = "";
+
+    private async Task AddPolicy()
+    {
+        string PolicyName = "FGA" + SelectedTable;
+        try
+        {
+            if (string.IsNullOrEmpty(SelectedTable))
+            {
+                StatusMessage = "Please select a table and enter a policy name.";
+                return;
+            }
+
+            await oraclefgaservice.AddPolicyAsync(SelectedTable, PolicyName);
+            StatusMessage = "Policy added successfully.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+        }
     }
 
-    private async Task HandleAddPolicy()
+    private async Task EnablePolicy()
     {
-        await AuditService.AddFGAAsync(newPolicy.ObjectSchema, newPolicy.ObjectName, newPolicy.PolicyName, newPolicy.AuditColumn, newPolicy.Condition);
-        auditPolicies = await AuditService.GetAuditPoliciesAsync(); // Refresh the list
+        string PolicyName = "FGA" + SelectedTable;
+        try
+        {
+            if (string.IsNullOrEmpty(SelectedTable))
+            {
+                StatusMessage = "Please select a table and enter a policy name.";
+                return;
+            }
+
+            await oraclefgaservice.EnablePolicyAsync(SelectedTable, PolicyName);
+            StatusMessage = "Policy enabled successfully.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    private async Task DisablePolicy()
+    {
+        string PolicyName = "FGA" + SelectedTable;
+        try
+        {
+            if (string.IsNullOrEmpty(SelectedTable))
+            {
+                StatusMessage = "Please select a table and enter a policy name.";
+                return;
+            }
+
+            await oraclefgaservice.DisablePolicyAsync(SelectedTable, PolicyName);
+            StatusMessage = "Policy disabled successfully.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    private async Task DropPolicy()
+    {
+        string PolicyName = "FGA" + SelectedTable;
+        try
+        {
+            if (string.IsNullOrEmpty(SelectedTable))
+            {
+                StatusMessage = "Please select a table and enter a policy name.";
+                return;
+            }
+
+            await oraclefgaservice.DropPolicyAsync(SelectedTable, PolicyName);
+            StatusMessage = "Policy dropped successfully.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    private async Task ViewData()
+    {
+        try
+        {
+            
+            TableData = await oraclefgaservice.FetchTableDataAsync();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+        }
+    }
+    private async Task DeleteData()
+    {
+        await oraclefgaservice.DeleteTableDataAsync();
+        try
+        {
+            
+            StatusMessage = "Delete data successfully.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+        }
     }
 }
