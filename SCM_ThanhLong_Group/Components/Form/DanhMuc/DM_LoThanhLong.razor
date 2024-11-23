@@ -10,6 +10,13 @@
     .modal {
         background-color: rgba(0, 0, 0, 0.5);
     }
+
+    .qr-code {
+        width: 300px;
+        height: 300px;
+        display: block;
+        margin: 0 auto;
+    }
 </style>
 
 <h2 style="text-align:center;font-weight:bold">Danh mục Lô Thanh Long</h2>
@@ -193,7 +200,6 @@ else
     </div>
 </div>
 
-
 <div class="modal fade @qrModalClass" tabindex="-1" role="dialog" style="@qrModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -206,7 +212,7 @@ else
             <div class="modal-body" style="background:#dedcd8; color:brown">
                 @if (!string.IsNullOrEmpty(loThanhLong.QRCode))
                 {
-                    <img src="data:image/png;base64,@loThanhLong.QRCode" />
+                    <img src="data:image/png;base64,@loThanhLong.QRCode" class="qr-code" />
                 }
             </div>
         </div>
