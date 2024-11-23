@@ -23,6 +23,7 @@ namespace SCM_ThanhLong_Group.Service
             _user = user;
         }
 
+
         public async Task<List<Profile>> GetAllProfiles()
         {
             List<Profile> profiles = new List<Profile>();
@@ -332,10 +333,16 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task killSession(string userName)
         {
-            //string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
-
-            try
+            if (string.Compare(userName, "sys", true) == 0 || string.Compare(userName, "system", true) == 0)
             {
+
+            }    
+            else
+            {
+                userName = "C##" + userName;
+            }
+            try
+                {
                 using (OracleConnection kn = _dbConnection.GetConnection("sys", "sys", "SYSDBA"))
                 {
                     string sqlKillSession = "killSessionUser";
