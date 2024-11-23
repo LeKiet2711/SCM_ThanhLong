@@ -70,9 +70,10 @@
 
     private async Task HandleLogin()
     {
+
         await userService.Logout();
         var result = await userService.AuthenticateUser(loginModel.username.ToUpper(), loginModel.password);
-        userCur = "C##" + loginModel.username.ToUpper();
+        userCur = loginModel.username.ToUpper();
         if (result)
         {
             Users_Service.currentUserName = loginModel.username;
@@ -82,7 +83,7 @@
         }
         else
         {
-            if ((await userService.isTheUserLocked("C##"+ (loginModel.username.ToUpper())) ))
+            if ((await userService.isTheUserLocked(loginModel.username.ToUpper())))
             {
                 ToastService.ShowError("Tài khoản này hiện đang bị khóa! vui lòng liên hệ quản trị viên để cấp lại!");
             }

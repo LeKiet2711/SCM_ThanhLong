@@ -24,12 +24,22 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task<bool> AuthenticateUser(string username, string password)
         {
-            if (await isTheUserLocked(username))
+            string connectionString;
+            //string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
+            if (string.Compare(username, "sys", true) == 0 || string.Compare(username, "system", true) == 0)
             {
-                return false;
+                connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/chkb;";
+                //connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/orcl1;";
             }
-
-            string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
+            else
+            {
+                connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/chkb;";
+                //connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
+            }
+            if(string.Compare(username,"sys", true)==0)
+            {
+                connectionString += "DBA Privilege=SYSDBA;";
+            } 
             using (var conn = new OracleConnection(connectionString))
             {
                 try
@@ -48,12 +58,12 @@ namespace SCM_ThanhLong_Group.Service
                 }
                 catch (OracleException)
                 {
-                    conn.Close();
-                    //await killSession(username);
+                    await killSession(username.ToUpper());
                     return false;
                 }
             }
         }
+
 
         public async Task<bool> isTheUserLocked(string userName)
         {
@@ -69,7 +79,7 @@ namespace SCM_ThanhLong_Group.Service
                     oracleCommand.CommandType = CommandType.StoredProcedure;
 
                     // Chuyển đổi tên người dùng thành chữ hoa
-                    oracleCommand.Parameters.Add("userNameIn", OracleDbType.Varchar2).Value = userName.ToUpper();
+                    oracleCommand.Parameters.Add("userNameIn", OracleDbType.Varchar2).Value = "C##"+userName.ToUpper();
                     oracleCommand.Parameters.Add("tableInfo", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
                     await kn.OpenAsync();
                     OracleDataReader read = await oracleCommand.ExecuteReaderAsync();
@@ -81,8 +91,8 @@ namespace SCM_ThanhLong_Group.Service
                             string status = read["ACCOUNT_STATUS"].ToString();
                             result = true;
                         }
+                        await killSession(userName.ToUpper());
                     }
-
                     kn.Close();
                 }
             }
@@ -203,7 +213,40 @@ namespace SCM_ThanhLong_Group.Service
             return permissions;
         }
 
+        public async Task killSession(string userName)
+        {
+            if (string.Compare(userName, "sys", true) == 0 || string.Compare(userName, "system", true) == 0)
+            {
 
+            }
+            else
+            {
+                userName = "C##" + userName;
+            }
+            try
+            {
+                using (OracleConnection kn = _dbConnection.GetConnection("sys", "sys", "SYSDBA"))
+                {
+                    string sqlKillSession = "killSessionUser";
+                    OracleCommand oracleCommand = new OracleCommand();
+                    oracleCommand.Connection = kn;
+                    oracleCommand.CommandText = sqlKillSession;
+                    oracleCommand.CommandType = CommandType.StoredProcedure;
+
+                    oracleCommand.Parameters.Add("userName", OracleDbType.Varchar2).Value = userName;
+
+                    //kn.OpenAsync();
+                    kn.Open();
+                    oracleCommand.ExecuteNonQuery();
+                    kn.Close();
+                    //kn.CloseAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
 
     }
 }
