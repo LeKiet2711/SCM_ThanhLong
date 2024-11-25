@@ -6,6 +6,7 @@
 @inject IJSRuntime iJsRuntime
 @inject NavigationManager navigation
 @inject Users user
+@using System.Text.RegularExpressions
 
 <link href="mahacss/styledangnhap.css" rel="stylesheet" />
 
@@ -17,12 +18,14 @@
         Tạo tài khoản
     </span>
 
-        <input class="textbox custom-input" type="text" @bind="userName" placeholder="Tên đăng nhập">
-        <i class="fa-solid fa-user"></i>
+    <input class="textbox custom-input" type="text" @bind="userName" placeholder="Tên đăng nhập">
+    <i class="fa-solid fa-user"></i>
 
-        <input class="textbox custom-input" type="text" @bind="passWord" placeholder="Mật khẩu">
+    <input class="textbox custom-input" type="text" @bind="email" placeholder="vd: ten@gmail.com">
 
-        <input class="textbox custom-input" type="text" placeholder="Xác nhận mật khẩu">
+    <input class="textbox custom-input" type="text" @bind="passWord" placeholder="Mật khẩu">
+
+    <input class="textbox custom-input" type="text" @bind="confirmPassWord" placeholder="Xác nhận mật khẩu">
 
     <select class="textbox custom-input" @bind="profileName">
         @foreach (string name in profiles)
@@ -32,13 +35,13 @@
     </select>
 
 
-        <button @onclick="handleCreateUser" type="submit" class="nut-dang-nhap">Tạo tài khoản</button>
+    <button @onclick="handleCreateUser" type="submit" class="nut-dang-nhap">Tạo tài khoản</button>
 
-        <div class="text-dang-ky-thanh-vien">
-            <a href="/Home">Trở về</a>
-        </div>
-        
-        <div class="duoiphai"></div>
+    <div class="text-dang-ky-thanh-vien">
+        <a href="/Home">Trở về</a>
+    </div>
+
+    <div class="duoiphai"></div>
 
     <div class="duoiphai"></div>
 
@@ -64,7 +67,11 @@
     private List<string> profiles = new List<string>();
     private string userName { get; set; }
     private string passWord { get; set; }
+    private string confirmPassWord { get; set; }
     private string profileName { get; set; }
+    private string email { get; set; }
+    private string errorContent { get; set; }
+
 
 
     protected override async Task OnInitializedAsync()
@@ -76,14 +83,66 @@
 
     private async Task handleCreateUser()
     {
-        if(await profileService.CreateUser(userName, passWord, profileName))
+        errorContent = "";
+      
+            if (await IsValidValue())
+            {
+                string newUser = await profileService.CreateUser(userName, passWord, profileName, email);
+                if (!string.IsNullOrEmpty(newUser))
+                {
+                await iJsRuntime.InvokeVoidAsync("alert", $"Tạo user thành công!\n Tên đăng nhập là: {newUser}");
+                await iJsRuntime.InvokeVoidAsync("alert", $"Tên đăng nhập là: {newUser}");
+                    navigation.NavigateTo("/Home");
+                }
+                else
+                {
+                    errorContent += "Lỗi tạo mới người dùng! Tên người dùng phải là không dấu\n";
+                    await iJsRuntime.InvokeVoidAsync("alert", errorContent);
+
+                }
+            }
+
+
+    }
+
+    public bool IsValidEmail(string email)
+    {
+        string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        Regex regex = new Regex(pattern);
+        return regex.IsMatch(email);
+    }
+
+    public async Task<bool> IsValidValue()
+    {
+        bool result = false;
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(passWord) || string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(confirmPassWord))
         {
-            await iJsRuntime.InvokeVoidAsync("alert", "Tạo user thành công!");
-            navigation.NavigateTo("/Home");
+            errorContent += "Vui lòng nhập đầy đủ thông tin";
+            await iJsRuntime.InvokeVoidAsync("alert", errorContent);
         }
         else
         {
-            await iJsRuntime.InvokeVoidAsync("alert", "Lỗi tạo mới người dùng! Tên người dùng phải là không dấu");
+            if (!IsValidEmail(email))
+            {
+                errorContent += "Email không hợp lệ\n";
+            }
+            if (string.Compare(passWord, confirmPassWord) != 0)
+            {
+                errorContent += "Mật khẩu không khớp\n";
+            }
+            if (string.IsNullOrEmpty(profileName))
+            {
+                errorContent += "Chưa chọn profile";
+            }
+            if (errorContent != "")
+            {
+                await iJsRuntime.InvokeVoidAsync("alert", errorContent);
+            }
+            else
+            {
+                result = true;
+            }
         }
+        return result;
     }
 }
