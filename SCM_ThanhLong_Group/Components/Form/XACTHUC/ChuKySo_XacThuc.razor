@@ -38,10 +38,9 @@
     private IBrowserFile uploadedSignedFile;
     private string uploadedSignedFileName;
     private bool? isSignatureValid;
-    private string publicKey; // Dùng để lưu public key dán vào hoặc từ file
+    private string publicKey;
     private string uploadedPublicKeyFileName; // Dùng để lưu tên file public key đã tải lên
 
-    // Xử lý khi người nhận tải file đã ký lên
     private async Task UploadSignedFile(InputFileChangeEventArgs e)
     {
         uploadedSignedFile = e.File;
@@ -84,7 +83,7 @@
             await uploadedSignedFile.OpenReadStream().CopyToAsync(memoryStream);
             var signedFileContent = memoryStream.ToArray();
 
-            // Tách chữ ký từ file (trong ví dụ này, chữ ký nằm ở cuối file)
+            // Tách chữ ký từ file
             var signature = signedFileContent[(signedFileContent.Length - 256)..];
             var fileContent = signedFileContent[0..(signedFileContent.Length - 256)].ToArray();
 
