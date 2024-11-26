@@ -6,6 +6,7 @@ using SCM_ThanhLong_Group.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Telerik.SvgIcons;
@@ -368,33 +369,72 @@ namespace SCM_ThanhLong_Group.Service
 
         
 
-        public async Task<bool> CreateUser(string userName, string password, string profile)
+        public async Task<string> CreateUser(string userName, string password, string profile, string email)
         {
-            bool result = false;
+            string newUser = "";
             try
             {
                 using (OracleConnection kn = _dbConnection.GetConnection("sys", "sys", "SYSDBA"))
                 {
-                    string sql = "createUser.createUserDefault";
-                    OracleCommand oracleCommand = new OracleCommand();
-                    oracleCommand.Connection = kn;
-                    oracleCommand.CommandText = sql;
-                    oracleCommand.CommandType = CommandType.StoredProcedure;
-
-                    oracleCommand.Parameters.Add("userNameIn", OracleDbType.Varchar2).Value = userName;
-                    oracleCommand.Parameters.Add("passWordDefault", OracleDbType.Varchar2).Value = password;
-                    oracleCommand.Parameters.Add("profileName", OracleDbType.Varchar2).Value = profile;
-                    //kn.OpenAsync();
+                    //Bắt đầu một giao dịch để có thể rollback khi không thành công cả 2
                     kn.Open();
-                    oracleCommand.ExecuteNonQuery();
-                    result = true;
-                    kn.Close();
+                    OracleTransaction oracleTransaction = kn.BeginTransaction();
+                    try
+                    {
+                        //Tạo người dùng
+                        string sql = "createUser.createUserDefault";
+                        OracleCommand oracleCommand = new OracleCommand();
+                        oracleCommand.Connection = kn;
+                        oracleCommand.CommandText = sql;
+                        oracleCommand.CommandType = CommandType.StoredProcedure;
+
+                        oracleCommand.Parameters.Add("userNameIn", OracleDbType.Varchar2).Value = userName;
+                        oracleCommand.Parameters.Add("passWordDefault", OracleDbType.Varchar2).Value = password;
+                        oracleCommand.Parameters.Add("profileName", OracleDbType.Varchar2).Value = profile;
+                     
+                        oracleCommand.ExecuteNonQuery();
+
+                        //Thêm vào bảng user của admin email
+                        string sqlGetNameUser = "GetUserNew";
+                        string sqlInsert = "insert_email";
+                        string userNameNew = "";
+                        OracleCommand cmd = new OracleCommand(sqlGetNameUser, kn);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add("userNameOut", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    
+                        OracleDataReader readName = cmd.ExecuteReader();
+                        if (readName.HasRows)
+                        {
+                            while (readName.Read())
+                            {
+                                userNameNew = readName["USERNAME"].ToString();
+                            }
+                        }
+
+                        OracleCommand cmdInsert = new OracleCommand(sqlInsert, kn);
+                        cmdInsert.CommandType = CommandType.StoredProcedure;
+                        cmdInsert.Parameters.Add("p_username", OracleDbType.Varchar2).Value = userNameNew;
+                        cmdInsert.Parameters.Add("p_email", OracleDbType.Varchar2).Value = email;
+                        cmdInsert.ExecuteNonQuery();
+
+                        oracleTransaction.Commit();
+                        newUser = userNameNew;
+                    }
+                    catch(Exception e)
+                    {
+                        oracleTransaction.Rollback();
+                    }
+                    finally
+                    {
+                        kn.Close();
+                    }
                 }
             }
             catch (Exception ex)
             {
             }
-            return result;
+            
+            return newUser;
         }
 
     }

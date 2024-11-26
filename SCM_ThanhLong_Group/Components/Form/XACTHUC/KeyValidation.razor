@@ -213,7 +213,7 @@
                     // 3. Gửi email
                     using (MailMessage mail = new MailMessage())
                     {
-                        mail.From = new MailAddress("ledinhquy.thd@gmail.com");
+                        mail.From = new MailAddress("scmmanagesoftware@gmail.com");
                         mail.To.Add($"{gmail}");
                         mail.Subject = "Xác thực người dùng";
                         mail.Body = $"<h1>Mã của bạn: {generatedCode}</h1>";
@@ -221,7 +221,7 @@
 
                         using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                         {
-                            smtp.Credentials = new System.Net.NetworkCredential("ledinhquy.thd@gmail.com", "znzutistuyojriqk");
+                            smtp.Credentials = new System.Net.NetworkCredential("scmmanagesoftware@gmail.com", "ihitdlowdisznbyg");
                             smtp.EnableSsl = true;
                             smtp.Send(mail);
                         }

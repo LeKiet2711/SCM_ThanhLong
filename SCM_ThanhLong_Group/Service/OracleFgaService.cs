@@ -253,7 +253,7 @@ namespace SCM_ThanhLong_Group.Service
                             
                         }
                         await transaction.CommitAsync();
-                        await FetchTableDataAsync();
+                       
                     }
                 }
                 

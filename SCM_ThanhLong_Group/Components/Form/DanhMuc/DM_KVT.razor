@@ -182,16 +182,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        // try
-        // {
+        try
+        {
             user.username="C##"+ await Users_Service.GetCurrentUserName();
             user.password=await Users_Service.GetCurrentPassWord();
             dataList = await KhuVucTrong_Service.getAllData();
-        // }
-        // catch
-        // {
-        //     NavigationManager.NavigateTo("/Error");
-        // }
+        }
+        catch
+        {
+            NavigationManager.NavigateTo("/Error");
+        }
     }
 
     private void OpenAddModal()

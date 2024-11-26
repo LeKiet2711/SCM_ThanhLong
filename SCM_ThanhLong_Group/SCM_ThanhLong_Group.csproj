@@ -41,6 +41,7 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="wwwroot\Invoices\" />
+    <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\PrivateKey\" />
     <Folder Include="wwwroot\SignedInvoices\" />
   </ItemGroup>
