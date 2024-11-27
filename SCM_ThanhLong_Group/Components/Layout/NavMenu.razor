@@ -1,88 +1,89 @@
 ﻿<link href="/css/navmenu.css" rel="stylesheet" />
 <link href="/mahacss/mahapanna.css" rel="stylesheet" />
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">SCM_ThanhLong</a>
+<div class="sidebar-menu-right">
+    <div class="top-row ps-3 navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="">SCM_ThanhLong</a>
+        </div>
+    </div>
+
+    <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+    <div class="nav-scrollable " onclick="document.querySelector('.navbar-toggler').click()">
+        <nav class="flex-column">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/Home" Match="NavLinkMatch.All">
+                    <span class="bi bi-house-fill" aria-hidden="true"></span> Home
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="danhmuckhuvuctrong">
+                    <span class="bi bi-tree" aria-hidden="true"></span> Khu vực trồng
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="danhmuchotrong">
+                    <span class="bi bi-person-lines-fill" aria-hidden="true"></span> Hộ trồng
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="danhmuckho">
+                    <span class="bi bi-box-seam-fill" aria-hidden="true"></span> Kho
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="danhmuclothanhlong">
+                    <span class="bi bi-shop" aria-hidden="true"></span> Lô thanh Long
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="phieunhapkho">
+                    <span class="bi bi-shop" aria-hidden="true"></span> Phiếu nhập
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="phieuxuatkho">
+                    <span class="bi bi-shop" aria-hidden="true"></span> Phiếu xuất
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="phanquyenkho">
+                    <span class="bi bi-house-lock-fill" aria-hidden="true"></span> Phân quyền kho
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="phanquyenuser">
+                    <span class="bi bi-key-fill" aria-hidden="true"></span> Phân quyền user
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="quanlyprofile">
+                    <span class="bi bi-key-fill" aria-hidden="true"></span> Quản lý profile
+                </NavLink>
+            </div>
+            @* <div class="nav-item px-3"> *@
+            @*     <NavLink class="nav-link" href="create-user"> *@
+            @*         <span class="bi bi-key-fill" aria-hidden="true"></span> Tạo mới người dùng *@
+            @*     </NavLink> *@
+            @* </div> *@
+            <div class="nav-item px-3">
+
+                <NavLink class="nav-link" href="audit-manager">
+                    <span class="bi bi-key-fill" aria-hidden="true"></span> Kiểm toán
+                </NavLink>
+
+                <NavLink class="nav-link" href="fga">
+                    <span class="bi bi-key-fill" aria-hidden="true"></span> FGA
+                </NavLink>
+
+                <NavLink class="nav-link" href="manager-user">
+                    <span class="bi bi-key-fill" aria-hidden="true"></span> Khóa/Mở User
+                </NavLink>
+
+            </div>
+        </nav>
     </div>
 </div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable sidebar-menu-right" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/Home" Match="NavLinkMatch.All">
-                <span class="bi bi-house-fill" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="danhmuckhuvuctrong">
-                <span class="bi bi-tree" aria-hidden="true"></span> Khu vực trồng
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="danhmuchotrong">
-                <span class="bi bi-person-lines-fill" aria-hidden="true"></span> Hộ trồng
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="danhmuckho">
-                <span class="bi bi-box-seam-fill" aria-hidden="true"></span> Kho
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="danhmuclothanhlong">
-                <span class="bi bi-shop" aria-hidden="true"></span> Lô thanh Long
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="phieunhapkho">
-                <span class="bi bi-shop" aria-hidden="true"></span> Phiếu nhập
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="phieuxuatkho">
-                <span class="bi bi-shop" aria-hidden="true"></span> Phiếu xuất
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="phanquyenkho">
-                <span class="bi bi-house-lock-fill" aria-hidden="true"></span> Phân quyền kho
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="phanquyenuser">
-                <span class="bi bi-key-fill" aria-hidden="true"></span> Phân quyền user
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="quanlyprofile">
-                <span class="bi bi-key-fill" aria-hidden="true"></span> Quản lý profile
-            </NavLink>
-        </div>
-        @* <div class="nav-item px-3"> *@
-        @*     <NavLink class="nav-link" href="create-user"> *@
-        @*         <span class="bi bi-key-fill" aria-hidden="true"></span> Tạo mới người dùng *@
-        @*     </NavLink> *@
-        @* </div> *@
-        <div class="nav-item px-3">
-
-            <NavLink class="nav-link" href="audit-manager">
-                <span class="bi bi-key-fill" aria-hidden="true"></span> Kiểm toán
-            </NavLink>
-
-            <NavLink class="nav-link" href="fga">
-                <span class="bi bi-key-fill" aria-hidden="true"></span> FGA
-            </NavLink>
-
-            <NavLink class="nav-link" href="manager-user">
-                <span class="bi bi-key-fill" aria-hidden="true"></span> Khóa/Mở User
-            </NavLink>
-
-        </div>
-    </nav>
-</div>
-

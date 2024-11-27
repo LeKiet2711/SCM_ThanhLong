@@ -9,8 +9,10 @@
 }
 
 .background-main {
-	background: linear-gradient(to right,rgb(13 17 22),rgb(10 12 24));
 	position: relative;
+	background: linear-gradient(to right,rgb(13 17 22),rgb(10 12 24));
+/*	background-image: url('../img/hai_trai_thanh_long.png');*/
+/*	background-size: 50px;*/
 }
 
 .navigation-top-menu {
@@ -28,12 +30,13 @@
 	position: absolute;
 	margin-top: var(--chieu-cao-top);
 	position: fixed;
-	border-radius: 25px;
+	border-radius: 10px;
 	margin-left: 2px;
-	border: 1px solid #2d303a;
+	border: 1px solid white;
 	backdrop-filter: blur(20px);
 	background: transparent;
 	background: linear-gradient(45deg, #da00ff36, #00c9d178);
+	z-index: 3;
 }
 
 .btn-dang-xuat {
