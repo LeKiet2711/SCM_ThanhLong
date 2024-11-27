@@ -9,6 +9,8 @@
 @inject IToastService toastService
 @inject OracleFgaService oraclefgaservice
 @inject NavigationManager NavigationManager
+@using Oracle.ManagedDataAccess.Client;
+
 @using System.Data;
 <style>
     /* Tổng thể */
@@ -101,7 +103,9 @@
 
 <!-- Khung chứa combobox và nút -->
 <div class="action-container">
-    <p>@StatusMessage</p>
+    <p class="@((StatusMessage.StartsWith("Lỗi") || StatusMessage.StartsWith("Error")) ? "error" : "success")">
+        @StatusMessage
+    </p>
     <div>
         <label for="tableSelect">Select Table:</label>
         <select id="tableSelect" @bind="SelectedTable">
@@ -188,10 +192,16 @@ else if (TableData == null)
             await oraclefgaservice.AddPolicyAsync(SelectedTable, PolicyName);
             StatusMessage = $"Khởi tạo chính sách giám sát {PolicyName} thành công";
         }
+        catch (OracleException ex) when (ex.Number == 28101) // Lỗi ORA-28101
+        {
+            StatusMessage = $"Chính sách {PolicyName} đã tồn tại.";
+            StateHasChanged();
+        }
         catch (Exception ex)
         {
-            StatusMessage = $"Error: {ex.Message}";
+            StatusMessage = $"Lỗi xảy ra: {ex.Message}";
         }
+       
     }
 
     private async Task EnablePolicy()
@@ -222,6 +232,7 @@ else if (TableData == null)
             if (string.IsNullOrEmpty(SelectedTable))
             {
                 StatusMessage = "Hãy chọn Table mà bạn muốn theo dõi";
+                StateHasChanged();
                 return;
             }
 
@@ -231,6 +242,10 @@ else if (TableData == null)
         catch (Exception ex)
         {
             StatusMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            StateHasChanged(); // Đảm bảo giao diện luôn được cập nhật
         }
     }
 
