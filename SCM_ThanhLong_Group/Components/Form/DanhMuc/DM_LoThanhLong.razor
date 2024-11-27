@@ -323,6 +323,8 @@ else
 
     private async Task GenerateQRCode(GridCommandEventArgs args)
     {
+        string sql = "GRANT EXECUTE ON C##Admin.GetLinkQRByLoThanhLong TO C##TET";
+        await Users_Service.ExecuteSqlCommand(sql);
         var item = (LoThanhLong)args.Item;
         loThanhLong = item.ShallowCopy();
         string linkQR = await loThanhLong_Service.GetLinkQRByLoThanhLongID(loThanhLong.Auto_ID);
