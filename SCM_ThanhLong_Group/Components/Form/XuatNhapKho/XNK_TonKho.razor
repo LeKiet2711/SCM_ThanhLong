@@ -1,0 +1,87 @@
+﻿@page "/xnktonkho"
+@rendermode InteractiveServer
+@inject TonKho_Service TonKho_Service
+@inject Users_Service Users_Service
+@inject IToastService ToastService
+@inject Users user
+@inject NavigationManager Navigation
+
+<style>
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+</style>
+
+<h2 style="text-align:center;font-weight:bold">Báo cáo tồn kho</h2>
+
+<div class="form-group">
+    <label for="ngayNhap" class="control-label"><b>Ngày nhập: </b></label>
+    <InputDate class="form-control" @bind-Value="ngayNhap" />
+</div>
+<div class="form-group">
+    <label for="ngayXuat" class="control-label"><b>Ngày xuất: </b></label>
+    <InputDate class="form-control" @bind-Value="ngayXuat" />
+</div>
+<button class="btn btn-primary" @onclick="LoadTonKhoData" style="margin-bottom:10px">
+    <span class="oi oi-reload" aria-hidden="true">Tải dữ liệu</span>
+</button>
+
+@if (tonKhoList == null)
+{
+    <p><em>Loading......</em></p>
+}
+else
+{
+    <TelerikGrid Data="@tonKhoList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
+        <GridColumns>
+            <GridColumn Field="@nameof(TonKho.MaLoHang)" Title="Mã lô hàng" Width="100px" />
+            <GridColumn Field="@nameof(TonKho.SLDauKy)" Title="Số lượng đầu kỳ" Width="100px" />
+            <GridColumn Field="@nameof(TonKho.SLNhap)" Title="Số lượng nhập" Width="100px" />
+            <GridColumn Field="@nameof(TonKho.SLXuat)" Title="Số lượng xuất" Width="100px" />
+            <GridColumn Field="@nameof(TonKho.SLCuoiKy)" Title="Số lượng cuối kỳ" Width="100px" />
+        </GridColumns>
+    </TelerikGrid>
+}
+
+@code {
+    private DateTime ngayNhap = DateTime.Now;
+    private DateTime ngayXuat = DateTime.Now;
+    private List<TonKho> tonKhoList = new List<TonKho>();
+    private bool isInitialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                user.username = "C##" + await Users_Service.GetCurrentUserName();
+                user.password = await Users_Service.GetCurrentPassWord();
+                isInitialized = true;
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Navigation.NavigateTo("/Error");
+            }
+        }
+    }
+
+    private async Task LoadTonKhoData()
+    {
+        try
+        {
+            // Gọi phương thức dịch vụ với các tham số DateTime
+            tonKhoList = await TonKho_Service.BaoCaoTonKho(ngayNhap, ngayXuat);
+
+            if (tonKhoList.Count == 0)
+            {
+                ToastService.ShowWarning("Không có dữ liệu tồn kho cho khoảng thời gian này.");
+            }
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+}

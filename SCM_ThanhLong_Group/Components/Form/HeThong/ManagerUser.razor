@@ -1,0 +1,100 @@
+﻿@page "/manager-user"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject DBA_UserService DBA_UserService
+@inject IJSRuntime iJSRuntime
+@inject NavigationManager navigation
+
+<link rel="stylesheet" href="/mahacss/styleaudit.css">
+<link rel="stylesheet" href="/mahacss/dbauserstyle.css">
+
+<h3>Quản lý người dùng</h3>
+
+<button class="buttom_custom" @onclick="InvokeCreateUser">Tạo mới người dùng</button>
+
+<div class="table-container">
+    <table class="styled-table audit-table">
+    <thead>
+        <tr>
+            <th>USERNAME</th>
+            <th>ACCOUNT STATUS</th>
+            <th>LOCK DATE</th>
+            <th>EXPIRY DATE</th>
+            <th>CREATED</th>
+            <th>PROFILE</th>
+            <th>LAST LOGIN</th>
+            <th></th>
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (users != null)
+        {
+            foreach (DBA_User user in users)
+            {
+                <tr>
+                    <td>@user.USERNAME</td>
+                    <td>@user.ACCOUNT_STATUS</td>
+                    <td>@user.LOCK_DATE</td>
+                    <td>@user.EXPIRY_DATE</td>
+                    <td>@user.CREATED</td>
+                    <td>@user.PROFILE</td>
+                    <td>@user.LAST_LOGIN</td>
+                    <td><button class="btn btn-primary" @onclick="@(()=>LockAccount(user.USERNAME))">Khóa</button></td>
+                    <td><button class="btn btn-primary" @onclick="@(()=>UnLockAccount(user.USERNAME))">Mở Khóa</button></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr class="active-row">
+                <td colspan="7">Không có dữ liệu hiển thị</td>
+            </tr>
+        }
+        <!-- Thêm các hàng dữ liệu khác tại đây -->
+    </tbody>
+</table>
+</div>
+
+@code {
+    List<DBA_User> users = new List<DBA_User>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await DBA_UserService.GetAllDataUser();
+    }
+
+    private async Task LockAccount(string userName)
+    {
+        if(await DBA_UserService.LockAccount(userName))
+        {
+            await iJSRuntime.InvokeVoidAsync("alert", "Khóa tài khoản thành công!");
+            users = await DBA_UserService.GetAllDataUser();
+            StateHasChanged(); //Kết xuất lại
+        }
+        else
+        {
+            await iJSRuntime.InvokeVoidAsync("alert", "Không thể khóa tài khoản này!");
+        }
+    }
+
+    private async Task UnLockAccount(string userName)
+    {
+        if (await DBA_UserService.UnlockAccount(userName))
+        {
+            await iJSRuntime.InvokeVoidAsync("alert", "Mở khóa tài khoản thành công!");
+            users = await DBA_UserService.GetAllDataUser();
+            StateHasChanged(); //Kết xuất lại
+        }
+        else
+        {
+            await iJSRuntime.InvokeVoidAsync("alert", "Không thể mở khóa tài khoản này!");
+        }
+    }
+
+    private void InvokeCreateUser()
+    {
+        navigation.NavigateTo("create-user");
+    }
+}

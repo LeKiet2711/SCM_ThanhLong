@@ -224,7 +224,7 @@
             user.password = await user_Service.GetCurrentPassWord();
             lstUser = await user_Service.getAllData();
             InitializeTablePermissions();
-           
+
         }
         catch (Exception ex)
         {
@@ -314,39 +314,39 @@
             return;
         }
 
-        if(tablePermission.TableName == "KHUVUCTRONG")
+        if (tablePermission.TableName == "KHUVUCTRONG")
         {
-            //isGranted dùng để lưu trữ lại trạng thái của checkbox. Nếu được check thì isGranted = true, ngược lại isGranted = false
+            // isGranted is used to store the state of the checkbox. If checked, isGranted = true; otherwise, isGranted = false
             sql = isGranted ?
-             "GRANT EXECUTE ON C##Admin.GetAllKhuVucTrong TO " + userGet.username :
-             "REVOKE EXECUTE ON C##Admin.GetAllKhuVucTrong FROM " + userGet.username;
+                "GRANT EXECUTE ON C##Admin.GetAllKhuVucTrong TO " + userGet.username :
+                "REVOKE EXECUTE ON C##Admin.GetAllKhuVucTrong FROM " + userGet.username;
             await user_Service.ExecuteSqlCommand(sql);
         }
         if (tablePermission.TableName == "NHAPHANPHOI")
         {
             sql = isGranted ?
-             "GRANT EXECUTE ON C##Admin.GetAllNhaPhanPhoi " + userGet.username :
+             "GRANT EXECUTE ON C##Admin.GetAllNhaPhanPhoi TO " + userGet.username :
              "REVOKE EXECUTE ON C##Admin.GetAllNhaPhanPhoi FROM " + userGet.username;
             await user_Service.ExecuteSqlCommand(sql);
         }
         if (tablePermission.TableName == "KHO")
         {
             sql = isGranted ?
-             "GRANT EXECUTE ON C##Admin.GETALLKHO " + userGet.username :
+             "GRANT EXECUTE ON C##Admin.GETALLKHO TO " + userGet.username :
              "REVOKE EXECUTE ON C##Admin.GETALLKHO FROM " + userGet.username;
             await user_Service.ExecuteSqlCommand(sql);
         }
         if (tablePermission.TableName == "HOTRONG")
         {
             sql = isGranted ?
-             "GRANT EXECUTE ON C##Admin.GETALLHOTRONG " + userGet.username :
+             "GRANT EXECUTE ON C##Admin.GETALLHOTRONG TO " + userGet.username :
              "REVOKE EXECUTE ON C##Admin.GETALLHOTRONG FROM " + userGet.username;
             await user_Service.ExecuteSqlCommand(sql);
         }
         if (tablePermission.TableName == "LOTHANHLONG")
         {
             sql = isGranted ?
-             "GRANT EXECUTE ON C##Admin.GETALLLOTHANHLONG " + userGet.username :
+             "GRANT EXECUTE ON C##Admin.GETALLLOTHANHLONG TO " + userGet.username :
              "REVOKE EXECUTE ON C##Admin.GETALLLOTHANHLONG FROM " + userGet.username;
             await user_Service.ExecuteSqlCommand(sql);
         }

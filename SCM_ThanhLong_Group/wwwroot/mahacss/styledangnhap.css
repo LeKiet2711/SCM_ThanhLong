@@ -266,21 +266,57 @@ a, .btn-link {
 }
 
 .buttom_custom {
-	height: 30px;
+	height: 40px;
 	border-radius: 21px;
 	border-color: none;
 	background: linear-gradient(45deg, #f71bff, #2ae0b6);
 	border: 0 solid;
 	color: white;
 	font-weight: bold;
-	padding: 5px;
 	box-sizing: border-box;
+	padding: 10px 20px;
 }
 
 .text_gradient {
 	background: linear-gradient(to right, #9b30d0 0%, #4bf4df 100%);
 	background-clip: text;
 	color: transparent;
+}
+
+.nut-dang-nhap:hover {
+/*	color: #ef35b4;
+	box-shadow: 2px 0px 40px #ef35b4;
+	border-color: #ef35b4;*/
+	animation: chaymau 3s infinite alternate;
+}
+
+@keyframes chaymau
+{
+	0% {
+		box-shadow: 2px 0px 40px #08ff08;
+		border-color: #08ff08;
+		color: #08ff08;
+	}
+	10% {
+		box-shadow: 2px 0px 40px #50e3fc;
+		border-color: #50e3fc;
+		color: #50e3fc;
+	}
+	30% {
+		box-shadow: 2px 0px 40px #bc13fe;
+		border-color: #bc13fe;
+		color: #bc13fe;
+	}
+	70% {
+		box-shadow: 2px 0px 40px #03a9f4;
+		border-color: #03a9f4;
+		color: #03a9f4;
+	}
+	90% {
+		box-shadow: 2px 0px 40px #0ff0fc;
+		border-color: #0ff0fc;
+		color: #0ff0fc;
+	}
 }
 
 /*--combobox
