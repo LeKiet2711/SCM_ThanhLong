@@ -51,6 +51,7 @@ builder.Services.AddScoped<ChiTietPhieuXuat_Service>();
 builder.Services.AddScoped<Profile_Service>();
 builder.Services.AddScoped<LoThanhLong_Service>();
 builder.Services.AddScoped<Audit_Service>();
+builder.Services.AddScoped<DBA_UserService>();
 
 
 builder.Services.AddScoped<NhomQuyen_Service>();
