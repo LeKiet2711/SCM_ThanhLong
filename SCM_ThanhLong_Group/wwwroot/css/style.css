@@ -59,7 +59,7 @@
 
 
 .hero {
-    background-image: url('../images/check.jpg');
+    /*background-image: url('../img/cac_trai_thanh_long.png');*/
     background-size: cover;
     background-position: center;
     height: 88vh;
@@ -70,6 +70,7 @@
     overflow: hidden;
     color: white;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    margin-top:72px;
 }
 
     .hero-content {

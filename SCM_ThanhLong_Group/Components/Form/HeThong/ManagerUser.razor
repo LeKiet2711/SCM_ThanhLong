@@ -19,11 +19,10 @@
             <th>USERNAME</th>
             <th>ACCOUNT STATUS</th>
             <th>LOCK DATE</th>
-            <th>EXPIRY DATE</th>
-            <th>CREATED</th>
+@*             <th>EXPIRY DATE</th>
+            <th>CREATED</th> *@
             <th>PROFILE</th>
             <th>LAST LOGIN</th>
-            <th></th>
             <th></th>
 
         </tr>
@@ -37,12 +36,14 @@
                     <td>@user.USERNAME</td>
                     <td>@user.ACCOUNT_STATUS</td>
                     <td>@user.LOCK_DATE</td>
-                    <td>@user.EXPIRY_DATE</td>
-                    <td>@user.CREATED</td>
+                    @* <td>@user.EXPIRY_DATE</td>
+                    <td>@user.CREATED</td> *@
                     <td>@user.PROFILE</td>
                     <td>@user.LAST_LOGIN</td>
-                    <td><button class="btn btn-primary" @onclick="@(()=>LockAccount(user.USERNAME))">Khóa</button></td>
-                    <td><button class="btn btn-primary" @onclick="@(()=>UnLockAccount(user.USERNAME))">Mở Khóa</button></td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="@(()=>LockAccount(user.USERNAME))">Khóa</button>
+                            <button class="btn btn-primary" @onclick="@(()=>UnLockAccount(user.USERNAME))">Mở</button>
+                    </td>
                 </tr>
             }
         }

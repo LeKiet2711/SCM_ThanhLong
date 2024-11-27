@@ -5,26 +5,32 @@
 @inject SCM_ThanhLong_Group.Service.Users_Service UserService
 @inject Profile_Service profileService
 
+<link href="/mahacss/mahapanna.css" rel="stylesheet" />
+<style>
+
+</style>
+
+
 <BlazoredToasts Position="ToastPosition.BottomRight"
                 Timeout="3"
                 IconType="Blazored.Toast.Configuration.IconType.FontAwesome"
                 SuccessIcon="fa fa-thumbs-up"
                 ErrorIcon="fa fa-bug" />
 
-<div class="page">
+<div class="page background-main">
     <TelerikRootComponent>
-    <div class="sidebar">
+    <div class="sidebar sidebar-menu-right">
         <NavMenu />
     </div>
     
     <main>
-        <div class="top-row px-4">
+            <div style="position: absolute; left:0; top: 0; height: 72px; background: transparent; border:none; backdrop-filter: blur(20px); background-image: linear-gradient(to right, rgba(13, 17, 22,0.3), rgba(13, 17, 22,0.3)); position: fixed; z-index: 3;" class="top-row px-4 navigation-top-menu">
             <span>Xin chào, @UserService.currentUserName!</span>
-            <a href="/Home" class="btn btn-primary ms-3">Hồ sơ</a>
-            <button @onclick="HandleLogout" class="btn btn-secondary ms-2">Đăng xuất</button>
+                <a href="/Home" class="btn btn-primary btn-ho-so ms-3">Hồ sơ</a>
+                <button @onclick="HandleLogout" class="btn btn-secondary btn-dang-xuat ms-2">Đăng xuất</button>
         </div>
 
-        <article class="content px-4">
+        <article style="margin: 72px;" class="content px-4">
             
             @Body
         </article>
