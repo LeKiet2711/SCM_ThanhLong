@@ -1,0 +1,62 @@
+﻿/* error.css */
+
+.error-container {
+    text-align: center;
+    margin: 0 auto;
+    margin-top:150px;
+    max-width: 800px;
+    padding: 20px;
+    background-color: papayawhip;
+    border-radius: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    
+}
+
+.error-icon {
+    display: block;
+    width: 100px;
+    height: 80px;
+    margin: 0 auto;
+    padding: 0;
+    
+}
+
+.error-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: red; /* Đỏ */
+    margin-bottom: 10px;
+}
+
+.error-subtitle {
+    font-size: 24px;
+    color: red;
+    margin-bottom: 20px;
+}
+
+.request-id {
+    font-size: 14px;
+    color: red;
+    margin-top: 10px;
+}
+
+.error-details {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #555;
+}
+
+    .error-details h3 {
+        font-size: 18px;
+        font-weight: bold;
+        color: red;
+    }
+
+    .error-details p {
+        color: red;
+        margin-top: 10px;
+    }
+
+strong {
+    color: red;
+}

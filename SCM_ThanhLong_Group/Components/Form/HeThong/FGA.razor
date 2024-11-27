@@ -17,7 +17,7 @@
     body {
         font-family: Arial, sans-serif;
         background-color: #f9f9f9; /* Nền sáng nhẹ */
-        margin: 20px;
+        margin: 0;
     }
 
     h3 {
@@ -99,7 +99,7 @@
     }
 </style>
 
-<h3>FGA Management</h3>
+<h3>Trình Theo Dõi Tác Động Hệ Thống FGA</h3>
 
 <!-- Khung chứa combobox và nút -->
 <div class="action-container">
@@ -118,12 +118,12 @@
     </div>
     <br />
     <div style="text-align: center;">
-        <button @onclick="AddPolicy">Add Policy</button>
-        <button @onclick="EnablePolicy">Enable Policy</button>
-        <button @onclick="DisablePolicy">Disable Policy</button>
-        <button @onclick="DropPolicy">Drop Policy</button>
-        <button @onclick="ViewData">View Data</button>
-        <button @onclick="DeleteData">Delete Data</button>
+        <button @onclick="AddPolicy">Tạo Policy</button>
+        <button @onclick="EnablePolicy">Bật Policy</button>
+        <button @onclick="DisablePolicy">Tắt Policy</button>
+        <button @onclick="DropPolicy">Xóa Policy</button>
+        <button @onclick="ViewData">Xem Dữ Liệu</button>
+        <button @onclick="DeleteData">Reset Data</button>
     </div>
 </div>
 
@@ -161,8 +161,8 @@ else if (TableData == null)
     protected override async Task OnInitializedAsync()
     {
         user.username = "sys";
-        user.password = "sys";
-
+        user.password = "sys";    
+        TableData = await oraclefgaservice.FetchTableDataAsync();
     }
     private List<string> Tables = new List<string>
     {
@@ -284,6 +284,7 @@ else if (TableData == null)
     private async Task DeleteData()
     {
         await oraclefgaservice.DeleteTableDataAsync();
+        TableData = await oraclefgaservice.FetchTableDataAsync();
         try
         {
             

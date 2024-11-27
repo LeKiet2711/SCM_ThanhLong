@@ -6,16 +6,136 @@
 @using BlazorDownloadFile
 @inject IBlazorDownloadFileService downloadFileService
 
-
-<h3>Ký số hóa đơn</h3>
-
-<div class="form-group">
-    <button class="btn btn-primary" @onclick="GenerateKeys">Tạo cặp khóa RSA</button>
-    <p>Public Key: @publicKey</p>
-    @if (!string.IsNullOrEmpty(publicKey))
-    {
-        <button class="btn btn-info" @onclick="DownloadPublicKey">Tải xuống Public Key</button>
+<style>
+    /* Giao diện chung */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-image: url('./images/phapluat3.jpg');
+        background-size: cover;
+        background-attachment: fixed;
     }
+
+        /* Overlay để làm mờ hình nền */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Tạo hiệu ứng tối màu */
+            z-index: -1;
+        }
+
+    /* Container chính */
+    .container {
+        background-color: rgba(255, 255, 255, 0.9); /* Làm mờ để hòa với nền */
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 700px;
+        text-align: center;
+    }
+
+    /* Tiêu đề */
+    h3 {
+        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', 'Script MT';
+        font-size: 28px;
+        color: #007bff;
+        margin-bottom: 20px;
+    }
+
+    /* Form nhóm */
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .form-group input[type="file"],
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 5px;
+        }
+
+    /* Nút */
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .btn-info {
+        background-color: #17a2b8;
+        color: #fff;
+    }
+
+        .btn-info:hover {
+            background-color: #117a8b;
+        }
+
+    .btn-success {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+        .btn-success:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background-color: #218838;
+        }
+</style>
+
+<div class="container">
+    <h3>KÝ SỐ HÓA ĐƠN</h3>
+
+    <!-- Tạo cặp khóa RSA -->
+    <div class="form-group">
+        <button class="btn btn-primary" @onclick="GenerateKeys">Tạo cặp khóa RSA</button>
+        <p><strong>Public Key:</strong> @publicKey</p>
+        @if (!string.IsNullOrEmpty(publicKey))
+        {
+            <button class="btn btn-info" @onclick="DownloadPublicKey">Tải xuống Public Key</button>
+        }
+    </div>
+
+    <!-- Tải lên Public Key -->
     <div class="form-group">
         <label for="publicKeyFile">Tải lên file Public key (.txt):</label>
         <InputFile OnChange="UploadPublicKeyFile" class="form-control" id="publicKeyFile" />
@@ -32,29 +152,29 @@
 
     <!-- Tải lên Private Key -->
     <div class="form-group">
-        <label for="PrivateKeyFile">Tải lên file Private key (.txt):</label>
+        <label for="privateKeyFile">Tải lên file Private key (.txt):</label>
         <InputFile OnChange="UploadPrivateKeyFile" class="form-control" id="privateKeyFile" />
     </div>
-</div>
+    <hr style="border: 1px solid #ddd; margin: 20px 0;">
 
-<hr style="border: 1px solid black; width: 50%;">
-
-<div class="form-group">
-    <InputFile OnChange="UploadFile" />
-    <p>@uploadedFileName</p>
-</div>
-
-<div class="form-group">
-    <button class="btn btn-success" @onclick="SignInvoice" disabled="@(uploadedFile == null)">Ký số</button>
-</div>
-
-@if (!string.IsNullOrEmpty(signedFilePath))
-{
+    <!-- Upload file hóa đơn -->
     <div class="form-group">
-        <a class="btn btn-info" href="@signedFilePath" download>Download Hóa đơn đã ký</a>
+        <InputFile OnChange="UploadFile" />
+        <p><strong>File tải lên:</strong> @uploadedFileName</p>
     </div>
-}
 
+    <!-- Nút Ký Số -->
+    <div class="form-group">
+        <button class="btn btn-success" @onclick="SignInvoice" disabled="@(uploadedFile == null)">Ký số</button>
+    </div>
+    <!-- Tải xuống hóa đơn đã ký -->
+    @if (!string.IsNullOrEmpty(signedFilePath))
+    {
+        <div class="form-group">
+            <a class="btn btn-info" href="@signedFilePath" download>Download Hóa đơn đã ký</a>
+        </div>
+    }
+</div>
 @code {
     private RSA_ChuKySo_Service rsaService = new RSA_ChuKySo_Service();
     private string? publicKey;

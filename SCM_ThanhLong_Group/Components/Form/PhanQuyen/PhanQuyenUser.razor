@@ -7,55 +7,196 @@
 @inject Users user
 @inject NavigationManager NavigationManager
 
-<TelerikComboBox Data="@lstUser"
-                 Value="@userGet.username"
-                 Filterable="true"
-                 FilterOperator="@StringFilterOperator.Contains"
-                 ValueField="username"
-                 TextField="username"
-                 Placeholder="Chọn user"
-                 Width="340px"
-                 ValueChanged="@(async (string args)=>await OnUserSelected(args))">
-    <ComboBoxSettings>
-        <ComboBoxPopupSettings Height="250px" MaxHeight="300px" MinHeight="75px" />
-    </ComboBoxSettings>
-</TelerikComboBox>
+<style>
+    /* Giao diện chung */
+    body {
+        font-family: Arial, sans-serif;
+        /* background-color: #f5f7fa; */
+        color: #333;
+        margin: 0;
+        background-image: url('./images/bgdep.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+    }
 
-<div style="overflow-x: auto; white-space: nowrap; margin-top:40px">
-    <div style="display: inline-block; width: 900px;margin-right:20px">
-        <table class="table">
-            <thead>
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1); /* Tạo hiệu ứng tối màu */
+            z-index: -1;
+        }
+
+    /* Container chính */
+    .container {
+        
+        text-align: center;
+        background: #fff;
+        margin-top: 20px;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        max-width: 900px;
+       /*  margin-top:200px; */
+    }
+
+    /* Tiêu đề */
+    .title {
+        font-size: 32px;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 20px;
+    }
+
+    /* ComboBox */
+    .telerik-combobox {
+        margin-bottom: 20px;
+        border: 2px solid #007bff;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+        max-width: 340px;
+        margin: 0 auto 20px;
+        transition: box-shadow 0.2s;
+    }
+
+        .telerik-combobox:hover {
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        }
+
+    /* Bảng phân quyền */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        margin-top: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .table thead {
+            background-color: #007bff;
+            color: #fff;
+            text-align: left;
+        }
+
+        .table th, .table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
+            background-color: #e9f5ff;
+            cursor: pointer;
+        }
+
+    /* Checkbox with icons */
+    input[type="checkbox"] {
+        transform: scale(1.2);
+        cursor: pointer;
+        margin: 0;
+    }
+
+        input[type="checkbox"]:hover {
+            transform: scale(1.3);
+            transition: transform 0.2s ease;
+        }
+
+    /* Tooltips */
+    .tooltip {
+        visibility: hidden;
+        position: absolute;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px;
+        z-index: 1;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -60px;
+    }
+
+    input[type="checkbox"]:hover + .tooltip {
+        visibility: visible;
+    }
+</style>
+
+<div class="container">
+    <!-- Tiêu đề -->
+    <h1 class="title">Phân Quyền User</h1>
+
+    <!-- ComboBox -->
+    <TelerikComboBox Data="@lstUser"
+                     Value="@userGet.username"
+                     Filterable="true"
+                     FilterOperator="@StringFilterOperator.Contains"
+                     ValueField="username"
+                     TextField="username"
+                     Placeholder="Chọn user"
+                     Width="340px"
+                     ValueChanged="@(async (string args) => await OnUserSelected(args))">
+        <ComboBoxSettings>
+            <ComboBoxPopupSettings Height="250px" MaxHeight="300px" MinHeight="75px" />
+        </ComboBoxSettings>
+    </TelerikComboBox>
+
+    <!-- Bảng phân quyền -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Table Name</th>
+                <th>Xem</th>
+                <th>Thêm</th>
+                <th>Sửa</th>
+                <th>Xóa</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tablePermission in lstTables)
+            {
                 <tr>
-                    <th>Table Name</th>
-                    <th>Xem</th>
-                    <th>Them</th>
-                    <th>Sua</th>
-                    <th>Xoa</th>
+                    <td>@tablePermission.TableName</td>
+                    <td>
+                        <input type="checkbox" checked="@tablePermission.Xem"
+                               @onchange="async (e) => await ViewPermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        <span class="tooltip">Xem</span>
+                    </td>
+                    <td>
+                        <input type="checkbox" checked="@tablePermission.Them"
+                               @onchange="async (e) => await AddPermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        <span class="tooltip">Thêm</span>
+                    </td>
+                    <td>
+                        <input type="checkbox" checked="@tablePermission.Sua"
+                               @onchange="async (e) => await UpdatePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        <span class="tooltip">Sửa</span>
+                    </td>
+                    <td>
+                        <input type="checkbox" checked="@tablePermission.Xoa"
+                               @onchange="async (e) => await DeletePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
+                        <span class="tooltip">Xóa</span>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var tablePermission in lstTables)
-                {
-                    <tr>
-                        <td>@tablePermission.TableName</td>
-                        <td>
-                            <input type="checkbox" checked="@tablePermission.Xem" @onchange="async (e) => await ViewPermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
-                        </td>
-                        <td>
-                            <input type="checkbox" checked="@tablePermission.Them" @onchange="async (e) => await AddPermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
-                        </td>
-                        <td>
-                            <input type="checkbox" checked="@tablePermission.Sua" @onchange="async (e) => await UpdatePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
-                        </td>
-                        <td>
-                            <input type="checkbox" checked="@tablePermission.Xoa" @onchange="async (e) => await DeletePermission(tablePermission, (bool)((ChangeEventArgs)e).Value)" />
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
 </div>
+
 @code {
     private List<Users> lstUser = new List<Users>();
     private List<TablePermission> lstTables = new List<TablePermission>();
@@ -167,7 +308,7 @@
     private async Task ViewPermission(TablePermission tablePermission, bool isGranted)
     {
         string sql = "";
-        if (user.username == null)
+        if (userGet.username == null)
         {
             toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
             return;
@@ -215,7 +356,7 @@
     private async Task AddPermission(TablePermission tablePermission, bool isGranted)
     {
         string sql = "";
-        if (user.username == null)
+        if (userGet.username == null)
         {
             toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
             return;
@@ -263,7 +404,7 @@
     private async Task UpdatePermission(TablePermission tablePermission, bool isGranted)
     {
         string sql = "";
-        if (user.username == null)
+        if (userGet.username == null)
         {
             toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
             return;
@@ -310,7 +451,7 @@
     private async Task DeletePermission(TablePermission tablePermission, bool isGranted)
     {
         string sql = "";
-        if (user.username == null)
+        if (userGet.username == null)
         {
             toastService.ShowError("Vui lòng chọn user muốn cấp quyền.");
             return;

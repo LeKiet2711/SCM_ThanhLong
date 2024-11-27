@@ -1,27 +1,59 @@
 ﻿@page "/Error"
 @using System.Diagnostics
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-image: url('./images/error.webp');
+        background-size: cover;
+        background-attachment: fixed;
+    }
 
+        /* Overlay để làm mờ hình nền */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1); /* Tạo hiệu ứng tối màu */
+            z-index: -1;
+        }
+</style>
 <PageTitle>Error</PageTitle>
+<link href="css/error.css" rel="stylesheet" />
+@* <img class="error-icon" src="./images/warning.png" /> *@
+<div class="error-container">
+    <!-- Biểu tượng cảnh báo -->
+    
+    
+    <!-- Thông báo chính -->
+    <h1 class="error-title">Lỗi!</h1>
+    <h2 class="error-subtitle">Bạn không có quyền truy cập!</h2>
 
-<h1 class="text-danger">Lỗi !</h1>
-<h2 class="text-danger">Bạn không có quyền truy cập !</h2>
+    @if (ShowRequestId)
+    {
+        <p class="request-id">
+            <strong>Request ID:</strong> <code>@RequestId</code>
+        </p>
+    }
 
-@if (ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@RequestId</code>
-    </p>
-}
+    <!-- Chi tiết lỗi -->
+    <div class="error-details">
+        <h3>Chú ý</h3>
+        <p>
+            Vui lòng liên hệ <strong>Nhà phát triển</strong> hoặc <strong>Quản trị viên</strong> của hệ thống để được cấp quyền truy cập.
+        </p>
+    </div>
+</div>
 
-<h3>Chú ý</h3>
-<p>
-    Vui lòng liên hệ <strong>Nhà phát triển</strong> hoặc <strong>Quản trị viên</strong>  của hệ thống để được cấp quyền truy cập.
-</p>
-<p>
 
-</p>
-
-@code{
+@code {
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
 

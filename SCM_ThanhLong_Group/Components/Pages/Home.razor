@@ -1,14 +1,18 @@
 ﻿@page "/Home"
+@* @using SCM_ThanhLong_Group.Components.Layout *@
 @rendermode InteractiveServer
 @inject IToastService toastService
 
+@inject NavigationManager Navigation
+
 <style>
     .hero {
-        background-image: url('../images/chuoi-cung-ung.jpg');
+        background-image: url('../images/bghome1.jpg');
         background-size: cover;
+        background-attachment: fixed;
         background-position: center;
         height: 88vh;
-        display: flex;
+        max-width:100%;
         align-items: center;
         justify-content: center;
         position: relative;
@@ -16,13 +20,18 @@
         color: purple;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
+    h1{
+        font-family:'Berlin Sans FB';
+        font-size: 50px;
+        color: #FFCC00;
+    }
 </style>
 
 
 <PageTitle>Home</PageTitle>
 <div class="hero">
     <div class="hero-content">
-        <h1>Chuỗi Cung Ứng Thanh Long</h1>
+        <h1 style="animation: bounce 2s infinite;">Quản Lý Cung Ứng Thanh Long</h1>
         <button class="btn btn-primary call-to-action" @onclick="ShowToast">Tìm hiểu thêm</button>
     </div>
 </div>
@@ -31,6 +40,7 @@
 @code {
     private void ShowToast()
     {
-        toastService.ShowInfo("Chào mừng bạn đến với chương trình quản lý Chuỗi Cung Ứng Thanh Long!");
+        // toastService.ShowInfo("Chào mừng bạn đến với chương trình quản lý Chuỗi Cung Ứng Thanh Long!");
+        Navigation.NavigateTo("/gioithieu");
     }
 }

@@ -1,0 +1,165 @@
+﻿@page "/gioithieu"
+@using SCM_ThanhLong_Group.Components.Layout
+@layout LoginLayout
+
+@* Sử dụng phần tử Header, Các phần giới thiệu và phần footer *@
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-image: url('./images/bgdep10.jpg');
+        background-size: cover;
+        margin: 0;
+    }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1); /* Tạo hiệu ứng tối màu */
+            z-index: -1;
+        }
+
+    .gioithieu-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Header */
+    .header {
+        background-color: #007bff;
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+
+        .header h1 {
+            font-size: 36px;
+        }
+
+        .header p {
+            font-size: 20px;
+        }
+
+    /* Section Titles */
+    .section-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    /* Section Content */
+    .section-content {
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    ul.section-content {
+        padding-left: 20px;
+    }
+
+    /* Benefits and Business Needs Section */
+    .section {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    /* Call to Action */
+    .cta {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+        .cta h2 {
+            font-size: 32px;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            font-size: 20px;
+        }
+
+        .cta .btn-primary {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+
+            .cta .btn-primary:hover {
+                background-color: #0056b3;
+            }
+
+    /* Footer */
+    .footer {
+        background-color: #007bff;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        margin-top: 50px;
+    }
+
+</style>
+
+<div class="gioithieu-container">
+    <!-- Header -->
+    <header class="header">
+        <h1>Hệ Thống Quản Lý Thanh Long</h1>
+        <p>Giải pháp tối ưu cho việc quản lý sản phẩm và quy trình trồng trọt thanh long</p>
+    </header>
+
+    <!-- Lợi ích của Thanh Long -->
+    <section class="section benefits">
+        <h2 class="section-title">Lợi ích của Thanh Long</h2>
+        <p class="section-content">
+            Thanh long, còn được biết đến là trái cây "vàng" của Việt Nam, không chỉ có giá trị dinh dưỡng cao mà còn mang lại nhiều lợi ích sức khỏe như:
+        </p>
+        <ul class="section-content">
+            <li><strong>Cung cấp nhiều vitamin và khoáng chất:</strong> Thanh long chứa nhiều vitamin C, B, chất xơ, và khoáng chất như sắt, kẽm, giúp tăng cường sức đề kháng và cải thiện hệ tiêu hóa.</li>
+            <li><strong>Cải thiện làn da:</strong> Với các thành phần chống oxy hóa, thanh long giúp bảo vệ da khỏi tác hại của ánh nắng và ô nhiễm môi trường.</li>
+            <li><strong>Tốt cho tim mạch:</strong> Thanh long có hàm lượng chất xơ cao giúp giảm cholesterol xấu và cải thiện sức khỏe tim mạch.</li>
+            <li><strong>Chống ung thư:</strong> Các nghiên cứu cho thấy thanh long có thể hỗ trợ trong việc ngăn ngừa một số loại ung thư nhờ vào các chất chống oxy hóa tự nhiên.</li>
+        </ul>
+    </section>
+
+    <!-- Nhu cầu của Doanh Nghiệp -->
+    <section class="section business-needs">
+        <h2 class="section-title">Nhu cầu của Doanh Nghiệp</h2>
+        <p class="section-content">
+            Các doanh nghiệp sản xuất, trồng trọt, và xuất khẩu thanh long cần một hệ thống quản lý hiệu quả để đáp ứng những yêu cầu ngày càng khắt khe của thị trường:
+        </p>
+        <ul class="section-content">
+            <li><strong>Quản lý số lượng hàng hóa:</strong> Hệ thống giúp doanh nghiệp kiểm soát số lượng thanh long trong kho, dễ dàng theo dõi số lượng xuất nhập hàng hóa, tránh tình trạng thiếu hoặc thừa hàng.</li>
+            <li><strong>Quản lý quy trình trồng trọt:</strong> Với các dữ liệu về chăm sóc cây trồng, hệ thống giúp nông dân và doanh nghiệp theo dõi và điều chỉnh các yếu tố ảnh hưởng đến năng suất và chất lượng của thanh long.</li>
+            <li><strong>Quản lý nguồn gốc xuất xứ:</strong> Đảm bảo rằng mỗi sản phẩm thanh long đều có đầy đủ thông tin về nguồn gốc, giúp tạo dựng niềm tin cho người tiêu dùng và các đối tác kinh doanh.</li>
+            <li><strong>Hiệu quả trong quản lý tài chính và chi phí:</strong> Hệ thống quản lý giúp tính toán chi phí sản xuất, quản lý lợi nhuận và tối ưu hóa các quy trình, giúp doanh nghiệp tiết kiệm chi phí và gia tăng lợi nhuận.</li>
+            <li><strong>Quản lý chất lượng sản phẩm:</strong> Với hệ thống theo dõi chất lượng từ khi trồng cho đến khi xuất khẩu, doanh nghiệp có thể đảm bảo sản phẩm đạt tiêu chuẩn chất lượng quốc tế, đồng thời nâng cao uy tín trên thị trường.</li>
+        </ul>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta">
+        <h2>Hãy sử dụng hệ thống quản lý thanh long của chúng tôi!</h2>
+        <p style="color: black">Tối ưu hóa quy trình trồng trọt, sản xuất và xuất khẩu để nâng cao hiệu quả kinh doanh và chất lượng sản phẩm.</p>
+        <a href="https://www.facebook.com/ThanhLongBinhThuan" class="btn btn-primary">Liên hệ ngay</a>
+        <a href="/Home" class="btn btn-primary">Home</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Hệ Thống Quản Lý Thanh Long | Tất cả quyền lợi được bảo lưu</p>
+    </footer>
+</div>
+
+
