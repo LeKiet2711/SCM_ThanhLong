@@ -20,11 +20,17 @@
         <label for="publicKeyFile">Tải lên file Public key (.txt):</label>
         <InputFile OnChange="UploadPublicKeyFile" class="form-control" id="publicKeyFile" />
     </div>
-    <p>Private Key: @privateKey</p>
-    @if (!string.IsNullOrEmpty(privateKey))
-    {
-        <button class="btn btn-info" @onclick="DownloadPrivateKey">Tải xuống Private Key</button>
-    }
+
+    <!-- Hiển thị Private Key -->
+    <div class="form-group">
+        <p><strong>Private Key:</strong> @privateKey</p>
+        @if (!string.IsNullOrEmpty(privateKey))
+        {
+            <button class="btn btn-info" @onclick="DownloadPrivateKey">Tải xuống Private Key</button>
+        }
+    </div>
+
+    <!-- Tải lên Private Key -->
     <div class="form-group">
         <label for="PrivateKeyFile">Tải lên file Private key (.txt):</label>
         <InputFile OnChange="UploadPrivateKeyFile" class="form-control" id="privateKeyFile" />

@@ -33,6 +33,7 @@ namespace SCM_ThanhLong_Group.Service
                     {
                         try
                         {
+                       
                             using (OracleCommand command = new OracleCommand("add_fga_policy", conn))
                             {
                                 command.CommandType = CommandType.StoredProcedure;
@@ -46,10 +47,16 @@ namespace SCM_ThanhLong_Group.Service
                             }
                             await transaction.CommitAsync();
                         }
-                        catch
+                        catch (OracleException ex) when (ex.Number == 28101) // Kiểm tra lỗi ORA-28101
                         {
                             await transaction.RollbackAsync();
-                            throw;
+                            Console.WriteLine("Policy đã tồn tại.");
+                        }
+                        catch (Exception ex) // Xử lý các lỗi khác
+                        {
+                            await transaction.RollbackAsync();
+                            Console.WriteLine($"Lỗi xảy ra: {ex.Message}");
+                            throw; // Ném lại ngoại lệ nếu cần
                         }
                     }
                 }
@@ -246,7 +253,7 @@ namespace SCM_ThanhLong_Group.Service
                             
                         }
                         await transaction.CommitAsync();
-                        await FetchTableDataAsync();
+                       
                     }
                 }
                 
