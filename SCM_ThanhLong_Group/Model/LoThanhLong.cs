@@ -9,11 +9,11 @@ namespace SCM_ThanhLong_Group.Model
         public string MaLo { get; set; }
 
         [Required(ErrorMessage = "Vui lòng không để trống hộ trồng")]
-        public int HoTrongID { get; set; }
+        public int? HoTrongID { get; set; }
 
         public string TenHoTrong { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn ngày thu hoạch hợp lệ")]
-        public DateTime NgayThuHoach { get; set; }
+        public DateTime? NgayThuHoach { get; set; }
         public string QRCode { get; set; }
         public string TrangThai { get;set; }
         public string MoTa { get; set; }

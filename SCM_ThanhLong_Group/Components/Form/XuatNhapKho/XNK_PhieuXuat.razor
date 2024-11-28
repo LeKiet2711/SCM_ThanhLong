@@ -152,6 +152,37 @@ else
     </div>
 </div>
 
+<div class="modal fade @deleteModalClass" tabindex="-1" role="dialog" style="@deleteModalDisplayStyle">
+    <div class="modal-dialog model-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#2f8f3a; color:beige">
+                <h5 class="modal-title"><b>Xóa phiếu xuất</b></h5>
+                <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#dedcd8; color:brown; font-size:30px">
+                <p style="color:red">Bạn có chắc chắn muốn xóa phiếu xuất này không?</p>
+                <EditForm Model="@phieuXuat" OnValidSubmit="deletePhieuXuat">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="SoPhieuXuat" class="control-label">Số phiếu xuất: </label>
+                        <label><b>@phieuXuat.SoPhieuXuat</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="TenKho" class="control-label">Tên kho: </label>
+                        <label><b>@phieuXuat.TenKho</b></label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Xóa phiếu xuất</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Đóng</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade @addChiTietModalClass" tabindex="-1" role="dialog" style="@addChiTietModalDisplayStyle">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

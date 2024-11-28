@@ -82,7 +82,7 @@ else
                     </div>
                     <div class="form-group">
                         <label for="NgayThuHoach" class="control-label"><b>Ngày thu hoạch: </b></label>
-                        <InputDate class="form-control" @bind-Value=@loThanhLong.NgayThuHoach />
+                        <InputDate class="form-control" @bind-Value=@loThanhLong.NgayThuHoach format="dd/MM/yyyy" />
                         <ValidationMessage For="@(() => loThanhLong.NgayThuHoach)" />
                     </div>
                     <div class="form-group">
@@ -180,7 +180,7 @@ else
                     </div>
                     <div class="form-group">
                         <label for="NgayThuHoach" class="control-label">Ngày thu hoạch: </label>
-                        <label><b>@loThanhLong.NgayThuHoach.ToShortDateString()</b></label>
+                        <label><b>@loThanhLong.NgayThuHoach</b></label>
                     </div>
                     <div class="form-group">
                         <label for="TrangThai" class="control-label">Trạng thái: </label>

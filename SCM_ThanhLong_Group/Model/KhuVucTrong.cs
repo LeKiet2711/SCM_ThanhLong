@@ -11,6 +11,7 @@ namespace SCM_ThanhLong_Group.Model
         public string TenKhuVuc { get; set; }
         public string MoTa { get; set; }
         public int isDeleted { get; set; }
+        [Required(ErrorMessage = "Link địa chỉ không được để trống.")]
         public string LinkQR { get; set; }
         public ICollection<HoTrong> HoTrongs { get; set; }
         public KhuVucTrong ShallowCopy()
