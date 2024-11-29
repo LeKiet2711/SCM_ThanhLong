@@ -71,7 +71,6 @@ else
     {
         try
         {
-            // Gọi phương thức dịch vụ với các tham số DateTime
             tonKhoList = await TonKho_Service.BaoCaoTonKho(ngayNhap, ngayXuat);
 
             if (tonKhoList.Count == 0)
