@@ -71,6 +71,7 @@ else
                     <div class="form-group">
                         <label for="linkQR" class="control-label"><b>Địa chỉ truy cập khu vực: </b></label>
                         <InputText class="form-control" @bind-Value=@khuVucTrong.LinkQR />
+                        <ValidationMessage For="@(() => khuVucTrong.LinkQR)" />
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Thêm khu vực trồng</button>

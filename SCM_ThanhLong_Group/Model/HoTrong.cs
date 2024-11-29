@@ -14,7 +14,7 @@ namespace SCM_ThanhLong_Group.Model
         public string SoDienThoai { get; set; }
         public int isDeleted { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn khu vực")]
-        public int KhuVucTrongID { get; set; }
+        public int? KhuVucTrongID { get; set; }
         public string TenKhuVucTrong { get; set; }
         public KhuVucTrong KhuVucTrong { get; set; }
 

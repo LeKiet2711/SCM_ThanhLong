@@ -21,7 +21,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task<List<TonKho>> BaoCaoTonKho(DateTime ngayNhap, DateTime ngayXuat)
         {
-            List<TonKho> result = new List<TonKho>();
+            var result = new List<TonKho>();
 
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
@@ -30,9 +30,12 @@ namespace SCM_ThanhLong_Group.Service
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    // Truyền giá trị DateTime vào store procedure
-                    cmd.Parameters.Add("p_NgayNhap", OracleDbType.Date).Value = ngayNhap;
-                    cmd.Parameters.Add("p_NgayXuat", OracleDbType.Date).Value = ngayXuat;
+                    // Truyền tham số đầu vào
+                    cmd.Parameters.Add("NgayNhap", OracleDbType.Date).Value = ngayNhap;
+                    cmd.Parameters.Add("NgayXuat", OracleDbType.Date).Value = ngayXuat;
+
+                    // REF CURSOR để lấy dữ liệu
+                    cmd.Parameters.Add("OutCursor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
                     using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
                     {
@@ -53,6 +56,7 @@ namespace SCM_ThanhLong_Group.Service
             }
             return result;
         }
+
 
     }
 

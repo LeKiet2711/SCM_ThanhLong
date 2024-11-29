@@ -43,7 +43,7 @@ else
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background:#2f8f3a; color:#dedcd8">
-                <h5 class="modal-title"><b>Thêm chi tiết phiếu nhập</b></h5>
+                <h5 class="modal-title"><b>Thêm chi tiết phiếu xuất</b></h5>
                 <button type="button" class="close" @onclick="CloseAddModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -84,13 +84,13 @@ else
     <div class="modal-dialog model-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background:#2f8f3a; color:beige">
-                <h5 class="modal-title"><b>Xóa phiếu nhập</b></h5>
+                <h5 class="modal-title"><b>Xóa phiếu xuất</b></h5>
                 <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body" style="background:#dedcd8; color:brown; font-size:30px">
-                <p style="color:red">Bạn có chắc chắn muốn xóa phiếu nhập này không?</p>
+                <p style="color:red">Bạn có chắc chắn muốn xóa phiếu xuất này không?</p>
                 <EditForm Model="@ctpx" OnValidSubmit="deleteChiTietPhieuXuat">
                     <DataAnnotationsValidator />
                     <div class="form-group">
