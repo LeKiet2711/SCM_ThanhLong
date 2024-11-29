@@ -5,8 +5,55 @@
 }
 
 :root {
-	--chieu-cao-top: 72px;
+	--chieu-cao-top: 10vh;
 }
+
+input::placeholder {
+	color: #272c31;
+}
+
+.input-dep {
+	font-weight: bold;
+	padding: 7px 25px;
+	border-radius: 29px;
+	border: none;
+	box-shadow: 1px 1px 10px #00efff;
+	color: #272c31;
+	width: 300px;
+}
+
+.input-dep:active {
+	outline: none;
+}
+/*xóa*/
+select:focus {
+	border-color: #555;
+	box-shadow: 0 0 5px rgba(0,0,0,0.2);
+	outline: none;
+	color: #272c31;
+}
+
+/*Khi sổ xuống nó sẽ như thế này*/
+option {
+	background-color: #ffffff;
+	color: #272c31;
+	font-size: 16px;
+	font-weight: bold;
+	font-family: 'Segoe UI', sans-serif;
+	padding: 3.4px 25px;
+	display:block;
+}
+
+select {
+	font-weight: bold;
+	padding: 7px 25px;
+	border-radius: 29px;
+	border: none;
+	box-shadow: 1px 1px 10px #00efff;
+	color: #272c31;
+	width: 300px;
+}
+/*xoa*/
 
 .background-main {
 	position: relative;
@@ -37,24 +84,73 @@
 	background: transparent;
 	background: linear-gradient(45deg, #da00ff36, #00c9d178);
 	z-index: 3;
+	height: 87vh;
 }
 
 .btn-dang-xuat {
 	background: linear-gradient(45deg, #bc3eff, #bf0000);
-	border-radius: 20px;
+	border-radius: 7px;
 	font-weight: bold;
 }
 .btn-ho-so:hover,
 .btn-dang-xuat:hover {
 	opacity: 0.8;
 	border: 1px solid white;
+	
+}
+
+.btn-ho-so:hover {
+	text-decoration: none;
+}
+
+.btn-ho-so:focus {
 	text-decoration: none;
 }
 
 .btn-ho-so {
 	background: linear-gradient(45deg, #00fff8, #5915c9);
-	border-radius: 29px;
+	border-radius: 7px;
 	border: none;
 	text-decoration: none;
 }
 
+.container-content {
+	width: 85vw;
+	margin-left: 15vw;
+	margin-top: var(--chieu-cao-top);
+	min-height:100vh;
+}
+
+.menu-class {
+	width: 13vw;
+
+}
+
+.nut-dep {
+	margin: 10px 5px;
+	padding: 7px 25px;
+	border: none;
+	border-radius: 20px;
+	background: linear-gradient(45deg, #1df0ff, #00ff4a);
+	color: #000;
+	font-weight: bold;
+	box-shadow: 1px 2px 14px #00f8ac;
+	min-width: 130px;
+}
+
+.nut-dep:hover {
+	color: white;
+}
+
+.chu-dep {
+	font-size: 2rem;
+	font-weight: bold;
+	background: linear-gradient(128.87deg, #2bc3d4 14.05%, #d600c9 89.3%);
+	background-clip: text;
+	color: transparent;
+	--web-kit-background-clip: text;
+	display: block;
+	width: 50%;
+	margin: auto;
+	text-align: center;
+}

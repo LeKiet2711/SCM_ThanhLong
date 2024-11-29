@@ -105,5 +105,63 @@ namespace SCM_ThanhLong_Group.Service
             }
             return lst;
         }
+
+        public async Task<List<string>> GET_ALL_TABLE_NAME_OF_USER()
+        {
+            List<string> lst = new List<string>();
+            try
+            {
+                using (OracleConnection kn = _dbConnection.GetConnection("sys", "sys", "SYSDBA"))
+                {
+                    OracleCommand oracleCommand = new OracleCommand("GET_ALL_TABLE_NAME_OF_USER", kn);
+                    oracleCommand.CommandType = CommandType.StoredProcedure;
+                    oracleCommand.Parameters.Add("USERNAMEIN", OracleDbType.Varchar2).Value = "C##ADMIN";
+                    oracleCommand.Parameters.Add("TABLEOUT", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    kn.Open();
+                    OracleDataReader r = oracleCommand.ExecuteReader();
+                    if (r.HasRows)
+                    {
+                        while (r.Read())
+                        {
+                            lst.Add(r["TABLE_NAME"].ToString());
+                        }
+                    }
+                    kn.Close();
+                }
+            }
+            catch (Exception e)
+            {
+            }
+            return lst;
+        }
+        
+        public async Task<bool> create_audit_policy_standard(string auditName, string auditActions, string auditTable)
+        {
+            bool result = false;
+            try
+            {
+                using (OracleConnection kn = _dbConnection.GetConnection("C##ADMIN", "oracle"))
+                {
+                    OracleCommand oracleCommand = new OracleCommand("create_audit_policy_standard", kn);
+                    oracleCommand.Parameters.Add("audit_name", OracleDbType.Varchar2).Value = auditName;
+                    oracleCommand.Parameters.Add("audit_actions", OracleDbType.Varchar2).Value = auditActions;
+                    oracleCommand.Parameters.Add("audit_object_schema", OracleDbType.Varchar2).Value = "C##ADMIN";
+                    oracleCommand.Parameters.Add("audit_object_name", OracleDbType.Varchar2).Value = auditTable;
+                    oracleCommand.CommandType = CommandType.StoredProcedure;
+                    kn.Open();
+                    oracleCommand.ExecuteNonQuery();
+                    kn.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                result = false;
+            }
+            return result;
+        }
+
+
+
+
     }
 }

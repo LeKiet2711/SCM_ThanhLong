@@ -19,22 +19,22 @@
 
 <div class="page background-main">
     <TelerikRootComponent>
-    <div class="">
+    <div style="height: 60vh;" class="menu-class">
             <NavMenu />
     </div>
-    
-    <main>
+
+        <main>
             <div style="position: absolute; left:0; top: 0; height: 72px; background: transparent; border:none; backdrop-filter: blur(20px); background-image: linear-gradient(to right, rgba(13, 17, 22,0.3), rgba(13, 17, 22,0.3)); position: fixed; z-index: 3;" class="top-row px-4 navigation-top-menu">
-            <span>Xin chào, @UserService.currentUserName!</span>
+                <span>Xin chào, @UserService.currentUserName!</span>
                 <a href="/Home" class="btn btn-primary btn-ho-so ms-3">Hồ sơ</a>
                 <button @onclick="HandleLogout" class="btn btn-secondary btn-dang-xuat ms-2">Đăng xuất</button>
-        </div>
+            </div>
 
-        <article style="margin-top: 72px;" class="content px-4">
-            
-            @Body
-        </article>
-    </main>
+            <article style="width: 85vw;margin-top: 72px; margin-left: 15vw;" class="content px-4 container-content">
+
+                @Body
+            </article>
+        </main>
     </TelerikRootComponent>
 </div>
 

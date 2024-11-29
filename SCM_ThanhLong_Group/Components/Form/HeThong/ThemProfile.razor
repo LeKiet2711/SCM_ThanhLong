@@ -144,7 +144,7 @@
 
         <h3>Thêm profile</h3>
         <label for="profile-name">Tên profile</label>
-        <input id="profile-name" placeholder="Nhập tên profile" @bind="tenProfile" />
+        <input class="input-dep" id="profile-name" placeholder="Nhập tên profile" @bind="tenProfile" />
 
         <label for="profile-type">Thuộc tính profile</label>
         <select class="" id="profile-type" @bind="profileAttribute">
@@ -165,12 +165,12 @@
         </select>
 
         <label class="khanhbang" for="limit">Vui lòng nhập số giới hạn</label>
-        <input id="limit" type="number" min="1" @bind="value" />
+        <input class="input-dep" id="limit" type="number" min="1" @bind="value" />
 
-        <button @onclick="addAProfileAttribute" class="khanhbang">Thêm vào danh mục profile</button>
+        <button class="nut-dep" @onclick="addAProfileAttribute" >Thêm vào danh mục profile</button>
 
 
-        <button @onclick="taoProfile" style=" color: white; margin: 50px; font-weight: bold; width: 250px; height: 30px; border-radius:5px; border: none; background: url('https://cdn.pixabay.com/photo/2019/03/10/01/12/planet-4045330_960_720.jpg'); background-size: cover;">
+        <button class="nut-dep" @onclick="taoProfile" >
             Lưu
         </button>
     </div>
