@@ -1,0 +1,122 @@
+﻿:root {
+	--chieu-cao-dong-bang: 36px;
+	--chieu-dai-khoi: 80vw
+}
+
+.container-table {
+	width: var(--chieu-dai-khoi);
+	margin: auto;
+	border-radius: 20px;
+	background: transparent;
+	height: 70vh;
+	backdrop-filter: blur(20px);
+	/* background-image: linear-gradient(45deg, rgb(14 14 14 / 37%), rgb(64 65 67 / 41%)); */
+	/* background: linear-gradient(180deg, #fff3, #dddcfc33 40.63%, #8f85ff33);
+             */
+	background: linear-gradient(193deg, #a7a3a333, #32383833 40.63%, #37364033);
+	border: 1px solid rgb(112, 112, 115);
+	/* opacity: 0.7; */
+	display: flex;
+	overflow-y: scroll;
+	/* hai thuộc tính quy định chiều rộng và màu scrollbar */
+	/* scrollbar-width:thin; */
+	/* scrollbar-color: white  transparent; */
+	/*hết thuộc tính trên quy định scrollbar */
+	padding: 20px 10px;
+	position: relative;
+}
+
+	/* ================================= PHẦN CUSTOM THANH CUỘN ======================================= */
+	/* Custom thanh cuộn chiều dài và rộng*/
+	.container-table::-webkit-scrollbar {
+		width: 5px;
+		height: 0.5em;
+	}
+
+	/* Thuộc tính thanh cuộn bao bên ngoài*/
+	.container-table::-webkit-scrollbar-track {
+		background: rgba(94, 91, 91, 0.466);
+		border-radius: 10px;
+		margin-block: 50px;
+	}
+
+	/* thuộc tính con trỏ cuộn */
+	.container-table::-webkit-scrollbar-thumb {
+		background: linear-gradient(to bottom, #ff007f, #00efff);
+		width: 10px;
+		border-radius: 20px;
+	}
+
+		.container-table::-webkit-scrollbar-thumb:hover {
+			background: linear-gradient(to top, #ff007f, #00efff);
+		}
+
+/* ================================= HẾT PHẦN CUSTOM THANH CUỘN ======================================= */
+
+
+.style-table {
+	border-collapse: collapse;
+	color: #eff4fc;
+	min-width: 95%;
+	/* height: 95%; */
+	margin: auto;
+	;
+}
+
+	.style-table tbody tr:hover {
+		background: transparent;
+		background-image: linear-gradient(45deg, rgba(66, 64, 64, 0.644), rgba(21, 21, 22, 0.682));
+		backdrop-filter: blur(20px);
+	}
+
+	.style-table th,
+	.style-table td {
+		border: 1px solid rgb(84, 88, 88);
+		min-height: var(--chieu-cao-dong-bang);
+		text-align: center;
+		line-height: var(--chieu-cao-dong-bang);
+	}
+
+	.style-table thead tr:first-child th:first-child {
+		border-top-left-radius: 15px;
+		display: block;
+		border-bottom: 0;
+		border-right: 0;
+	}
+
+	.style-table thead tr:first-child th:last-child {
+		border-top-right-radius: 15px;
+		display: block;
+		border-bottom: 0;
+		border-left: 0;
+	}
+
+	.style-table tbody tr:last-child td:first-child {
+		border-bottom-left-radius: 15px;
+		display: block;
+		border-right: 0;
+		border-top: 0;
+	}
+
+	.style-table tbody tr:last-child td:last-child {
+		border-bottom-right-radius: 15px;
+		display: block;
+		border-top: 0;
+		border-left: 0;
+	}
+
+.container-table-main {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	font-family: "Mona Sans", "MonaSansFallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+.tieu-de-table {
+	width: var(--chieu-dai-khoi);
+	color: white;
+	margin: 10px 10px;
+	font-size: 19px;
+	text-align: left;
+}
