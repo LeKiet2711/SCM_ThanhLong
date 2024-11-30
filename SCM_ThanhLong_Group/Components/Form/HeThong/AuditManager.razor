@@ -2,14 +2,39 @@
 @rendermode InteractiveServer
 @inject SCM_ThanhLong_Group.Service.Audit_Service auditService
 @* @inject Audit_Service auditService *@
+@inject IJSRuntime iJSRuntime
 
 <link href="mahacss/styleaudit.css" rel="stylesheet" />
+
+<span class="chu-dep">Tạo audit standard</span>
+
+<input class="input-dep" type="text" @bind="auditName" placeholder="Nhập tên Chính sách" />
+
+<select @bind="auditActions">
+    <option >Chọn hành động</option>
+    <option value="SELECT">Select</option>
+    <option value="INSERT">Insert</option>
+    <option value="UPDATE">Cập nhật</option>
+</select>
+
+<select @bind="auditTable">
+    <option>Chọn bảng</option>
+    @if(lstTable != null)
+    {
+        foreach (string table in lstTable)
+        {
+            <option>@table</option>
+        }
+    }
+</select>
+
+<button class="nut-dep" @onclick="CreateAudit">Tạo audit</button>   
 
 
 <br/>
 
-<div class="table-container">
-    <select @onchange="HandleSelectChange">
+@* <div class="table-container"> *@
+    <select class="input-dep" @onchange="HandleSelectChange">
         <option value="ALL" selected>Tất cả</option>
         <option value="UPDATE">Update</option>
         <option value="DELETE">Delete</option>
@@ -50,11 +75,11 @@
             }
         </tbody>
     </table>
-</div>
+@* </div> *@
 
 <h3>Thông tin kiểm toán khi cập nhật khu vực trồng</h3>
-<div class="table-container">
-    <table class="audit-table">
+@* <div class="table-container"> *@
+    <table style="max-width:70%;" class="audit-table">
         <tr>
             <th>AUDIT_ID</th>
             <th>USER_NAME</th>
@@ -94,21 +119,42 @@
             <h3>Chưa có thông tin kiểm toán nào</h3>
         }
     </table>
-</div>
+@* </div> *@
 
 @code {
     List<UnifiedAuditTrail> lst = new List<UnifiedAuditTrail>();
     List<KhuVucTrongAudit> lstKhuVucTrong = new List<KhuVucTrongAudit>();
     private string auditType = "ALL";
+    List<string> lstTable = new List<string>();
+    private string auditName = "";
+    private string auditTable = "";
+    private string auditActions = "";
 
     protected override async Task OnInitializedAsync()
     {
         lst = await auditService.GetAuditKhuVucTrong(auditType);
         lstKhuVucTrong = await auditService.GetTriggerAuditKhuVucTrong();
+        lstTable = await auditService.GET_ALL_TABLE_NAME_OF_USER();
     }
 
     private async void HandleSelectChange(ChangeEventArgs e)
     {
         lst = await auditService.GetAuditKhuVucTrong(e.Value.ToString());
+    }
+
+    private async Task CreateAudit()
+    {
+        if(string.IsNullOrEmpty(auditName)||string.IsNullOrEmpty(auditActions) || string.IsNullOrEmpty(auditTable))
+        {
+            await iJSRuntime.InvokeVoidAsync("alert", "Vui lòng nhập đầy đủ các trường");
+        }
+        else
+        {
+            await auditService.create_audit_policy_standard(auditName, auditActions, auditTable);
+            await iJSRuntime.InvokeVoidAsync("alert", $"tạo chính sách KT_{auditName.ToUpper()} thành công");
+
+        }
+        
+        StateHasChanged(); //Dùng để load lại
     }
 }

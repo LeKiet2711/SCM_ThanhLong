@@ -11,7 +11,7 @@
 @inject Users user
 
 <PageTitle>Cập nhật profile</PageTitle>
-<h3>Cập nhật profile</h3>
+<span class="chu-dep">Cập nhật profile</span>
 
 
 <label for="">Tên profile</label>
@@ -50,13 +50,13 @@
 </select>
 
 <label class="khanhbang" for="limit">Vui lòng nhập số giới hạn</label>
-<input id="limit" type="number" min="1" @bind="value" />
+<input class="input-dep" id="limit" type="number" min="1" @bind="value" />
 
-<button @onclick="addAProfileAttribute" class="khanhbang">Thêm vào danh mục profile</button>
+<button class="nut-dep" @onclick="addAProfileAttribute" >Thêm vào danh mục profile</button>
 
 
 
-<button @onclick="updateProfile" style=" color: white; margin: 50px; font-weight: bold; width: 250px; height: 30px; border-radius:5px; border: none; background: url('https://cdn.pixabay.com/photo/2019/03/10/01/12/planet-4045330_960_720.jpg'); background-size: cover;">
+<button class="nut-dep" @onclick="updateProfile">
     Cập nhật
 </button>
 

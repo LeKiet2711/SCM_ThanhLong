@@ -259,14 +259,12 @@ a, .btn-link {
 }
 
 .combobox_custom {
-	height: 30px;
 	border-radius: 5px;
 	border-color: rgb(12 215 48);
 	color: #5f39f9;
 }
 
 .buttom_custom {
-	height: 40px;
 	border-radius: 21px;
 	border-color: none;
 	background: linear-gradient(45deg, #f71bff, #2ae0b6);
