@@ -29,14 +29,11 @@ namespace SCM_ThanhLong_Group.Service
                 using (OracleCommand cmd = new OracleCommand("BaoCaoTonKho", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
-                    // Truyền tham số đầu vào
                     cmd.Parameters.Add("NgayNhap", OracleDbType.Date).Value = ngayNhap;
                     cmd.Parameters.Add("NgayXuat", OracleDbType.Date).Value = ngayXuat;
 
                     // REF CURSOR để lấy dữ liệu
                     cmd.Parameters.Add("OutCursor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-
                     using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())

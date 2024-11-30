@@ -17,7 +17,7 @@ namespace SCM_ThanhLong_Group.Service
             _user = user;
         }
 
-        public async Task<List<PhieuXuat>> getAllData(int? maKho = null)
+        public async Task<List<PhieuXuat>> getAllData(int khoId, string userId)
         {
             List<PhieuXuat> dataList = new List<PhieuXuat>();
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
@@ -27,7 +27,8 @@ namespace SCM_ThanhLong_Group.Service
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_MaKho", OracleDbType.Int32).Value = maKho.HasValue ? (object)maKho.Value : DBNull.Value;
+                    cmd.Parameters.Add("p_khoId", OracleDbType.Int32).Value = khoId;
+                    cmd.Parameters.Add("p_userId", OracleDbType.Varchar2).Value = userId;
 
                     using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
                     {

@@ -253,7 +253,6 @@ else
             user.password = await Users_Service.GetCurrentPassWord();
             hoTrongList = await PhieuXuat_Service.getHoTrongData();
             khoList = await PhieuXuat_Service.getKhoData();
-            dataList = await PhieuXuat_Service.getAllData();
             loThanhLongList = await PhieuXuat_Service.getLoThanhLongData();
         }
         catch
@@ -271,7 +270,7 @@ else
 
     private async Task LoadData(int maKho)
     {
-        dataList = await PhieuXuat_Service.getAllData(maKho);
+        dataList = await PhieuXuat_Service.getAllData(maKho,user.username);
     }
 
     private void OpenAddModal()
@@ -366,7 +365,7 @@ else
                     ctpx.SoPhieuXuat = phieuXuat.Auto_ID;
                     await ChiTietPhieuXuat_Service.addData(ctpx);
                 }
-                dataList = await PhieuXuat_Service.getAllData(khoId);
+                dataList = await PhieuXuat_Service.getAllData(khoId,user.username);
                 CloseAddModal();
                 ToastService.ShowSuccess("Thêm phiếu xuất thành công!");
                 StateHasChanged();
@@ -391,7 +390,7 @@ else
             {
                 phieuXuat.KhoID = khoId;
                 await PhieuXuat_Service.updateData(phieuXuat);
-                dataList = await PhieuXuat_Service.getAllData(khoId);
+                dataList = await PhieuXuat_Service.getAllData(khoId,user.username);
                 CloseEditModal();
                 ToastService.ShowSuccess("Sửa phiếu xuất thành công!");
                 StateHasChanged();
@@ -410,7 +409,7 @@ else
         {
             await PhieuXuat_Service.deleteData(phieuXuat.Auto_ID);
             await ChiTietPhieuXuat_Service.deleteData(phieuXuat.Auto_ID);
-            dataList = await PhieuXuat_Service.getAllData(khoId);
+            dataList = await PhieuXuat_Service.getAllData(khoId,user.username);
             CloseDeleteModal();
             ToastService.ShowSuccess("Xóa phiếu xuất thành công!");
             StateHasChanged();
