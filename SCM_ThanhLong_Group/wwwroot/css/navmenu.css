@@ -1,5 +1,5 @@
 ﻿.nav-link .bi {
-    font-size: 1.5rem; /* Tăng kích thước biểu tượng, bạn có thể thay đổi giá trị này */
+    font-size: 1.5rem; /* Tăng kích thước biểu tượng */
     position: relative;
     top: -13px; /* Điều chỉnh vị trí theo trục Y */
     margin-right: 25px; /* Khoảng cách giữa biểu tượng và chữ */
