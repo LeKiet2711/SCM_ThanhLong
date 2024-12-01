@@ -47,6 +47,7 @@ else
     private DateTime ngayNhap = DateTime.Now;
     private DateTime ngayXuat = DateTime.Now;
     private List<TonKho> tonKhoList = new List<TonKho>();
+    private List<dynamic> tonKhoTest = new List<dynamic>();
     private bool isInitialized = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -71,7 +72,11 @@ else
     {
         try
         {
-            tonKhoList = await TonKho_Service.BaoCaoTonKho(ngayNhap, ngayXuat);
+            // Làm sạch thời gian, chỉ lấy ngày
+            DateTime ngayNhapClean = new DateTime(ngayNhap.Year, ngayNhap.Month, ngayNhap.Day);
+            DateTime ngayXuatClean = new DateTime(ngayXuat.Year, ngayXuat.Month, ngayXuat.Day);
+
+            tonKhoList = await TonKho_Service.BaoCaoTonKho(ngayNhapClean, ngayXuatClean);
 
             if (tonKhoList.Count == 0)
             {
@@ -84,3 +89,4 @@ else
         }
     }
 }
+

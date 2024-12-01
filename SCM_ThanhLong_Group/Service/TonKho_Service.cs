@@ -22,15 +22,14 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<List<TonKho>> BaoCaoTonKho(DateTime ngayNhap, DateTime ngayXuat)
         {
             var result = new List<TonKho>();
-
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
                 using (OracleCommand cmd = new OracleCommand("BaoCaoTonKho", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("NgayNhap", OracleDbType.Date).Value = ngayNhap;
-                    cmd.Parameters.Add("NgayXuat", OracleDbType.Date).Value = ngayXuat;
+                    cmd.Parameters.Add("NgayNhap", OracleDbType.Date).Value = ngayNhap.Date;
+                    cmd.Parameters.Add("NgayXuat", OracleDbType.Date).Value = ngayXuat.Date;
 
                     // REF CURSOR để lấy dữ liệu
                     cmd.Parameters.Add("OutCursor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
@@ -41,12 +40,15 @@ namespace SCM_ThanhLong_Group.Service
                             var tonKho = new TonKho
                             {
                                 MaLoHang = reader["MaLoHang"].ToString(),
-                                SLDauKy = reader["SLDauKy"] == DBNull.Value ? 0 : int.Parse(reader["SLDauKy"].ToString()),
-                                SLNhap = reader["SLNhap"] == DBNull.Value ? 0 : int.Parse(reader["SLNhap"].ToString()),
-                                SLXuat = reader["SLXuat"] == DBNull.Value ? 0 : int.Parse(reader["SLXuat"].ToString()),
-                                SLCuoiKy = reader["SLCuoiKy"] == DBNull.Value ? 0 : int.Parse(reader["SLCuoiKy"].ToString())
+                                SLDauKy = reader["SLDauKy"] == DBNull.Value ? 0 : Convert.ToInt32(reader["SLDauKy"]),
+                                SLNhap = reader["SLNhap"] == DBNull.Value ? 0 : Convert.ToInt32(reader["SLNhap"]),
+                                SLXuat = reader["SLXuat"] == DBNull.Value ? 0 : Convert.ToInt32(reader["SLXuat"]),
+                                SLCuoiKy = reader["SLCuoiKy"] == DBNull.Value ? 0 : Convert.ToInt32(reader["SLCuoiKy"]),
                             };
                             result.Add(tonKho);
+                            Console.WriteLine($"MaLoHang: {reader["MaLoHang"]}, SLDauKy: {reader["SLDauKy"]}, " +
+                                  $"SLNhap: {reader["SLNhap"]}, SLXuat: {reader["SLXuat"]}, " +
+                                  $"SLCuoiKy: {reader["SLCuoiKy"]}");
                         }
                     }
                 }
@@ -55,14 +57,6 @@ namespace SCM_ThanhLong_Group.Service
         }
 
 
-    }
 
-    public class TonKho
-    {
-        public string MaLoHang { get; set; }
-        public int SLDauKy { get; set; }
-        public int SLNhap { get; set; }
-        public int SLXuat { get; set; }
-        public int SLCuoiKy { get; set; }
     }
 }
