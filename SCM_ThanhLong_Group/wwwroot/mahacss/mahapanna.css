@@ -193,3 +193,26 @@ select {
 	background: transparent;
 }
 
+
+.nut-xanh-bang,
+.nut-do-bang {
+	background: transparent;
+	backdrop-filter: blur(20px);
+	border-radius: 35px;
+	padding: 0 15px;
+}
+
+.nut-do-bang {
+	border: 1px solid #ff10d0;
+	color: #ff56d4;
+}
+
+.nut-xanh-bang {
+	border: 1px solid #00ff00;
+	color: #00ff00;
+}
+
+.nut-do-bang:hover,
+.nut-xanh-bang:hover {
+	    background: linear-gradient(45deg, #000000, #000000);
+}
