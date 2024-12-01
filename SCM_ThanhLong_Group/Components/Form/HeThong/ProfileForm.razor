@@ -47,7 +47,7 @@ else
                             <td>@p.Common</td>
                             <td>
                                 <button class="nut-xanh-bang" @onclick="@(()=>UpdateProfile(p))">Cập nhật</button>
-                                
+
                                 <button class="nut-do-bang" @onclick="@(()=>DropProfile(p))">Xóa</button>
                             </td>
                         </tr>
@@ -58,11 +58,11 @@ else
     </div>
 
 
-   
+
 
     <button class="nut-dep" @onclick="themProfile">Thêm Profile</button>
     <button class="nut-dep" @onclick="assignProfile">Gán Profile cho user</button>
-    
+
 }
 
 
@@ -95,7 +95,7 @@ else
     {
         //Truyền chuỗi với các ký tự đặc biệt
         string name = profileName.ProfileName;
-         string encodedData = Uri.EscapeDataString(profileName.ProfileName);
+        string encodedData = Uri.EscapeDataString(profileName.ProfileName);
         nav.NavigateTo($"/capnhatprofile?data={encodedData}");
     }
 
@@ -106,6 +106,7 @@ else
         {
             await iJSRuntime.InvokeVoidAsync("alert", "Xóa thành công");
             dataList = await profile_Service.GetAllProfilesSP();
+            StateHasChanged();
         }
         else
         {
