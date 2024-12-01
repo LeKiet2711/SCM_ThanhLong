@@ -17,7 +17,7 @@ input::placeholder {
 	padding: 7px 25px;
 	border-radius: 29px;
 	border: none;
-	box-shadow: 1px 1px 10px #00efff;
+/*	box-shadow: 1px 1px 10px #00efff;*/
 	color: #272c31;
 	width: 300px;
 }
@@ -28,7 +28,7 @@ input::placeholder {
 /*xóa*/
 select:focus {
 	border-color: #555;
-	box-shadow: 0 0 5px rgba(0,0,0,0.2);
+/*	box-shadow: 0 0 5px rgba(0,0,0,0.2);*/
 	outline: none;
 	color: #272c31;
 }
@@ -49,7 +49,7 @@ select {
 	padding: 7px 25px;
 	border-radius: 29px;
 	border: none;
-	box-shadow: 1px 1px 10px #00efff;
+/*	box-shadow: 1px 1px 10px #00efff;*/
 	color: #272c31;
 	width: 300px;
 }
@@ -118,7 +118,7 @@ select {
 	width: 85vw;
 	margin-left: 15vw;
 	margin-top: var(--chieu-cao-top);
-	min-height:100vh;
+	min-height:90vh;
 }
 
 .menu-class {
@@ -143,14 +143,14 @@ select {
 }
 
 .chu-dep {
-	font-size: 2rem;
+	font-size: 1.5rem;
 	font-weight: bold;
 	background: linear-gradient(128.87deg, #2bc3d4 14.05%, #d600c9 89.3%);
 	background-clip: text;
 	color: transparent;
 	--web-kit-background-clip: text;
 	display: block;
-	width: 30%;
+	width: 45%;
 	margin: auto;
 	text-align: center;
 }

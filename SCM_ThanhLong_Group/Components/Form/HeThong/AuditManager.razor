@@ -12,9 +12,10 @@
 
 <select @bind="auditActions">
     <option >Chọn hành động</option>
-    <option value="SELECT">Select</option>
-    <option value="INSERT">Insert</option>
-    <option value="UPDATE">Cập nhật</option>
+    <option value="SELECT">Xem thông tin</option>
+    <option value="INSERT">Thêm thông tin</option>
+    <option value="UPDATE">Cập nhật thông tin</option>
+    <option value="DELETE">Xóa thông tin</option>
 </select>
 
 <select @bind="auditTable">
@@ -96,6 +97,7 @@
 
 
             <table class="style-table">
+                <thead>
         <tr>
             <th>AUDIT_ID</th>
             <th>USER_NAME</th>
@@ -110,6 +112,8 @@
             <th>NEW_ISDELETED</th>
             <th>CHANGE_DATE</th>
         </tr>
+            </thead>
+            <tbody>
         @if (lstKhuVucTrong != null)
         {
             foreach (KhuVucTrongAudit khuVucTrong in lstKhuVucTrong)
@@ -134,6 +138,7 @@
         {
             <h3>Chưa có thông tin kiểm toán nào</h3>
         }
+            </tbody>
     </table>
     </div>
 </div>
