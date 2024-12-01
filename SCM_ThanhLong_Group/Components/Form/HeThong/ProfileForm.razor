@@ -10,7 +10,7 @@
 
 <style>
     .modal {
-        background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     }
 </style>
 
@@ -20,32 +20,45 @@
 }
 else
 {
-    <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
-        <GridColumns>
-            <GridColumn Field="@nameof(Profile.ProfileName)" Title="Profile Name" Width="100px" /> @*@onclick="@(()=>updateProfile(Profile.ProfileName))"*@
-            <GridColumn Field="@nameof(Profile.ResourceName)" Title="Resource Name" Width="100px" />
-            <GridColumn Field="@nameof(Profile.ResourceType)" Title="Resource Type" Width="100px" />
-            <GridColumn Field="@nameof(Profile.Limit)" Title="Limit" Width="100px" />
-            <GridColumn Field="@nameof(Profile.Common)" Title="Common" Width="100px" />
+    <div class="container-table-main">
+        <div class="tieu-de-table">
+            <span>Thông tin các profile trong hệ thống</span>
+        </div>
+        <div class="container-table">
+            <table class="style-table">
+                <thead>
+                    <tr>
+                        <th>Profile Name</th>
+                        <th>Resource Name</th>
+                        <th>Resource Type</th>
+                        <th>Limit</th>
+                        <th>Common</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Profile p in dataList)
+                    {
+                        <tr>
+                            <td>@p.ProfileName</td>
+                            <td>@p.ResourceName</td>
+                            <td>@p.ResourceType</td>
+                            <td>@p.Limit</td>
+                            <td>@p.Common</td>
+                            <td>
+                                <button class="nut-xanh-bang" @onclick="@(()=>UpdateProfile(p))">Cập nhật</button>
+                                
+                                <button class="nut-do-bang" @onclick="@(()=>DropProfile(p))">Xóa</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-      
 
-
-                <GridCommandColumn Title="Cập nhật" Width="100px">
-                    <GridCommandButton  OnClick="() => UpdateProfile((context as Profile))">
-                        <span class="oi oi-pencil"></span> Cập nhật
-                    </GridCommandButton>
-                </GridCommandColumn>
-
-            <GridCommandColumn Title="Xóa" Width="100px">
-                <GridCommandButton  OnClick="() => DropProfile((context as Profile))">
-                    <span class="oi oi-pencil"></span> Xóa
-                </GridCommandButton>
-            </GridCommandColumn>
-                
-
-        </GridColumns>
-    </TelerikGrid>
+   
 
     <button class="nut-dep" @onclick="themProfile">Thêm Profile</button>
     <button class="nut-dep" @onclick="assignProfile">Gán Profile cho user</button>

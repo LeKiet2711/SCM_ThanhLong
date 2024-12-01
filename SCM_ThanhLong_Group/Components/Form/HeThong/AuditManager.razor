@@ -7,31 +7,6 @@
 <link href="mahacss/styleaudit.css" rel="stylesheet" />
 <link href="mahacss/mahastylepopupdialog.css" rel="stylesheet" />
 
-@* <span class="chu-dep">Tạo audit standard</span> *@
-
-@* <input class="input-dep" type="text" @bind="auditName" placeholder="Nhập tên Chính sách" /> *@
-
-@* <select @bind="auditActions">
-    <option>Chọn hành động</option>
-    <option value="SELECT">Xem thông tin</option>
-    <option value="INSERT">Thêm thông tin</option>
-    <option value="UPDATE">Cập nhật thông tin</option>
-    <option value="DELETE">Xóa thông tin</option>
-</select> *@
-
-@* <select @bind="auditTable">
-    <option>Chọn bảng</option>
-    @if (lstTable != null)
-    {
-        foreach (string table in lstTable)
-        {
-            <option>@table</option>
-        }
-    }
-</select> *@
-
-@* <button class="nut-dep" @onclick="CreateAudit">Tạo audit</button> *@
-
 @* Phần hiển thị thêm popup dialog modal *@
 <div class="dialog-container" style="@show">
 
@@ -90,8 +65,6 @@
 <br />
 
 <button class="nut-dep" @onclick="showKBDialog">Tạo chính sách</button>
-
-@* <div class="table-container"> *@
 
 
 <span class="chu-dep">Thông tin kiểm toán</span>
