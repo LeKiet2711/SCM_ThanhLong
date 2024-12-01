@@ -8,6 +8,33 @@
 	--chieu-cao-top: 10vh;
 }
 
+/*================= TOÀN BỘ THANH CUỘN CỦA TRÌNH DUYỆT ==================*/
+/* Custom thanh cuộn chiều dài và rộng*/
+::-webkit-scrollbar {
+	width: 5px;
+	height: 0.5em;
+}
+
+/* Thuộc tính thanh cuộn bao bên ngoài*/
+::-webkit-scrollbar-track {
+	background: rgba(94, 91, 91, 0.466);
+	border-radius: 10px;
+	margin-block: 50px;
+}
+
+/* thuộc tính con trỏ cuộn */
+::-webkit-scrollbar-thumb {
+	background: linear-gradient(to bottom, #ff007f, #00efff);
+	width: 10px;
+	border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+		background: linear-gradient(to top, #ff007f, #00efff);
+	}
+
+/*============================= đổi thanh cuộn cho toàn bộ chương trình ==========================*/
+
 input::placeholder {
 	color: #272c31;
 }
@@ -17,7 +44,6 @@ input::placeholder {
 	padding: 7px 25px;
 	border-radius: 29px;
 	border: none;
-/*	box-shadow: 1px 1px 10px #00efff;*/
 	color: #272c31;
 	width: 300px;
 }
@@ -28,7 +54,6 @@ input::placeholder {
 /*xóa*/
 select:focus {
 	border-color: #555;
-/*	box-shadow: 0 0 5px rgba(0,0,0,0.2);*/
 	outline: none;
 	color: #272c31;
 }
@@ -49,7 +74,6 @@ select {
 	padding: 7px 25px;
 	border-radius: 29px;
 	border: none;
-/*	box-shadow: 1px 1px 10px #00efff;*/
 	color: #272c31;
 	width: 300px;
 }
@@ -58,8 +82,14 @@ select {
 .background-main {
 	position: relative;
 	background: linear-gradient(to right,rgb(13 17 22),rgb(10 12 24));
-/*	background-image: url('../img/hai_trai_thanh_long.png');*/
-/*	background-size: 50px;*/
+}
+
+.background-main-object {
+	background: url('../img/object1.png') center / contain no-repeat;
+	width: 200px;
+	position: absolute;
+	left: 0;
+	top: 50%;
 }
 
 .navigation-top-menu {
@@ -70,21 +100,19 @@ select {
 	width: 100vw;
 	height: var(--chieu-cao-top);
 	position: fixed;
-	z-index: 3;
+	z-index: 2;
 }
 
 .sidebar-menu-right {
 	position: absolute;
-	margin-top: var(--chieu-cao-top);
 	position: fixed;
 	border-radius: 10px;
-	margin-left: 2px;
 	border: 1px solid white;
 	backdrop-filter: blur(20px);
 	background: transparent;
-	background: linear-gradient(45deg, #da00ff36, #00c9d178);
-	z-index: 3;
-	height: 87vh;
+	background: linear-gradient(45deg, #a200ca36, #00c9d178);
+	z-index: 4;
+	height: 100vh;
 }
 
 .btn-dang-xuat {
@@ -115,10 +143,11 @@ select {
 }
 
 .container-content {
-	width: 85vw;
+	width: 84vw;
 	margin-left: 15vw;
 	margin-top: var(--chieu-cao-top);
 	min-height:90vh;
+	padding: 10px 0;
 }
 
 .menu-class {
@@ -154,3 +183,13 @@ select {
 	margin: auto;
 	text-align: center;
 }
+
+.menu-main::-webkit-scrollbar {
+	width:5px;
+	
+}
+
+.menu-main::-webkit-scrollbar-track {
+	background: transparent;
+}
+

@@ -10,12 +10,8 @@
 	background: transparent;
 	height: 70vh;
 	backdrop-filter: blur(20px);
-	/* background-image: linear-gradient(45deg, rgb(14 14 14 / 37%), rgb(64 65 67 / 41%)); */
-	/* background: linear-gradient(180deg, #fff3, #dddcfc33 40.63%, #8f85ff33);
-             */
 	background: linear-gradient(193deg, #a7a3a333, #32383833 40.63%, #37364033);
 	border: 1px solid rgb(112, 112, 115);
-	/* opacity: 0.7; */
 	display: flex;
 	overflow-y: scroll;
 	/* hai thuộc tính quy định chiều rộng và màu scrollbar */

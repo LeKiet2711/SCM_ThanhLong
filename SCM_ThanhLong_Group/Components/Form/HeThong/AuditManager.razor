@@ -5,141 +5,203 @@
 @inject IJSRuntime iJSRuntime
 
 <link href="mahacss/styleaudit.css" rel="stylesheet" />
+<link href="mahacss/mahastylepopupdialog.css" rel="stylesheet" />
 
-<span class="chu-dep">Tạo audit standard</span>
+@* <span class="chu-dep">Tạo audit standard</span> *@
 
-<input class="input-dep" type="text" @bind="auditName" placeholder="Nhập tên Chính sách" />
+@* <input class="input-dep" type="text" @bind="auditName" placeholder="Nhập tên Chính sách" /> *@
 
-<select @bind="auditActions">
-    <option >Chọn hành động</option>
+@* <select @bind="auditActions">
+    <option>Chọn hành động</option>
     <option value="SELECT">Xem thông tin</option>
     <option value="INSERT">Thêm thông tin</option>
     <option value="UPDATE">Cập nhật thông tin</option>
     <option value="DELETE">Xóa thông tin</option>
-</select>
+</select> *@
 
-<select @bind="auditTable">
+@* <select @bind="auditTable">
     <option>Chọn bảng</option>
-    @if(lstTable != null)
+    @if (lstTable != null)
     {
         foreach (string table in lstTable)
         {
             <option>@table</option>
         }
     }
-</select>
+</select> *@
 
-<button class="nut-dep" @onclick="CreateAudit">Tạo audit</button>   
+@* <button class="nut-dep" @onclick="CreateAudit">Tạo audit</button> *@
 
+@* Phần hiển thị thêm popup dialog modal *@
+<div class="dialog-container" style="@show">
 
-<br/>
+    <div class="dialog-main">
+        <div class="dialog-icon" @onclick="closeKBDialog">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+        <div class="dialog-title">
+            <p>Tiêu đề thêm dialog</p>
+        </div>
+
+        <div class="dialog-conten">
+            <label class="dialog-conten-title" for="">Nhập tên chính sách</label>
+            <input class="input-dialog" type="text" @bind="auditName" placeholder="Nhập tên Chính sách">
+        </div>
+
+        <div class="dialog-conten">
+            <label class="dialog-conten-title" for="">Hành động kiểm toán</label>
+            <select class="input-dialog" @bind="auditActions">
+                <option selected value="">Chọn hành động</option>
+                <option value="SELECT">Xem thông tin</option>
+                <option value="INSERT">Thêm thông tin</option>
+                <option value="UPDATE">Cập nhật thông tin</option>
+                <option value="DELETE">Xóa thông tin</option>
+            </select>
+        </div>
+
+        <div class="dialog-conten">
+            <label class="dialog-conten-title" for="">Bảng cần kiểm toán</label>
+            <select class="input-dialog" @bind="auditTable">
+                <option selected value="">Chọn bảng</option>
+                @if (lstTable != null)
+                {
+                    foreach (string table in lstTable)
+                    {
+                        <option>@table</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="dialog-container-button">
+            <div>
+                <button @onclick="CreateAudit" class="dialog-button">Tạo kiểm toán</button>
+            </div>
+            <div>
+                <button class="dialog-button" @onclick="closeKBDialog">Đóng</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@* Hết Phần hiển thị thêm popup dialog modal *@
+
+<br />
+
+<button class="nut-dep" @onclick="showKBDialog">Tạo chính sách</button>
 
 @* <div class="table-container"> *@
+
+
+<span class="chu-dep">Thông tin kiểm toán</span>
+
+
+<div class="container-table-main">
+
     <select class="input-dep" @onchange="HandleSelectChange">
         <option value="ALL" selected>Tất cả</option>
+        <option value="SELECT">Select</option>
+        <option value="INSERT">Insert</option>
         <option value="UPDATE">Update</option>
         <option value="DELETE">Delete</option>
         <option value="GRANT">Grant</option>
     </select>
 
-<span class="chu-dep">Thông tin kiểm toán</span>
+    <div class="tieu-de-table">
+        <span>Bảng thông tin ghi nhận kiểm toán</span>
+    </div>
+    <div class="container-table">
 
 
-    <div class="container-table-main">
-        <div class="tieu-de-table">
-            <span >Bảng thông tin ghi nhận kiểm toán</span>
-        </div>
-        <div class="container-table">
-
-
-            <table class="style-table">
-        <thead>
-            <tr>
-                <th>DBUSERNAME</th>
-                <th>ACTION_NAME</th>
-                <th>OBJECT_SCHEMA</th>
-                <th>OBJECT_NAME</th>
-                <th>EVENT_TIMESTAMP</th>
-                <th>SQL_TEXT</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (lst != null)
-            {
-                @foreach (UnifiedAuditTrail audit in lst)
+        <table class="style-table">
+            <thead>
+                <tr>
+                    <th>DBUSERNAME</th>
+                    <th>ACTION_NAME</th>
+                    <th>OBJECT_SCHEMA</th>
+                    <th>OBJECT_NAME</th>
+                    <th>EVENT_TIMESTAMP</th>
+                    <th>SQL_TEXT</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (lst != null)
+                {
+                    @foreach (UnifiedAuditTrail audit in lst)
+                    {
+                        <tr>
+                            <td>@audit.DBUSERNAME</td>
+                            <td>@audit.ACTION_NAME</td>
+                            <td>@audit.OBJECT_SCHEMA</td>
+                            <td>@audit.OBJECT_NAME</td>
+                            <td>@audit.EVENT_TIMESTAMP</td>
+                            <td>@audit.SQL_TEXT</td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>@audit.DBUSERNAME</td>
-                        <td>@audit.ACTION_NAME</td>
-                        <td>@audit.OBJECT_SCHEMA</td>
-                        <td>@audit.OBJECT_NAME</td>
-                        <td>@audit.EVENT_TIMESTAMP</td>
-                        <td>@audit.SQL_TEXT</td>
+                        <td colspan="6">Không có dữ liệu hiển thị</td>
                     </tr>
                 }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="6">Không có dữ liệu hiển thị</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
     </div>
 </div>
 
-    <div class="container-table-main">
-        <div class="tieu-de-table">
+<div class="container-table-main">
+    <div class="tieu-de-table">
         <span>Thông tin kiểm toán khi cập nhật khu vực trồng</span>
-        </div>
-        <div class="container-table">
+    </div>
+    <div class="container-table">
 
 
-            <table class="style-table">
-                <thead>
-        <tr>
-            <th>AUDIT_ID</th>
-            <th>USER_NAME</th>
-            <th>ACTION</th>
-            <th>OLD_MAKHV</th>
-            <th>NEW_MAKHV</th>
-            <th>OLD_TENKHV</th>
-            <th>NEW_TENKHV</th>
-            <th>OLD_MOTA</th>
-            <th>NEW_MOTA</th>
-            <th>OLD_ISDELETED</th>
-            <th>NEW_ISDELETED</th>
-            <th>CHANGE_DATE</th>
-        </tr>
+        <table class="style-table">
+            <thead>
+                <tr>
+                    <th>AUDIT_ID</th>
+                    <th>USER_NAME</th>
+                    <th>ACTION</th>
+                    <th>OLD_MAKHV</th>
+                    <th>NEW_MAKHV</th>
+                    <th>OLD_TENKHV</th>
+                    <th>NEW_TENKHV</th>
+                    <th>OLD_MOTA</th>
+                    <th>NEW_MOTA</th>
+                    <th>OLD_ISDELETED</th>
+                    <th>NEW_ISDELETED</th>
+                    <th>CHANGE_DATE</th>
+                </tr>
             </thead>
             <tbody>
-        @if (lstKhuVucTrong != null)
-        {
-            foreach (KhuVucTrongAudit khuVucTrong in lstKhuVucTrong)
-            {
-                <tr>
-                    <td>@khuVucTrong.AUDIT_ID</td>
-                    <td>@khuVucTrong.USER_NAME</td>
-                    <td>@khuVucTrong.ACTION</td>
-                    <td>@khuVucTrong.OLD_MAKHV</td>
-                    <td>@khuVucTrong.NEW_MAKHV</td>
-                    <td>@khuVucTrong.OLD_TENKV</td>
-                    <td>@khuVucTrong.NEW_TENKV</td>
-                    <td>@khuVucTrong.OLD_MOTA</td>
-                    <td>@khuVucTrong.NEW_MOTA</td>
-                    <td>@khuVucTrong.OLD_ISDELETED</td>
-                    <td>@khuVucTrong.NEW_ISDELETED</td>
-                    <td>@khuVucTrong.CHANGE_DATE</td>
-                </tr>
-            }
-        }
-        else
-        {
-            <h3>Chưa có thông tin kiểm toán nào</h3>
-        }
+                @if (lstKhuVucTrong != null)
+                {
+                    foreach (KhuVucTrongAudit khuVucTrong in lstKhuVucTrong)
+                    {
+                        <tr>
+                            <td>@khuVucTrong.AUDIT_ID</td>
+                            <td>@khuVucTrong.USER_NAME</td>
+                            <td>@khuVucTrong.ACTION</td>
+                            <td>@khuVucTrong.OLD_MAKHV</td>
+                            <td>@khuVucTrong.NEW_MAKHV</td>
+                            <td>@khuVucTrong.OLD_TENKV</td>
+                            <td>@khuVucTrong.NEW_TENKV</td>
+                            <td>@khuVucTrong.OLD_MOTA</td>
+                            <td>@khuVucTrong.NEW_MOTA</td>
+                            <td>@khuVucTrong.OLD_ISDELETED</td>
+                            <td>@khuVucTrong.NEW_ISDELETED</td>
+                            <td>@khuVucTrong.CHANGE_DATE</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <h3>Chưa có thông tin kiểm toán nào</h3>
+                }
             </tbody>
-    </table>
+        </table>
     </div>
 </div>
 
@@ -152,6 +214,7 @@
     private string auditName = "";
     private string auditTable = "";
     private string auditActions = "";
+    private string show = "display:none";
 
     protected override async Task OnInitializedAsync()
     {
@@ -175,9 +238,24 @@
         {
             await auditService.create_audit_policy_standard(auditName, auditActions, auditTable);
             await iJSRuntime.InvokeVoidAsync("alert", $"tạo chính sách KT_{auditName.ToUpper()} thành công");
+            show = "display:none";
+            StateHasChanged();
+            auditActions="";
+            auditName="";
+            auditTable="";
 
         }
-        
+
         StateHasChanged(); //Dùng để load lại
+    }
+
+    private void closeKBDialog()
+    {
+        show = "display:none";
+    }
+
+    private void showKBDialog()
+    {
+        show = "display: block";
     }
 }
