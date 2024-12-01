@@ -14,6 +14,108 @@
     }
 </style>
 
+@code{ 
+
+}
+
+@* Phần hiển thị thêm popup dialog modal *@
+<div class="dialog-container" style="@gan">
+
+    <div class="dialog-main">
+        @* <div class="dialog-main-conten"> *@
+            <div class="dialog-icon" @onclick="closeKBDialog">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="dialog-title">
+                <p>Thiết đặt profile cho người dùng</p>
+            </div>
+
+            <div class="dialog-conten">
+                <label class="dialog-conten-title" for="">Tên người dùng</label>
+                <select class="input-dialog" @bind="userName">
+                    @foreach (string name in users)
+                {
+                    <option>@name</option>
+                }
+            </select>
+        </div>
+
+        <div class="dialog-conten">
+            <label class="dialog-conten-title" for="">Profile</label>
+            <select class="input-dialog" @bind="profileName">
+                @foreach (string pro in profiles)
+                {
+                    <option>@pro</option>
+                }
+            </select>
+        </div>
+
+        <div class="dialog-container-button">
+            <div>
+                <button @onclick="assignProfileForUser" class="dialog-button">Thiết đặt profile</button>
+            </div>
+            <div>
+                <button class="dialog-button" @onclick="closeKBDialog">Đóng</button>
+            </div>
+        </div>
+
+        @* </div> *@
+    </div>
+</div>
+
+
+@* phần cập nhật profile *@ 
+<div class="dialog-container " style="@capNhat">
+
+    <div class="dialog-main">
+        <div class="dialog-icon" @onclick="closeKBDialog">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+        <div class="dialog-main-conten">
+            <div class="dialog-title">
+                <p>Cập nhật profile</p>
+            </div>
+
+            <div class="dialog-conten">
+                <label class="dialog-conten-title" for="">Tên profile</label>
+                <span class="input-dialog">@profileName</span>
+            </div>
+
+            @foreach (ProfileInformation profileAttribute in lstProfileInformation)
+            {
+                <div class="dialog-conten">
+                    <label class="dialog-conten-title" for="@profileAttribute.RESOURCE_NAME">@profileAttribute.RESOURCE_NAME</label>
+                    <input class="input-dialog" type="number" id="@profileAttribute.RESOURCE_NAME" min="1" @bind="@profileAttribute.LIMIT">
+                </div>
+            }
+
+            @* <div class="dialog-conten"> *@
+            @*     <label class="dialog-conten-title" for="">Tên profile</label> *@
+            @*     <select @bind="profileName"> *@
+            @*         @foreach (string pro in profiles) *@
+            @*         { *@
+            @*             <option>@pro</option> *@
+            @*         } *@
+            @*     </select> *@
+            @* </div> *@
+
+            <div class="dialog-container-button">
+                <div>
+                    <button @onclick="updateProfile" class="dialog-button">Tạo profile</button>
+                </div>
+                <div>
+                    <button class="dialog-button" @onclick="closeKBDialog">Đóng</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@* Hết Phần hiển thị thêm popup dialog modal *@
+
+
+
 @if (dataList == null)
 {
     <p><em>Loading......</em></p>
@@ -46,7 +148,7 @@ else
                             <td>@p.Limit</td>
                             <td>@p.Common</td>
                             <td>
-                                <button class="nut-xanh-bang" @onclick="@(()=>UpdateProfile(p))">Cập nhật</button>
+                                <button class="nut-xanh-bang" @onclick="@(()=>showKBUpdateDialog(p))">Cập nhật</button>
 
                                 <button class="nut-do-bang" @onclick="@(()=>DropProfile(p))">Xóa</button>
                             </td>
@@ -61,19 +163,31 @@ else
 
 
     <button class="nut-dep" @onclick="themProfile">Thêm Profile</button>
-    <button class="nut-dep" @onclick="assignProfile">Gán Profile cho user</button>
+    <button class="nut-dep" @onclick="showKBAsignDialog">Gán Profile cho user</button>
 
 }
 
 
 @code {
     private List<Profile> dataList = new List<Profile>();
+    private List<string> users = new List<string>();
+    private List<string> profiles = new List<string>();
+    private string userName { get; set; }
+    private string profileName { get; set; }
+    private string thuocTinhProfile = "";
+    private string value = "";
+    //Danh sách thuộc tính profile cần cập nhật
+    List<ProfileInformation> lstProfileInformation = new List<ProfileInformation>();
+
+
 
     protected override async Task OnInitializedAsync()
     {
         user.username = "sys";
         user.password = "sys";
         dataList = await profile_Service.GetAllProfilesSP();
+        users = await profile_Service.getAllUser();
+        profiles = await profile_Service.getAllProfileName();
     }
 
     protected void themProfile()
@@ -91,12 +205,16 @@ else
     //     nav.NavigateTo("capnhatprofile");
     // }
 
-    protected void UpdateProfile(Profile profileName)
+    protected async void UpdateProfile(Profile profileName)
     {
         //Truyền chuỗi với các ký tự đặc biệt
-        string name = profileName.ProfileName;
-        string encodedData = Uri.EscapeDataString(profileName.ProfileName);
-        nav.NavigateTo($"/capnhatprofile?data={encodedData}");
+        // string name = profileName.ProfileName;
+        // string encodedData = Uri.EscapeDataString(profileName.ProfileName);
+        // nav.NavigateTo($"/capnhatprofile?data={encodedData}");
+        lstProfileInformation = await profile_Service.GetProfileInformation(profileName.ProfileName);
+        capNhat = "display: block;";
+        this.profileName = profileName.ProfileName;
+
     }
 
     protected async void DropProfile(Profile profileName)
@@ -113,4 +231,87 @@ else
             await iJSRuntime.InvokeVoidAsync("alert", "Xóa thất bại hoặc profile chưa tồn tại!!!");
         }
     }
+
+    private async void assignProfileForUser()
+    {
+        if (await profile_Service.AssignProfileForUser(userName, profileName))
+        {
+            // kq = "Thành công!";
+            await iJSRuntime.InvokeVoidAsync("alert", $"Gán profile: {profileName} cho user: {userName} thành công!!!");
+            closeKBDialog();
+            StateHasChanged();
+        }
+        else
+        {
+            await iJSRuntime.InvokeVoidAsync("alert", $"Lỗi khi gán profile cho user!!! Vui lòng chọn user và profile trước khi gán");
+        }
+    }
+
+    private string them = "display:none";
+    private string capNhat = "display:none";
+    private string gan = "display:none";
+    private void closeKBDialog()
+    {
+        capNhat = gan  = them = "display:none;";
+    }
+
+    private void showKBAddDialog()
+    {
+        them = "display: block;";
+    }
+
+    private void showKBAsignDialog()
+    {
+        gan = "display: block;";
+    }
+
+    private async void showKBUpdateDialog(Profile profileName)
+    {
+        capNhat = "display: block;";
+        lstProfileInformation = await profile_Service.GetProfileInformation(profileName.ProfileName);
+        this.profileName = profileName.ProfileName;
+    }
+
+    private async void updateProfile()
+    {
+        thuocTinhProfile = "";
+        foreach (ProfileInformation profileAttribute in lstProfileInformation)
+        {
+            thuocTinhProfile += " " + profileAttribute.RESOURCE_NAME + " " + profileAttribute.LIMIT + " ";
+        }
+        if (!String.IsNullOrEmpty(thuocTinhProfile))
+        {
+            // if (thuocTinhProfile.Contains(profileAttribute))
+            // {
+            //     int index = thuocTinhProfile.IndexOf(profileAttribute) + 1;
+            //     if (index != -1)
+            //     {
+            //         string pattern = @"(" + profileAttribute + @"\s+)\d+";
+            //         thuocTinhProfile = Regex.Replace(thuocTinhProfile, pattern, $"${{1}}{value}");
+            //         thuocTinhProfileHienThi = Regex.Replace(thuocTinhProfile, pattern, $"${{1}}{value}");
+            //     }
+
+            if (await profile_Service.UpdateProfile(profileName, thuocTinhProfile))
+            {
+                // khanhBang += "thành công!";
+                nav.NavigateTo("quanlyprofile");
+                this.profileName = "";
+                StateHasChanged();
+                await iJSRuntime.InvokeVoidAsync("alert", "Cập nhật thành công profile!");
+                lstProfileInformation = new List<ProfileInformation>();
+                closeKBDialog();
+                StateHasChanged();
+            }
+            else
+            {
+                // khanhBang += "thất công!";
+            }
+            // }
+        }
+        else
+        {
+            await iJSRuntime.InvokeVoidAsync("alert", "Vui lòng nhập đầy đủ thông tin hợp lệ cho profile!");
+        }
+    }
+
 }

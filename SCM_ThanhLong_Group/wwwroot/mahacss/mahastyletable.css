@@ -6,7 +6,7 @@
 .container-table {
 	width: var(--chieu-dai-khoi);
 	margin: auto;
-	border-radius: 20px;
+	border-radius: 10px;
 	background: transparent;
 	height: 70vh;
 	backdrop-filter: blur(20px);
@@ -52,7 +52,7 @@
 .style-table {
 	border-collapse: collapse;
 	color: #eff4fc;
-	border-radius: 15px;
+	border-radius: 10px;
 	overflow-y: scroll;
 	height: 100%;
 	display: block;
@@ -84,7 +84,7 @@
 		min-height: var(--chieu-cao-dong-bang);
 		text-align: center;
 		line-height: var(--chieu-cao-dong-bang);
-		padding: 5px;
+		padding: 5px 13px;
 	}
 
 

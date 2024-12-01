@@ -14,7 +14,7 @@
 </style>
 
 <span class="chu-dep" style="text-align:center;font-weight:bold">Danh mục hộ trồng</span>
-<button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px">
+<button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative;">
     <span class="oi oi-plus" aria-hidden="true">Thêm hộ trồng mới</span>
 </button>
 
@@ -24,23 +24,66 @@
 }
 else
 {
-    <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
-        <GridColumns>
-            <GridColumn Field="@nameof(HoTrong.MaHoTrong)" Title="Mã hộ trồng" Width="100px" />
-            <GridColumn Field="@nameof(HoTrong.TenHoTrong)" Title="Tên hộ trồng" Width="100px" />
-            <GridColumn Field="@nameof(HoTrong.TenKhuVucTrong)" Title="Khu vực trồng" Width="100px" />
-            <GridColumn Field="@nameof(HoTrong.DiaChi)" Title="Địa chỉ" Width="100px" />
-            <GridColumn Field="@nameof(HoTrong.SoDienThoai)" Title="Số điện thoại" Width="100px" />
-            <GridCommandColumn Width="180px">
-                <GridCommandButton Command="Edit" OnClick="@EditItem">
-                    <span class="oi oi-pencil" Width="100px"></span> Sửa
-                </GridCommandButton>
-                <GridCommandButton Command="Delete" OnClick="@DeleteItem">
-                    <span class="oi oi-trash" Width="100px"></span> Xóa
-                </GridCommandButton>
-            </GridCommandColumn>
-        </GridColumns>
-    </TelerikGrid>
+    <div class="container-table-main">
+        <div class="tieu-de-table">
+            <span>Danh mục hộ trồng</span>
+        </div>
+        <div class="container-table">
+            <table class="style-table">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã hộ trồng</th>
+                        <th>Tên hộ trồng</th>
+                        <th>Khu vực trồng</th>
+                        <th>Địa chỉ</th>
+                        <th>Số điện thoại</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (HoTrong hoTrong in dataList)
+                    {
+                        <tr>
+                            <td>@stt</td>
+                            <td>@hoTrong.MaHoTrong</td>
+                            <td>@hoTrong.TenHoTrong</td>
+                            <td>@hoTrong.KhuVucTrong</td>
+                            <td>@hoTrong.DiaChi</td>
+                            <td>@hoTrong.SoDienThoai</td>
+                            <td>
+                                <button class="nut-xanh-bang" @onclick="@(()=>OpenEditModal(hoTrong))">Cập nhật</button>
+                                <button class="nut-do-bang" @onclick="@(()=>OpenDeleteModal(hoTrong))">Xóa</button>
+                            </td>
+                        </tr>
+                        if(stt>0)
+                        {
+                            stt++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    @* <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> *@
+    @*     <GridColumns> *@
+    @*         <GridColumn Field="@nameof(HoTrong.MaHoTrong)" Title="Mã hộ trồng" Width="100px" /> *@
+    @*         <GridColumn Field="@nameof(HoTrong.TenHoTrong)" Title="Tên hộ trồng" Width="100px" /> *@
+    @*         <GridColumn Field="@nameof(HoTrong.TenKhuVucTrong)" Title="Khu vực trồng" Width="100px" /> *@
+    @*         <GridColumn Field="@nameof(HoTrong.DiaChi)" Title="Địa chỉ" Width="100px" /> *@
+    @*         <GridColumn Field="@nameof(HoTrong.SoDienThoai)" Title="Số điện thoại" Width="100px" /> *@
+    @*         <GridCommandColumn Width="180px"> *@
+    @*             <GridCommandButton Command="Edit" OnClick="@EditItem"> *@
+    @*                 <span class="oi oi-pencil" Width="100px"></span> Sửa *@
+    @*             </GridCommandButton> *@
+    @*             <GridCommandButton Command="Delete" OnClick="@DeleteItem"> *@
+    @*                 <span class="oi oi-trash" Width="100px"></span> Xóa *@
+    @*             </GridCommandButton> *@
+    @*         </GridCommandColumn> *@
+    @*     </GridColumns> *@
+    @* </TelerikGrid> *@
 }
 
 
@@ -77,7 +120,7 @@ else
                             }
                         </InputSelect>
                         <ValidationMessage For="@(()=>hoTrong.KhuVucTrongID)" />
-                     
+
                     </div>
                     <div class="form-group">
                         <label for="DiaChi" class="control-label"><b>Địa chỉ: </b></label>
@@ -172,9 +215,9 @@ else
                     </div>
                     <div class="form-group">
                         <div class="form-group">
-                        <label for="KhuVucTrongID" class="control-label">Mã khu vực trồng: </label>
-                        <label><b>@hoTrong.KhuVucTrongID</b></label>
-                    </div>
+                            <label for="KhuVucTrongID" class="control-label">Mã khu vực trồng: </label>
+                            <label><b>@hoTrong.KhuVucTrongID</b></label>
+                        </div>
                         <label for="DiaChi" class="control-label">Địa chỉ: </label>
                         <label><b>@hoTrong.DiaChi</b></label>
                     </div>
@@ -197,7 +240,7 @@ else
 @code {
     private List<HoTrong> dataList = new List<HoTrong>();
     private List<KhuVucTrong> khuVucTrongList = new List<KhuVucTrong>();
-
+    private int stt = 1;
     private HoTrong hoTrong = new HoTrong();
 
     private string addModalClass = "";

@@ -108,7 +108,7 @@ namespace SCM_ThanhLong_Group.Service
         {
             string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
 
-            using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+            using (OracleConnection kn = _dbConnection.GetConnection("sys","sys","sysdba"))
             {
                 string sqlProcedure = "sp_CreateProfile";
                 OracleCommand hd = new OracleCommand();
@@ -279,11 +279,11 @@ namespace SCM_ThanhLong_Group.Service
         public async Task<bool> UpdateProfile(string profileName, string thuocTinhProfile)
         {
             bool result = false;
-            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+            //string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
 
             try
             {
-                using (OracleConnection kn = _dbConnection.GetConnection(_user.username, _user.password, dbaPrivilege))
+                using (OracleConnection kn = _dbConnection.GetConnection("sys","sys","sysdba"))
                 {
                     string sqlProcedureUpdate = "sp_updateProfile";
                     OracleCommand oracleCommand = new OracleCommand();
@@ -292,9 +292,9 @@ namespace SCM_ThanhLong_Group.Service
                     oracleCommand.CommandType = CommandType.StoredProcedure;
                     oracleCommand.Parameters.Add("tenProfile", OracleDbType.Varchar2).Value = profileName;
                     oracleCommand.Parameters.Add("thuocTinhProFile", OracleDbType.Varchar2).Value = thuocTinhProfile;
-                    kn.OpenAsync();
+                    kn.Open();
                     oracleCommand.ExecuteNonQuery();
-                    kn.CloseAsync();
+                    kn.Close();
                 }
                 result = true;
             }

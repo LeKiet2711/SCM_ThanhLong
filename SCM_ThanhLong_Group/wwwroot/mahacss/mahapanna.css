@@ -100,7 +100,7 @@ select {
 	width: 100vw;
 	height: var(--chieu-cao-top);
 	position: fixed;
-	z-index: 2;
+	z-index: 3;
 }
 
 .sidebar-menu-right {
@@ -148,6 +148,8 @@ select {
 	margin-top: var(--chieu-cao-top);
 	min-height:90vh;
 	padding: 10px 0;
+	z-index: 2;
+/*	position: relative;*/
 }
 
 .menu-class {
@@ -215,4 +217,8 @@ select {
 .nut-do-bang:hover,
 .nut-xanh-bang:hover {
 	    background: linear-gradient(45deg, #000000, #000000);
+}
+
+.mau-chu {
+	color: #eff4fc;
 }

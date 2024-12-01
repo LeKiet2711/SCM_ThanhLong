@@ -27,20 +27,23 @@
 
     /* Khung chứa combobox và nút */
     .action-container {
-        background-color: #ffffff; /* Nền trắng */
-        border: 1px solid #ddd; /* Viền nhạt */
+        /* background-color: #ffffff; /* Nền trắng */ */
+        /* border: 1px solid #ddd; /* Viền nhạt */ */
         border-radius: 10px;
         padding: 20px;
-        width: 70%;
+        /* width: 70%; */
         margin: 0 auto 20px auto; /* Căn giữa và thêm khoảng cách */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+        position: relative;
+        flex-direction: column;
+        align-items: center;
     }
 
         /* Combobox */
         .action-container label {
             font-weight: bold;
-            color: #333;
             margin-right: 10px;
+            color: #eff4fc;
         }
 
         .action-container select {
@@ -64,7 +67,6 @@
 
             .action-container button:hover {
                 background-color: #45a049; /* Màu xanh lá nhạt khi hover */
-                position: relative;
             }
 
     /* Bảng hiển thị */
@@ -103,12 +105,12 @@
 <h3>Trình Theo Dõi Tác Động Hệ Thống FGA</h3>
 
 <!-- Khung chứa combobox và nút -->
-<div class="action-container">
+<div class="action-container container-table">
     <p class="@((StatusMessage.StartsWith("Lỗi") || StatusMessage.StartsWith("Error")) ? "error" : "success")">
         @StatusMessage
     </p>
     <div>
-        <label for="tableSelect">Select Table:</label>
+        <label class="mau-chu" for="tableSelect">Select Table:</label>
         <select id="tableSelect" @bind="SelectedTable">
             <option value="" disabled>Select a table</option>
             @foreach (var table in Tables)
@@ -119,12 +121,12 @@
     </div>
     <br />
     <div style="text-align: center;">
-        <button @onclick="AddPolicy">Tạo Policy</button>
-        <button @onclick="EnablePolicy">Bật Policy</button>
-        <button @onclick="DisablePolicy">Tắt Policy</button>
-        <button @onclick="DropPolicy">Xóa Policy</button>
-        <button @onclick="ViewData">Xem Dữ Liệu</button>
-        <button @onclick="DeleteData">Reset Data</button>
+        <button class="nut-dep" @onclick="AddPolicy">Tạo Policy</button>
+        <button class="nut-dep" @onclick="EnablePolicy">Bật Policy</button>
+        <button class="nut-dep" @onclick="DisablePolicy">Tắt Policy</button>
+        <button class="nut-dep" @onclick="DropPolicy">Xóa Policy</button>
+        <button class="nut-dep" @onclick="ViewData">Xem Dữ Liệu</button>
+        <button class="nut-dep" @onclick="DeleteData">Reset Data</button>
     </div>
 </div>
 
