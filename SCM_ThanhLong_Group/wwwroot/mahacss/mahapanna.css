@@ -152,6 +152,17 @@ select {
 /*	position: relative;*/
 }
 
+.container-content-plus {
+	width: 84vw;
+	margin-left: 1.5vw;
+	margin-top: var(--chieu-cao-top);
+	min-height: 90vh;
+	padding: 10px 0;
+	z-index: 2;
+	background:white;
+	/*	position: relative;*/
+}
+
 .menu-class {
 	width: 13vw;
 
