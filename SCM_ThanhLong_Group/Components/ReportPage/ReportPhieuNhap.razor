@@ -1,6 +1,18 @@
 ﻿@page "/reportnhapkho/{NHAPKHO_ID}"
 @inject PhieuNhap_Service phieuNhapService
 
+<style>
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .container-content {
+        margin-left: 1.5vw;
+        background: white;
+    }
+</style>
+
+
 <PageTitle>Report Viewer</PageTitle>
 
 <ReportViewer ServiceUrl="/api/reports"

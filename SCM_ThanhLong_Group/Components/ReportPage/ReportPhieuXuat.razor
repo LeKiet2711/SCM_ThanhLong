@@ -1,6 +1,17 @@
 ﻿@page "/reportxuatkho/{XUATKHO_ID}"
 @inject PhieuXuat_Service phieuXuatService
 
+<style>
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .container-content {
+        margin-left: 1.5vw;
+        background: white;
+    }
+</style>
+
 <PageTitle>Report Viewer</PageTitle>
 
 <ReportViewer ServiceUrl="/api/reports"

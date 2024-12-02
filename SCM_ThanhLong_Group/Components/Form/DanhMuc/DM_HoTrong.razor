@@ -9,13 +9,38 @@
 
 <style>
     .modal {
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.9);
     }
+
+    .close-icon {
+        font-size: 2rem;
+    }
+    .modal-dialog {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .modal-footer {
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
     .container-content {
         margin-left: 1.5vw;
         background: white;
     }
 </style>
+
 
 <span class="chu-dep" style="text-align:center;font-weight:bold">Danh mục hộ trồng</span>
 <button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative;">
@@ -168,7 +193,7 @@ else
                     </div>
                     <div class="form-group">
                         <label for="MaKhuVuc" class="control-label"><b>Mã khu vực: </b></label>
-                        <InputSelect class="" @bind-Value="@hoTrong.KhuVucTrongID">
+                        <InputSelect class="form-control" @bind-Value="@hoTrong.KhuVucTrongID">
                             <option value="">-- Chọn khu vực trồng --</option>
                             @foreach (var item in khuVucTrongList)
                             {
