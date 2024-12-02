@@ -21,7 +21,7 @@
     </ComboBoxSettings>
 </TelerikComboBox>
 
-<button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
+<button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative;">
     <span class="oi oi-plus" aria-hidden="true">Thêm</span>
 </button>
 
@@ -57,16 +57,44 @@
     </div>
 </div>
 
-<TelerikGrid Data="@lstKhoUser" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
-    <GridColumns>
-        <GridColumn Field="UserId" Title="Mã đăng nhập" />
-        <GridColumn>
-            <Template>
-                <button class="btn btn-danger" @onclick="@(async () => await DeleteUserFromKho((context as KhoUser).UserId))">Xóa</button>
-            </Template>
-        </GridColumn>
-    </GridColumns>
-</TelerikGrid>
+<div class="container-table-main">
+    <div class="tieu-de-table">
+        <span>Thông tin phân quyền kho</span>
+    </div>
+    <div class="container-table">
+        <table class="style-table">
+            <thead>
+                <tr>
+                    <th>Mã đăng nhập</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (KhoUser data in lstKhoUser)
+                {
+                    <tr>
+                        <td>@data.UserId</td>
+                        <td>
+                            <button class="nut-do-bang" @onclick="@(()=>DeleteUserFromKho(data.UserId))">Xóa</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@* <TelerikGrid Data="@lstKhoUser" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> *@
+@*     <GridColumns> *@
+@*         <GridColumn Field="UserId" Title="Mã đăng nhập" /> *@
+@*         <GridColumn> *@
+@*             <Template> *@
+@*                 <button class="btn btn-danger" @onclick="@(async () => await DeleteUserFromKho((context as KhoUser).UserId))">Xóa</button> *@
+@*             </Template> *@
+@*         </GridColumn> *@
+@*     </GridColumns> *@
+@* </TelerikGrid> *@
 
 @code {
     List<Kho> lstKho = new List<Kho>();

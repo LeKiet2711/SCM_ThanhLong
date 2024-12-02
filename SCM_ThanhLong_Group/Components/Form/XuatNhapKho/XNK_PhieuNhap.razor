@@ -30,7 +30,7 @@
 </TelerikComboBox>
 
 
-<button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
+<button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative">
     <span class="oi oi-plus" aria-hidden="true">Thêm phiếu nhập mới</span>
 </button>
 
@@ -40,27 +40,71 @@
 }
 else
 {
-    <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
-        <GridColumns>
-            <GridColumn Field="@nameof(PhieuNhap.SoPhieuNhap)" Title="Số phiếu nhập" Width="100px" />
-            <GridColumn Field="@nameof(PhieuNhap.TenKho)" Title="Tên kho" Width="100px" />
-            <GridColumn Field="@nameof(PhieuNhap.NgayNhap)" Title="Ngày nhập" Width="100px" />
-            <GridCommandColumn Width="180px">
-                <GridCommandButton Command="Edit" OnClick="@EditItem">
-                    <span class="oi oi-pencil" Width="100px"></span> Sửa
-                </GridCommandButton>
-                <GridCommandButton Command="Delete" OnClick="@DeleteItem">
-                    <span class="oi oi-trash" Width="100px"></span> Xóa
-                </GridCommandButton>
-                <GridCommandButton OnClick="() => ViewDetails((context as PhieuNhap).Auto_ID)">
-                    <span class="oi oi-eye" Width="100px"></span> Xem chi tiết phiếu nhập
-                </GridCommandButton>
-                <GridCommandButton OnClick="() => ExportReport((context as PhieuNhap).Auto_ID.ToString())">
-                    <span class="oi oi-trash" Width="100px"></span> In phiếu nhập
-                </GridCommandButton>
-            </GridCommandColumn>
-        </GridColumns>
-    </TelerikGrid>
+
+    <div class="container-table-main">
+        <div class="tieu-de-table">
+            <span>Thông tin phiếu nhập</span>
+        </div>
+        <div class="container-table">
+            <table class="style-table">
+                <thead>
+                    <tr>
+                        <th>Số phiếu nhập</th>
+                        <th>Tên kho</th>
+                        <th>Ngày nhập</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (PhieuNhap data in dataList)
+                    {
+                        <tr>
+                            <td>@data.SoPhieuNhap</td>
+                            <td>@data.TenKho</td>
+                            <td>@data.NgayNhap</td>
+                            <td>
+                                <button class="nut-do-bang" @onclick="@(()=>OpenEditModal(data))">Cập nhật</button>
+                            </td>
+                            <td>
+                                <button class="nut-do-bang" @onclick="@(()=>OpenDeleteModal(data))">Xóa</button>
+                            </td>
+                            <td>
+                                <button class="nut-do-bang" @onclick="@(()=>ViewDetails(data.Auto_ID))">Xem</button>
+                            </td>
+                            <td>
+                                <button class="nut-do-bang" @onclick="@(()=>ExportReport(data.Auto_ID+""))">Xuất</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> *@
+    @*     <GridColumns> *@
+    @*         <GridColumn Field="@nameof(PhieuNhap.SoPhieuNhap)" Title="Số phiếu nhập" Width="100px" /> *@
+    @*         <GridColumn Field="@nameof(PhieuNhap.TenKho)" Title="Tên kho" Width="100px" /> *@
+    @*         <GridColumn Field="@nameof(PhieuNhap.NgayNhap)" Title="Ngày nhập" Width="100px" /> *@
+    @*         <GridCommandColumn Width="180px"> *@
+    @*             <GridCommandButton Command="Edit" OnClick="@EditItem"> *@
+    @*                 <span class="oi oi-pencil" Width="100px"></span> Sửa *@
+    @*             </GridCommandButton> *@
+    @*             <GridCommandButton Command="Delete" OnClick="@DeleteItem"> *@
+    @*                 <span class="oi oi-trash" Width="100px"></span> Xóa *@
+    @*             </GridCommandButton> *@
+    @*             <GridCommandButton OnClick="() => ViewDetails((context as PhieuNhap).Auto_ID)"> *@
+    @*                 <span class="oi oi-eye" Width="100px"></span> Xem chi tiết phiếu nhập *@
+    @*             </GridCommandButton> *@
+    @*             <GridCommandButton OnClick="() => ExportReport((context as PhieuNhap).Auto_ID.ToString())"> *@
+    @*                 <span class="oi oi-trash" Width="100px"></span> In phiếu nhập *@
+    @*             </GridCommandButton> *@
+    @*         </GridCommandColumn> *@
+    @*     </GridColumns> *@
+    @* </TelerikGrid> *@
 }
 
 

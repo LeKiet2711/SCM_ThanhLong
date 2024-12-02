@@ -13,10 +13,23 @@
 <link href="/mahacss/mahapanna.css" rel="stylesheet" />
 <link href="/mahacss/mahastyletable.css" rel="stylesheet" />
 
+<link href="mahacss/mahastylepopupdialog.css" rel="stylesheet" />
+
 <style>
     *{
         font-family: "Roboto", sans-serif;
     }
+
+    .modal-dialog {
+        /* height: 100%; */
+        margin-top: 15vh;
+    }
+
+    .modal { 
+        z-index: 40;
+
+    }
+    
 </style>
 
 
@@ -32,8 +45,11 @@
         <div style="height: 60vh;" class="menu-class">
             <NavMenu />
         </div>
-        <img style="position: absolute; top: 30%; left: 60%;" src="./img/object1.png" alt="Alternate Text" />
+        <img style="position: absolute; top: 30%; left: 60%; width: 200px; filter: blur(29px);" src="./img/decor-7-DjmEjkAr.png" alt="Alternate Text" />
         <img style="position: absolute; height: 90vh; width: 60vw;" src="/img/duoi.png" alt="nền màu mè" />
+        <img style="position: absolute; height: 90vh; width: 60vw;" src="/img/duoi.png" alt="nền màu mè" />
+        <img style="position: fixed;height: 37vh;width: 14vw;object-fit: cover;top: -5%;left: 90%;filter: blur(2px);" src="/img/khoicamtim.png" alt="nền màu mè" />
+        <img style="position: fixed;height: 37vh;width: 14vw;object-fit: cover;top: 85%;left: 69%;" src="/img/trangtri1.png" alt="nền màu mè" />
 
         @* Phần nội dung *@
         <main>
@@ -48,7 +64,7 @@
             @*     @Body *@
             @* </div> *@
 
-            <article class="content px-4 container-content">
+            <article  class="content px-4 container-content">
                 @Body
             </article>
 
