@@ -10,7 +10,7 @@
 
 <span class="chu-dep">Quản lý người dùng</span>
 
-<button class="nut-dep" @onclick="InvokeCreateUser">Tạo mới người dùng</button>
+<button class="nut-dep" style="position: relative;" @onclick="InvokeCreateUser">Tạo mới người dùng</button>
 
 <div class="container-table-main">
         <div class="tieu-de-table">
@@ -47,8 +47,8 @@
                     <td>@user.PROFILE</td>
                     <td>@user.LAST_LOGIN</td>
                     <td>
-                        <button class="btn btn-primary" @onclick="@(()=>LockAccount(user.USERNAME))">Khóa</button>
-                            <button class="btn btn-primary" @onclick="@(()=>UnLockAccount(user.USERNAME))">Mở</button>
+                        <button class="nut-do-bang" @onclick="@(()=>LockAccount(user.USERNAME))">Khóa</button>
+                            <button class="nut-xanh-bang" @onclick="@(()=>UnLockAccount(user.USERNAME))">Mở</button>
                     </td>
                 </tr>
             }

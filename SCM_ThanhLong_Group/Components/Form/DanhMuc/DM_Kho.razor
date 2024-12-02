@@ -8,12 +8,12 @@
 
 <style>
     .modal {
-        background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     }
 </style>
 
 <span class="chu-dep" style="text-align:center;font-weight:bold">Danh mục kho</span>
-<button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
+<button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative;">
     <span class="oi oi-plus" aria-hidden="true">Thêm kho mới</span>
 </button>
 
@@ -23,21 +23,53 @@
 }
 else
 {
-    <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
-        <GridColumns>
-            <GridColumn Field="@nameof(Kho.MaKho)" Title="Mã kho" Width="100px" />
-            <GridColumn Field="@nameof(Kho.TenKho)" Title="Tên kho" Width="100px" />
-            <GridColumn Field="@nameof(Kho.DiaChi)" Title="Địa chỉ" Width="100px" />
-            <GridCommandColumn Width="180px">
-                <GridCommandButton Command="Edit" OnClick="@EditItem">
-                    <span class="oi oi-pencil" Width="100px"></span> Sửa
-                </GridCommandButton>
-                <GridCommandButton Command="Delete" OnClick="@DeleteItem">
-                    <span class="oi oi-trash" Width="100px"></span> Xóa
-                </GridCommandButton>
-            </GridCommandColumn>
-        </GridColumns>
-    </TelerikGrid>
+    <div class="container-table-main">
+        <div class="tieu-de-table">
+            <span>Thông tin kho</span>
+        </div>
+        <div class="container-table">
+            <table class="style-table">
+                <thead>
+                    <tr>
+                        <th>Mã kho</th>
+                        <th>Tên kho</th>
+                        <th>Địa chỉ</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Kho data in dataList)
+                    {
+                        <tr>
+                            <td>@data.MaKho</td>
+                            <td>@data.TenKho</td>
+                            <td>@data.DiaChi</td>
+                            <td>
+                                <button class="nut-xanh-bang" onclick="@(()=>OpenEditModal(data))">cập nhật</button>
+                                <button class="nut-do-bang" onclick="@(()=>OpenDeleteModal(data))">xóa</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> *@
+    @*     <GridColumns> *@
+    @*         <GridColumn Field="@nameof(Kho.MaKho)" Title="Mã kho" Width="100px" /> *@
+    @*         <GridColumn Field="@nameof(Kho.TenKho)" Title="Tên kho" Width="100px" /> *@
+    @*         <GridColumn Field="@nameof(Kho.DiaChi)" Title="Địa chỉ" Width="100px" /> *@
+    @*         <GridCommandColumn Width="180px"> *@
+    @*             <GridCommandButton Command="Edit" OnClick="@EditItem"> *@
+    @*                 <span class="oi oi-pencil" Width="100px"></span> Sửa *@
+    @*             </GridCommandButton> *@
+    @*             <GridCommandButton Command="Delete" OnClick="@DeleteItem"> *@
+    @*                 <span class="oi oi-trash" Width="100px"></span> Xóa *@
+    @*             </GridCommandButton> *@
+    @*         </GridCommandColumn> *@
+    @*     </GridColumns> *@
+    @* </TelerikGrid> *@
 }
 
 @* Modal cho việc thêm mới *@

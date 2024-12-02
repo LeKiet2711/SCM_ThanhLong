@@ -10,19 +10,22 @@
     .modal {
         background-color: rgba(0, 0, 0, 0.5);
     }
+    label {
+        color: #eff4fc;
+    }
 </style>
 
 <span class="chu-dep" style="text-align:center;font-weight:bold">Báo cáo tồn kho</span>
 
 <div class="form-group">
-    <label for="ngayNhap" class="control-label"><b>Ngày nhập: </b></label>
-    <InputDate class="form-control" @bind-Value="ngayNhap" />
+    <label for="ngayNhap" class="control-label mau-chu"><b>Ngày nhập: </b></label>
+    <InputDate class="form-control" style="position: relative;" @bind-Value="ngayNhap" />
 </div>
 <div class="form-group">
-    <label for="ngayXuat" class="control-label"><b>Ngày xuất: </b></label>
-    <InputDate class="form-control" @bind-Value="ngayXuat" />
+    <label for="ngayXuat" class="control-label mau-chu"><b>Ngày xuất: </b></label>
+    <InputDate class="form-control" style="position: relative;" @bind-Value="ngayXuat" />
 </div>
-<button class="btn btn-primary" @onclick="LoadTonKhoData" style="margin-bottom:10px">
+<button class="nut-dep" @onclick="LoadTonKhoData" style="margin-bottom:10px; position: relative;">
     <span class="oi oi-reload" aria-hidden="true">Tải dữ liệu</span>
 </button>
 
@@ -32,6 +35,38 @@
 }
 else
 {
+
+    <div class="container-table-main">
+        <div class="tieu-de-table">
+            <span>Thông tin tồn kho</span>
+        </div>
+        <div class="container-table">
+            <table class="style-table">
+                <thead>
+                    <tr>
+                        <th>Mã lô hàng</th>
+                        <th>Số lượng đầu kỳ</th>
+                        <th>Số lượng nhập</th>
+                        <th>Số lượng xuất</th>
+                        <th>Số lượng cuối kỳ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (TonKho data in tonKhoList)
+                    {
+                        <tr>
+                            <td>@data.MaLoHang</td>
+                            <td>@data.SLDauKy</td>
+                            <td>@data.SLNhap</td>
+                            <td>@data.SLXuat</td>
+                            <td>@data.SLCuoiKy</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <TelerikGrid Data="@tonKhoList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
         <GridColumns>
             <GridColumn Field="@nameof(TonKho.MaLoHang)" Title="Mã lô hàng" Width="100px" />
@@ -47,6 +82,7 @@ else
     private DateTime ngayNhap = DateTime.Now;
     private DateTime ngayXuat = DateTime.Now;
     private List<TonKho> tonKhoList = new List<TonKho>();
+    private List<dynamic> tonKhoTest = new List<dynamic>();
     private bool isInitialized = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -71,7 +107,11 @@ else
     {
         try
         {
-            tonKhoList = await TonKho_Service.BaoCaoTonKho(ngayNhap, ngayXuat);
+            // Làm sạch thời gian, chỉ lấy ngày
+            DateTime ngayNhapClean = new DateTime(ngayNhap.Year, ngayNhap.Month, ngayNhap.Day);
+            DateTime ngayXuatClean = new DateTime(ngayXuat.Year, ngayXuat.Month, ngayXuat.Day);
+
+            tonKhoList = await TonKho_Service.BaoCaoTonKho(ngayNhapClean, ngayXuatClean);
 
             if (tonKhoList.Count == 0)
             {
@@ -84,3 +124,4 @@ else
         }
     }
 }
+

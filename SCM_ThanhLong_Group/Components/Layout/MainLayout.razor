@@ -5,11 +5,31 @@
 @inject SCM_ThanhLong_Group.Service.Users_Service UserService
 @inject Profile_Service profileService
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
 <link href="/mahacss/mahapanna.css" rel="stylesheet" />
 <link href="/mahacss/mahastyletable.css" rel="stylesheet" />
 
-<style>
+<link href="mahacss/mahastylepopupdialog.css" rel="stylesheet" />
 
+<style>
+    *{
+        font-family: "Roboto", sans-serif;
+    }
+
+    .modal-dialog {
+        /* height: 100%; */
+        margin-top: 15vh;
+    }
+
+    .modal { 
+        z-index: 40;
+
+    }
+    
 </style>
 
 
@@ -21,21 +41,33 @@
 
 <div class="page background-main">
     <TelerikRootComponent>
-    <div style="height: 60vh;" class="menu-class">
+        @* Phần menu *@
+        <div style="height: 60vh;" class="menu-class">
             <NavMenu />
-    </div>
+        </div>
+        <img style="position: absolute; top: 30%; left: 60%; width: 200px; filter: blur(29px);" src="./img/decor-7-DjmEjkAr.png" alt="Alternate Text" />
+        <img style="position: absolute; height: 90vh; width: 60vw;" src="/img/duoi.png" alt="nền màu mè" />
+        <img style="position: absolute; height: 90vh; width: 60vw;" src="/img/duoi.png" alt="nền màu mè" />
+        <img style="position: fixed;height: 37vh;width: 14vw;object-fit: cover;top: -5%;left: 90%;filter: blur(2px);" src="/img/khoicamtim.png" alt="nền màu mè" />
+        <img style="position: fixed;height: 37vh;width: 14vw;object-fit: cover;top: 85%;left: 69%;" src="/img/trangtri1.png" alt="nền màu mè" />
 
+        @* Phần nội dung *@
         <main>
+            @* Phần thanh điều hướng ngang *@
             <div style="position: absolute; left:0; top: 0; height: 72px; background: transparent; border:none; backdrop-filter: blur(20px); background-image: linear-gradient(to right, rgba(13, 17, 22,0.3), rgba(13, 17, 22,0.3)); position: fixed; z-index: 3;" class="top-row px-4 navigation-top-menu">
                 <span>Xin chào, @UserService.currentUserName!</span>
                 <a href="/Home" class="btn btn-primary btn-ho-so ms-3">Hồ sơ</a>
                 <button @onclick="HandleLogout" class="btn btn-secondary btn-dang-xuat ms-2">Đăng xuất</button>
             </div>
 
-            <article style="width: 85vw;margin-top: 72px; margin-left: 15vw;" class="content px-4 container-content">
+            @* <div class="content px-4 container-content"> *@
+            @*     @Body *@
+            @* </div> *@
 
+            <article  class="content px-4 container-content">
                 @Body
             </article>
+
         </main>
     </TelerikRootComponent>
 </div>

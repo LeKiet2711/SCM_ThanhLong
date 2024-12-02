@@ -5,12 +5,9 @@
 }
 
 body {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
 	background-color: rgb(6 8 13);
 	color: white;
-	 /*text-shadow: 0px 1px 5px yellow;*/ 
 	position: relative;
-	/*overflow: hidden;*/
 }
 
 
@@ -119,20 +116,6 @@ input::placeholder {
 	/* bỏ outline mặt định xấu quắc */
 	outline: none;
 }
-
-/*.home_homeMenuItemBorder__FwstZ:hover {
-	background-image: linear-gradient(45deg, #e7127e, rgba(143, 113, 248, .6));
-}
-
-.home_homeMenuItemBorder__FwstZ {
-	border-radius: 40px;
-	margin-bottom: 10px;
-	background-image: linear-gradient(135deg, #96f871, hsla(0, 0%, 100%, .15) 50%);
-	padding: 1px;
-	width: 332px;
-	height: 64px;
-	margin-right: 24px;
-}*/
 
 .nho {
 	width: 300px;
@@ -317,35 +300,5 @@ a, .btn-link {
 	}
 }
 
-/*--combobox
-height: 30px;
-border-radius: 5px;
-border-color: rgb(12 215 48);
-color: #5f39f9;*/
-
-/*
-	nút
-	height: 30px;
-border-radius: 21px;
-border-color: none;
-background: linear-gradient(45deg, #f71bff, #2ae0b6);
-border: 0 solid;
-color: white;
-font-weight: bold;
-padding: 5px;
-box-sizing: border-box;*/
-
-/*
-	Chữ gradient
-
-	background: linear-gradient(to right, #9b30d0 0%, #4bf4df 100%);
-background-clip: text;
-color: transparent;*/
-
-/*background: linear-gradient(to right, #9b30d0 0%, #4bf4df 100%);
-background-clip: text;
-color: transparent;
-height: 30px;
-border-radius: 5px;*/
 
 /*background: linear-gradient(45deg, #e400ff, #25ebc5); tham khảo*/

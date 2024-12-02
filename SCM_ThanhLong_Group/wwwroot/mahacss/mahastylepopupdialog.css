@@ -1,0 +1,195 @@
+﻿ /* phần code popup */
+
+
+        .input-dialog {
+            font-weight: bold;
+            padding: 7px 25px;
+            border-radius: 25px;
+            border: none;
+            color: #eff4fc;
+            width: 100%;
+            height: 36px;
+            outline: none;
+            border: 1px solid #eff4fc;
+            background: transparent;
+            font-size: 16px;
+        }
+
+            .input-dialog::placeholder {
+                color: #eff4fc;
+            }
+
+            .dialog-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 40;
+                background: transparent;
+                backdrop-filter: blur(20px);
+                background-image: linear-gradient(to right, rgba(18, 18, 18, 0.393), rgba(18, 19, 20, 0.218));
+                animation: popupdialog .3 ease-in-out;
+                display: none;
+            }
+
+div.dialog-container.them,
+div.dialog-container.xoa,
+div.dialog-container.capnhat {
+	display: block;
+}
+.dialog-main {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    background: transparent;
+    padding: 30px 50px;
+    border-radius: 15px;
+    min-height: 60%;
+    backdrop-filter: blur(20px);
+    color: #eff4fc;
+    background: linear-gradient(193deg, #a7a3a333, #32383833 40.63%, #37364033);
+    border: 1px solid rgb(112, 112, 115);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    animation: popupdialog .5s linear;
+    max-height: 90vh;
+}
+
+@keyframes popupdialog
+        {
+            from {
+                transform: scale(0.1), translate(-50%, -50%);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1),
+                translate(-50%,-50%);
+                opacity: 1;
+            }
+        }
+
+        .dialog-title {
+            font-size: 30px;
+            color: white;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .dialog-conten-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #eff4fc;
+        }
+
+        .dialog-conten {
+            display: flex;
+            flex-direction: column;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .dialog-icon {
+            position: absolute;
+            top: 0.2em;
+            right: 0.6em;
+            font-size: 23px;
+            cursor: pointer;
+        }
+
+        .dialog-button {
+            padding: 8px 29px;
+            border-radius: 20px;
+            color: rgb(0, 255, 153);
+            font-weight: bold;
+            border: 1px solid rgb(112, 112, 115);
+            cursor: pointer;
+            background: linear-gradient(193deg, #a7a3a333, #32383833 40.63%, #37364033);
+            margin-left: 10px;
+            min-height: 36px;
+        }
+
+        .dialog-button:hover {
+            background: linear-gradient(193deg, #89868689, #3238387b 40.63%, #37364086);
+            color: rgb(50, 248, 212);
+
+        }
+
+        .dialog-container-button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: right;
+            margin: 20px 0;
+        }
+
+.dialog-conten option {
+    background-color: rgba(5, 5, 10, 0.958);
+    color: rgb(0, 255, 166);
+}
+
+.dialog-main-conten {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	top: 0;
+	width: 80%;
+	margin: auto;
+	max-height: 100%;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding: 10px;
+}
+
+
+/*
+    cách sử dụng dialog (dán phần code bên dưới)
+
+    @* Phần hiển thị thêm popup dialog modal *@
+<div class="dialog-container" style="@show">
+
+    <div class="dialog-main">
+        <div class="dialog-icon" @onclick="closeDialog">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+        <div class="dialog-title">
+            <p>Tiêu đề thêm dialog</p>
+        </div>
+
+        <div class="dialog-conten">
+            <label class="dialog-conten-title" for="">Nhập tên chính sách</label>
+            <input class="input-dialog" type="text">
+        </div>
+        <div class="dialog-conten">
+            <label class="dialog-conten-title" for="">Nhập tên</label>
+            <input class="input-dialog" type="text">
+        </div>
+
+        <div class="dialog-container-button">
+            <div>
+                <button class="dialog-button">Thêm mới nhà cung cấp</button>
+            </div>
+            <div>
+                <button class="dialog-button" @onclick="closeDialog">Đóng</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    @code {
+    private string show = "display:none";
+  private void closeDialog()
+  {
+      show = "display:none";
+  }
+    }
+
+@* Hết Phần hiển thị thêm popup dialog modal *@
+
+
+*/

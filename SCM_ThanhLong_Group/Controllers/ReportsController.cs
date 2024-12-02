@@ -63,7 +63,7 @@ namespace SCM_ThanhLong_Group.Components.Pages.Controllers
 
             using (var smtpClient = new SmtpClient("smtp.gmail.com", 587))
             {
-                smtpClient.Credentials = new NetworkCredential("lgklgk2711@gmail.com", "lpwliwpwybzylkpj");
+                smtpClient.Credentials = new NetworkCredential("scmmanagesoftware@gmail.com", "ihitdlowdisznbyg");
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtpClient.EnableSsl = true; // Đặt thành true để kích hoạt TTS
 

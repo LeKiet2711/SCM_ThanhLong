@@ -20,7 +20,7 @@
 </style>
 
 <span class="chu-dep" style="text-align:center;font-weight:bold">Danh mục Lô Thanh Long</span>
-<button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
+<button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative;">
     <span class="oi oi-plus" aria-hidden="true">Thêm lô thanh long mới</span>
 </button>
 
@@ -30,6 +30,43 @@
 }
 else
 {
+    <div class="container-table-main">
+        <div class="tieu-de-table">
+            <span>Thông tin lô thanh long</span>
+        </div>
+        <div class="container-table">
+            <table class="style-table">
+                <thead>
+                    <tr>
+                        <th>Mã lô</th>
+                        <th>Tên hộ trồng</th>
+                        <th>Ngày thu hoạch</th>
+                        <th>Trạng thái</th>
+                        <th>Mô tả</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (LoThanhLong data in dataList)
+                    {
+                        <tr>
+                            <td>@data.MaLo</td>
+                            <td>@data.TenHoTrong</td>
+                            <td>@data.NgayThuHoach</td>
+                            <td>@data.TrangThai</td>
+                            <td>@data.MoTa</td>
+                            <td>
+                                <button class="nut-xanh-bang" @onclick="@(()=>OpenEditModal(data))">Cập nhật</button>
+                                <button class="nut-do-bang" @onclick="@(()=>OpenDeleteModal(data))">Xóa</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
         <GridColumns>
             <GridColumn Field="@nameof(LoThanhLong.MaLo)" Title="Mã lô" Width="100px" />
