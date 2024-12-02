@@ -28,11 +28,11 @@ namespace SCM_ThanhLong_Group.Service
             //string connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;";
             if (string.Compare(username, "sys", true) == 0 || string.Compare(username, "system", true) == 0)
             {
-                connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/orcl1;";
+                connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/orcl;";
             }
             else
             {
-                connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl1;pooling=false";
+                connectionString = $"User Id=C##{username};Password={password};Data Source=localhost:1521/orcl;pooling=false";
             }
             if(string.Compare(username,"sys", true)==0)
             {

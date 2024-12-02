@@ -17,7 +17,7 @@
     body {
         font-family: Arial, sans-serif;
         background-color: #f9f9f9; /* Nền sáng nhẹ */
-        margin: 0;
+        margin: 0px;
     }
 
     h3 {
@@ -27,25 +27,20 @@
 
     /* Khung chứa combobox và nút */
     .action-container {
-        /* background-color: #ffffff; /* Nền trắng */ */
-        /* border: 1px solid #ddd; /* Viền nhạt */ */
+        background-color: #ffffff; /* Nền trắng */
+        border: 1px solid #ddd; /* Viền nhạt */
         border-radius: 10px;
         padding: 20px;
-        /* width: 70%; */
+        width: 100%;
         margin: 0 auto 20px auto; /* Căn giữa và thêm khoảng cách */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
-        position: relative;
-        flex-direction: column;
-        align-items: center;
     }
-
         /* Combobox */
         .action-container label {
             font-weight: bold;
+            color: #333;
             margin-right: 10px;
-            color: #eff4fc;
         }
-
         .action-container select {
             padding: 8px;
             border: 1px solid #ccc;
@@ -72,12 +67,14 @@
     /* Bảng hiển thị */
     table {
         width: 80%;
-        margin: 20px auto;
+        margin: 0 auto;
         border-collapse: collapse;
         text-align: center;
         background-color: #ffffff; /* Nền trắng */
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+        position:relative;
+      
     }
 
     table, th, td {
@@ -105,7 +102,7 @@
 <h3>Trình Theo Dõi Tác Động Hệ Thống FGA</h3>
 
 <!-- Khung chứa combobox và nút -->
-<div class="action-container container-table">
+<div class="action-container">
     <p class="@((StatusMessage.StartsWith("Lỗi") || StatusMessage.StartsWith("Error")) ? "error" : "success")">
         @StatusMessage
     </p>
@@ -121,13 +118,14 @@
     </div>
     <br />
     <div style="text-align: center;">
-        <button class="nut-dep" @onclick="AddPolicy">Tạo Policy</button>
-        <button class="nut-dep" @onclick="EnablePolicy">Bật Policy</button>
-        <button class="nut-dep" @onclick="DisablePolicy">Tắt Policy</button>
-        <button class="nut-dep" @onclick="DropPolicy">Xóa Policy</button>
-        <button class="nut-dep" @onclick="ViewData">Xem Dữ Liệu</button>
-        <button class="nut-dep" @onclick="DeleteData">Reset Data</button>
+        <button @onclick="AddPolicy">Tạo Policy</button>
+        <button @onclick="EnablePolicy">Bật Policy</button>
+        <button @onclick="DisablePolicy">Tắt Policy</button>
+        <button @onclick="DropPolicy">Xóa Policy</button>
+        <button @onclick="ViewData">Xem Dữ Liệu</button>
+        <button @onclick="DeleteData">Reset Data</button>
     </div>
+   
 </div>
 
 <!-- Bảng hiển thị -->

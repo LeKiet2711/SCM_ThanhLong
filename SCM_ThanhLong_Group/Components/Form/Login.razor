@@ -32,12 +32,12 @@
              <InputText @bind-Value="loginModel.username" class="textbox custom-input" placeholder="Tên đăng nhập"></InputText>
             @* <input  @bind="loginModel.username" class="textbox custom-input" type="text" placeholder="Tên đăng nhập"> *@
             <i class="fa-solid fa-user"></i>
-           <ValidationMessage For="@(() =>loginModel.username)" class="validate-kb"/>
+           @* <ValidationMessage For="@(() =>loginModel.username)" class="validate-kb"/> *@
         @* </div> *@
         @* <div class="container-input"> *@
             <InputText @bind-Value="loginModel.password" class="textbox custom-input" type="password" placeholder="Mật khẩu"></InputText>
             <i class="fa-solid fa-lock"></i>
-        <ValidationMessage For="@(()=>loginModel.password)" class="validate-kb" />
+       @*  <ValidationMessage For="@(()=>loginModel.password)" class="validate-kb" /> *@
         @* </div> *@
         <button type="submit" class="nut-dang-nhap ">Đăng nhập</button>
         <div class="text-dang-ky-thanh-vien">
@@ -70,14 +70,25 @@
 
     private async Task HandleLogin()
     {
-
+        if (loginModel.username == null)
+        {
+            ToastService.ShowError("Vui lòng không để trống Tên tài khoản !");
+            return;
+        }
+        if (loginModel.password == null)
+        {
+            ToastService.ShowError("Vui lòng không để trống Mật khẩu !");
+            return;
+        }
         await userService.Logout();
         var result = await userService.AuthenticateUser(loginModel.username.ToUpper(), loginModel.password);
         userCur = loginModel.username.ToUpper();
+       
         if (result)
         {
-            Users_Service.currentUserName = loginModel.username;
+            Users_Service.currentUserName = loginModel.username;     
             Users_Service.currentPassWord = loginModel.password;
+           
             // ToastService.ShowSuccess("Đăng nhập thành công!");
             Navigation.NavigateTo("/validate-key");
         }
