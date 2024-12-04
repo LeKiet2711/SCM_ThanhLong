@@ -12,10 +12,35 @@
     .modal {
         background-color: rgba(0, 0, 0, 0.5);
     }
+
+    .modal-dialog {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .modal-footer {
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    .container-content {
+        margin-left: 1.5vw;
+        background: white;
+    }
 </style>
 
 <span class="chu-dep" style="text-align:center;font-weight:bold">Chi tiết phiếu xuất @Auto_ID</span>
-<button class="btn btn-success" @onclick="OpenAddModal" style="margin-bottom:10px">
+<button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative">
     <span class="oi oi-plus" aria-hidden="true">Thêm chi tiết phiếu xuất mới</span>
 </button>
 
@@ -84,7 +109,7 @@ else
     <div class="modal-dialog model-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background:#2f8f3a; color:beige">
-                <h5 class="modal-title"><b>Xóa phiếu xuất</b></h5>
+                <h5 class="modal-title"><b>Xóa chi tiết phiếu xuất</b></h5>
                 <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
