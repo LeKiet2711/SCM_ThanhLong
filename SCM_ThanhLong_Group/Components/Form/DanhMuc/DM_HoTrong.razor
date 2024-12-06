@@ -9,9 +9,38 @@
 
 <style>
     .modal {
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .close-icon {
+        font-size: 2rem;
+    }
+    .modal-dialog {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .modal-footer {
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    .container-content {
+        margin-left: 1.5vw;
+        background: white;
     }
 </style>
+
 
 <span class="chu-dep" style="text-align:center;font-weight:bold">Danh mục hộ trồng</span>
 <button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative;">
@@ -24,7 +53,7 @@
 }
 else
 {
-    <div class="container-table-main">
+    @* <div class="container-table-main">
         <div class="tieu-de-table">
             <span>Danh mục hộ trồng</span>
         </div>
@@ -64,26 +93,26 @@ else
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> *@
 
 
-    @* <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> *@
-    @*     <GridColumns> *@
-    @*         <GridColumn Field="@nameof(HoTrong.MaHoTrong)" Title="Mã hộ trồng" Width="100px" /> *@
-    @*         <GridColumn Field="@nameof(HoTrong.TenHoTrong)" Title="Tên hộ trồng" Width="100px" /> *@
-    @*         <GridColumn Field="@nameof(HoTrong.TenKhuVucTrong)" Title="Khu vực trồng" Width="100px" /> *@
-    @*         <GridColumn Field="@nameof(HoTrong.DiaChi)" Title="Địa chỉ" Width="100px" /> *@
-    @*         <GridColumn Field="@nameof(HoTrong.SoDienThoai)" Title="Số điện thoại" Width="100px" /> *@
-    @*         <GridCommandColumn Width="180px"> *@
-    @*             <GridCommandButton Command="Edit" OnClick="@EditItem"> *@
-    @*                 <span class="oi oi-pencil" Width="100px"></span> Sửa *@
-    @*             </GridCommandButton> *@
-    @*             <GridCommandButton Command="Delete" OnClick="@DeleteItem"> *@
-    @*                 <span class="oi oi-trash" Width="100px"></span> Xóa *@
-    @*             </GridCommandButton> *@
-    @*         </GridCommandColumn> *@
-    @*     </GridColumns> *@
-    @* </TelerikGrid> *@
+     <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> 
+         <GridColumns>
+             <GridColumn Field="@nameof(HoTrong.MaHoTrong)" Title="Mã hộ trồng" Width="100px" /> 
+             <GridColumn Field="@nameof(HoTrong.TenHoTrong)" Title="Tên hộ trồng" Width="100px" /> 
+             <GridColumn Field="@nameof(HoTrong.TenKhuVucTrong)" Title="Khu vực trồng" Width="100px" /> 
+             <GridColumn Field="@nameof(HoTrong.DiaChi)" Title="Địa chỉ" Width="100px" /> 
+             <GridColumn Field="@nameof(HoTrong.SoDienThoai)" Title="Số điện thoại" Width="100px" /> 
+             <GridCommandColumn Width="180px"> 
+                 <GridCommandButton Command="Edit" OnClick="@EditItem"> 
+                     <span class="oi oi-pencil" Width="100px"></span> Sửa 
+                 </GridCommandButton> 
+                 <GridCommandButton Command="Delete" OnClick="@DeleteItem"> 
+                     <span class="oi oi-trash" Width="100px"></span> Xóa 
+                 </GridCommandButton> 
+             </GridCommandColumn> 
+         </GridColumns> 
+     </TelerikGrid> 
 }
 
 
@@ -164,7 +193,7 @@ else
                     </div>
                     <div class="form-group">
                         <label for="MaKhuVuc" class="control-label"><b>Mã khu vực: </b></label>
-                        <InputSelect class="" @bind-Value="@hoTrong.KhuVucTrongID">
+                        <InputSelect class="form-control" @bind-Value="@hoTrong.KhuVucTrongID">
                             <option value="">-- Chọn khu vực trồng --</option>
                             @foreach (var item in khuVucTrongList)
                             {

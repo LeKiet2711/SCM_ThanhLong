@@ -8,9 +8,38 @@
 
 <style>
     .modal {
-    background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .close-icon {
+        font-size: 2rem;
+    }
+    .modal-dialog {
+        border-radius: 30px;
+        overflow: hidden;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .modal-footer {
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    .container-content {
+        margin-left: 1.5vw;
+        background: white;
     }
 </style>
+
 
 <span class="chu-dep" style="text-align:center;font-weight:bold">Danh mục kho</span>
 <button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative;">
@@ -23,7 +52,7 @@
 }
 else
 {
-    <div class="container-table-main">
+    @* <div class="container-table-main">
         <div class="tieu-de-table">
             <span>Thông tin kho</span>
         </div>
@@ -53,23 +82,23 @@ else
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> *@
 
-    @* <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> *@
-    @*     <GridColumns> *@
-    @*         <GridColumn Field="@nameof(Kho.MaKho)" Title="Mã kho" Width="100px" /> *@
-    @*         <GridColumn Field="@nameof(Kho.TenKho)" Title="Tên kho" Width="100px" /> *@
-    @*         <GridColumn Field="@nameof(Kho.DiaChi)" Title="Địa chỉ" Width="100px" /> *@
-    @*         <GridCommandColumn Width="180px"> *@
-    @*             <GridCommandButton Command="Edit" OnClick="@EditItem"> *@
-    @*                 <span class="oi oi-pencil" Width="100px"></span> Sửa *@
-    @*             </GridCommandButton> *@
-    @*             <GridCommandButton Command="Delete" OnClick="@DeleteItem"> *@
-    @*                 <span class="oi oi-trash" Width="100px"></span> Xóa *@
-    @*             </GridCommandButton> *@
-    @*         </GridCommandColumn> *@
-    @*     </GridColumns> *@
-    @* </TelerikGrid> *@
+     <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> 
+         <GridColumns>
+             <GridColumn Field="@nameof(Kho.MaKho)" Title="Mã kho" Width="100px" /> 
+             <GridColumn Field="@nameof(Kho.TenKho)" Title="Tên kho" Width="100px" /> 
+             <GridColumn Field="@nameof(Kho.DiaChi)" Title="Địa chỉ" Width="100px" /> 
+             <GridCommandColumn Width="180px"> 
+                 <GridCommandButton Command="Edit" OnClick="@EditItem"> 
+                     <span class="oi oi-pencil" Width="100px"></span> Sửa 
+                 </GridCommandButton> 
+                 <GridCommandButton Command="Delete" OnClick="@DeleteItem"> 
+                     <span class="oi oi-trash" Width="100px"></span> Xóa 
+                 </GridCommandButton>
+             </GridCommandColumn> 
+         </GridColumns> 
+     </TelerikGrid> 
 }
 
 @* Modal cho việc thêm mới *@
@@ -77,7 +106,7 @@ else
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background:#2f8f3a; color:beige">
-                <h5 class="modal-title"><b>Thêm mới khu vực trồng</b></h5>
+                <h5 class="modal-title"><b>Thêm mới kho</b></h5>
                 <button type="button" class="close" @onclick="CloseAddModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -152,7 +181,7 @@ else
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background:#2f8f3a; color:beige">
-                <h5 class="modal-title"><b>Xóa khu vực trồng</b></h5>
+                <h5 class="modal-title"><b>Xóa kho</b></h5>
                 <button type="button" class="close" @onclick="CloseDeleteModal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

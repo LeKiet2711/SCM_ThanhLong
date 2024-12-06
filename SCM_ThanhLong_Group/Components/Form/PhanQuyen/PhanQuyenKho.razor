@@ -7,6 +7,37 @@
 @inject NavigationManager Navigation
 @inject Users user
 
+<style>
+    .modal {
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-dialog {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .modal-footer {
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    .container-content {
+        margin-left: 1.5vw;
+        background: white;
+    }
+</style>
+
 <TelerikComboBox Data="@lstKho"
                  Value="@khoId"
                  Filterable="true"
@@ -57,7 +88,7 @@
     </div>
 </div>
 
-<div class="container-table-main">
+@* <div class="container-table-main">
     <div class="tieu-de-table">
         <span>Thông tin phân quyền kho</span>
     </div>
@@ -83,18 +114,18 @@
         </table>
     </div>
 </div>
+ *@
 
-
-@* <TelerikGrid Data="@lstKhoUser" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> *@
-@*     <GridColumns> *@
-@*         <GridColumn Field="UserId" Title="Mã đăng nhập" /> *@
-@*         <GridColumn> *@
-@*             <Template> *@
-@*                 <button class="btn btn-danger" @onclick="@(async () => await DeleteUserFromKho((context as KhoUser).UserId))">Xóa</button> *@
-@*             </Template> *@
-@*         </GridColumn> *@
-@*     </GridColumns> *@
-@* </TelerikGrid> *@
+ <TelerikGrid Data="@lstKhoUser" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> 
+     <GridColumns> 
+         <GridColumn Field="UserId" Title="Mã đăng nhập" /> 
+         <GridColumn> 
+             <Template> 
+                 <button class="btn btn-danger" @onclick="@(async () => await DeleteUserFromKho((context as KhoUser).UserId))">Xóa</button> 
+             </Template> 
+         </GridColumn> 
+     </GridColumns> 
+ </TelerikGrid> 
 
 @code {
     List<Kho> lstKho = new List<Kho>();

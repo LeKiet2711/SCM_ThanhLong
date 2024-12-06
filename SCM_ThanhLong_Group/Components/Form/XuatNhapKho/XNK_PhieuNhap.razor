@@ -9,9 +9,38 @@
 
 <style>
     .modal {
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .close-icon {
+        font-size: 2rem;
+    }
+    .modal-dialog {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .modal-footer {
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    .container-content {
+        margin-left: 1.5vw;
+        background: white;
     }
 </style>
+
 
 <span class="chu-dep" style="text-align:center;font-weight:bold">Phiếu nhập kho</span>
 
@@ -41,7 +70,7 @@
 else
 {
 
-    <div class="container-table-main">
+    @* <div class="container-table-main">
         <div class="tieu-de-table">
             <span>Thông tin phiếu nhập</span>
         </div>
@@ -82,29 +111,29 @@ else
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> *@
 
-    @* <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> *@
-    @*     <GridColumns> *@
-    @*         <GridColumn Field="@nameof(PhieuNhap.SoPhieuNhap)" Title="Số phiếu nhập" Width="100px" /> *@
-    @*         <GridColumn Field="@nameof(PhieuNhap.TenKho)" Title="Tên kho" Width="100px" /> *@
-    @*         <GridColumn Field="@nameof(PhieuNhap.NgayNhap)" Title="Ngày nhập" Width="100px" /> *@
-    @*         <GridCommandColumn Width="180px"> *@
-    @*             <GridCommandButton Command="Edit" OnClick="@EditItem"> *@
-    @*                 <span class="oi oi-pencil" Width="100px"></span> Sửa *@
-    @*             </GridCommandButton> *@
-    @*             <GridCommandButton Command="Delete" OnClick="@DeleteItem"> *@
-    @*                 <span class="oi oi-trash" Width="100px"></span> Xóa *@
-    @*             </GridCommandButton> *@
-    @*             <GridCommandButton OnClick="() => ViewDetails((context as PhieuNhap).Auto_ID)"> *@
-    @*                 <span class="oi oi-eye" Width="100px"></span> Xem chi tiết phiếu nhập *@
-    @*             </GridCommandButton> *@
-    @*             <GridCommandButton OnClick="() => ExportReport((context as PhieuNhap).Auto_ID.ToString())"> *@
-    @*                 <span class="oi oi-trash" Width="100px"></span> In phiếu nhập *@
-    @*             </GridCommandButton> *@
-    @*         </GridCommandColumn> *@
-    @*     </GridColumns> *@
-    @* </TelerikGrid> *@
+     <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> 
+         <GridColumns> 
+             <GridColumn Field="@nameof(PhieuNhap.SoPhieuNhap)" Title="Số phiếu nhập" Width="100px" /> 
+             <GridColumn Field="@nameof(PhieuNhap.TenKho)" Title="Tên kho" Width="100px" /> 
+             <GridColumn Field="@nameof(PhieuNhap.NgayNhap)" Title="Ngày nhập" Width="100px" /> 
+             <GridCommandColumn Width="180px"> 
+                 <GridCommandButton Command="Edit" OnClick="@EditItem"> 
+                     <span class="oi oi-pencil" Width="100px"></span> Sửa 
+                 </GridCommandButton> 
+                 <GridCommandButton Command="Delete" OnClick="@DeleteItem"> 
+                     <span class="oi oi-trash" Width="100px"></span> Xóa 
+                 </GridCommandButton> 
+                 <GridCommandButton OnClick="() => ViewDetails((context as PhieuNhap).Auto_ID)"> 
+                     <span class="oi oi-eye" Width="100px"></span> Xem chi tiết phiếu nhập 
+                 </GridCommandButton> 
+                 <GridCommandButton OnClick="() => ExportReport((context as PhieuNhap).Auto_ID.ToString())"> 
+                     <span class="oi oi-trash" Width="100px"></span> In phiếu nhập 
+                 </GridCommandButton> 
+             </GridCommandColumn> 
+         </GridColumns> 
+     </TelerikGrid> 
 }
 
 
