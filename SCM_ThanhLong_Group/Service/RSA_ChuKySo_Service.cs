@@ -49,8 +49,7 @@ namespace SCM_ThanhLong_Group.Service
             {
                 // Ghi nội dung file gốc
                 fs.Write(originalFileContent, 0, originalFileContent.Length);
-
-                // Ghi chữ ký vào cuối file (hoặc metadata nếu dùng thư viện PDF)
+                // Ghi chữ ký vào cuối file
                 fs.Write(signature, 0, signature.Length);
             }
         }

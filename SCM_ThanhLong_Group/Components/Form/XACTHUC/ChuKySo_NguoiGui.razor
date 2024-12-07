@@ -30,7 +30,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5); /* Tạo hiệu ứng tối màu */
-            z-index: -1;
+            z-index: 0;
         }
 
     /* Container chính */
@@ -42,6 +42,8 @@
         width: 100%;
         max-width: 700px;
         text-align: center;
+        position: relative;
+        z-index: 1;
     }
 
     /* Tiêu đề */
@@ -120,6 +122,20 @@
         .btn-success:hover:not(:disabled) {
             background-color: #218838;
         }
+
+    .key-display {
+        width: 100%;
+        height: 120px; /* Chiều cao cố định */
+        overflow: auto; /* Thêm thanh cuộn nếu nội dung dài */
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        font-family: monospace; /* Phông chữ phù hợp với mã */
+        background-color: #f9f9f9;
+        color: #333;
+        resize: none; /* Không cho phép người dùng thay đổi kích thước */
+    }
 </style>
 
 <div class="container">
@@ -128,7 +144,11 @@
     <!-- Tạo cặp khóa RSA -->
     <div class="form-group">
         <button class="btn btn-primary" @onclick="GenerateKeys">Tạo cặp khóa RSA</button>
-        <p><strong>Public Key:</strong> @publicKey</p>
+    </div>
+
+    <div class="form-group">
+        <label for="publicKey">Public Key:</label>
+        <textarea id="publicKey" class="key-display" readonly>@publicKey</textarea>
         @if (!string.IsNullOrEmpty(publicKey))
         {
             <button class="btn btn-info" @onclick="DownloadPublicKey">Tải xuống Public Key</button>
@@ -143,7 +163,8 @@
 
     <!-- Hiển thị Private Key -->
     <div class="form-group">
-        <p><strong>Private Key:</strong> @privateKey</p>
+        <label for="privateKey">Private Key:</label>
+        <textarea id="privateKey" class="key-display" readonly>@privateKey</textarea>
         @if (!string.IsNullOrEmpty(privateKey))
         {
             <button class="btn btn-info" @onclick="DownloadPrivateKey">Tải xuống Private Key</button>
