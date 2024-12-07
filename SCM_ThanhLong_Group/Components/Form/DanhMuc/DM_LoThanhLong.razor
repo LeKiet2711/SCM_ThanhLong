@@ -85,6 +85,7 @@ else
                             <td>@data.MoTa</td>
                             <td>
                                 <button class="nut-xanh-bang" @onclick="@(()=>OpenEditModal(data))">Cập nhật</button>
+                                <button class="nut-xanh-bang" @onclick="@(()=>GenerateQRCodeD(data))">QR code</button>
                                 <button class="nut-do-bang" @onclick="@(()=>OpenDeleteModal(data))">Xóa</button>
                             </td>
                         </tr>
@@ -397,6 +398,28 @@ else
             var qrCodeData = qrGenerator.CreateQrCode(linkQR, QRCoder.QRCodeGenerator.ECCLevel.Q);
 
             // PngByteQRCode generate 
+            var qrCode = new QRCoder.PngByteQRCode(qrCodeData);
+            var qrCodeBytes = qrCode.GetGraphic(20);
+
+            // Convert QR Code image to Base64 to display
+            loThanhLong.QRCode = Convert.ToBase64String(qrCodeBytes);
+        }
+
+        OpenQRModal();
+    }
+
+    private async Task GenerateQRCodeD(LoThanhLong args)
+    {
+        string sql = "GRANT EXECUTE ON C##Admin.GetLinkQRByLoThanhLong TO C##TET";
+        await Users_Service.ExecuteSqlCommand(sql);
+        var item = args;
+        loThanhLong = item.ShallowCopy();
+        string linkQR = await loThanhLong_Service.GetLinkQRByLoThanhLongID(loThanhLong.Auto_ID);
+        using (var qrGenerator = new QRCoder.QRCodeGenerator())
+        {
+            var qrCodeData = qrGenerator.CreateQrCode(linkQR, QRCoder.QRCodeGenerator.ECCLevel.Q);
+
+            // PngByteQRCode generate
             var qrCode = new QRCoder.PngByteQRCode(qrCodeData);
             var qrCodeBytes = qrCode.GetGraphic(20);
 
