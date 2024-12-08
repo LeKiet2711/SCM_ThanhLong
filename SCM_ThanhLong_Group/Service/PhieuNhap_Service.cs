@@ -250,7 +250,7 @@ namespace SCM_ThanhLong_Group.Service
             }
         }
 
-        public async Task<bool> isSoPhieuNhapExist(PhieuNhap phieuNhap, List<PhieuNhap> lstData, string ma) 
+        public async Task<bool> isSoPhieuNhapExist(PhieuNhap phieuNhap, List<PhieuNhap> lstData, string ma)
         {
             if (lstData.Any(k => k.SoPhieuNhap == phieuNhap.SoPhieuNhap && phieuNhap.SoPhieuNhap != ma))
             {
@@ -258,7 +258,7 @@ namespace SCM_ThanhLong_Group.Service
             }
             return false;
         }
-         
+
         public async Task<string> GetSoPhieuNhapById(int nhapKhoId)
         {
             string soPhieuNhap = string.Empty;
@@ -281,5 +281,29 @@ namespace SCM_ThanhLong_Group.Service
             return soPhieuNhap;
         }
 
+
+        public async Task<List<PhieuNhap>> GetAllPhieuNhapForException()
+        {
+            List<PhieuNhap> result = new List<PhieuNhap>();
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+            {
+                await conn.OpenAsync();
+                using (OracleCommand cmd = new OracleCommand("SELECT * FROM C##Admin.PhieuNhap", conn))
+                {
+                    using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            result.Add(new PhieuNhap
+                            {
+                                SoPhieuNhap = reader["SoPhieuNhap"].ToString(),
+                                // Các thuộc tính khác
+                            });
+                        }
+                    }
+                }
+            }
+            return result;
+        }
     }
 }

@@ -7,41 +7,7 @@
 @inject Users_Service Users_Service
 @inject Users user
 
-<style>
-    .modal {
-        background-color: rgba(0, 0, 0, 0.9);
-    }
-
-    .close-icon {
-        font-size: 2rem;
-    }
-    .modal-dialog {
-        border-radius: 15px;
-        overflow: hidden;
-    }
-
-    .modal-content {
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-header {
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-    }
-
-    .modal-footer {
-        border-bottom-left-radius: 15px;
-        border-bottom-right-radius: 15px;
-    }
-
-    .container-content {
-        margin-left: 1.5vw;
-        background: white;
-    }
-</style>
-
-
+<link href="css/form.css" rel="stylesheet" />
 <span class="chu-dep" style="text-align:center;font-weight:bold">Phiếu nhập kho</span>
 
 <TelerikComboBox Data="@khoList"
@@ -69,50 +35,6 @@
 }
 else
 {
-
-    @* <div class="container-table-main">
-        <div class="tieu-de-table">
-            <span>Thông tin phiếu nhập</span>
-        </div>
-        <div class="container-table">
-            <table class="style-table">
-                <thead>
-                    <tr>
-                        <th>Số phiếu nhập</th>
-                        <th>Tên kho</th>
-                        <th>Ngày nhập</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (PhieuNhap data in dataList)
-                    {
-                        <tr>
-                            <td>@data.SoPhieuNhap</td>
-                            <td>@data.TenKho</td>
-                            <td>@data.NgayNhap</td>
-                            <td>
-                                <button class="nut-do-bang" @onclick="@(()=>OpenEditModal(data))">Cập nhật</button>
-                            </td>
-                            <td>
-                                <button class="nut-do-bang" @onclick="@(()=>OpenDeleteModal(data))">Xóa</button>
-                            </td>
-                            <td>
-                                <button class="nut-do-bang" @onclick="@(()=>ViewDetails(data.Auto_ID))">Xem</button>
-                            </td>
-                            <td>
-                                <button class="nut-do-bang" @onclick="@(()=>ExportReport(data.Auto_ID+""))">Xuất</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div> *@
-
      <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> 
          <GridColumns> 
              <GridColumn Field="@nameof(PhieuNhap.SoPhieuNhap)" Title="Số phiếu nhập" Width="100px" /> 
@@ -298,6 +220,7 @@ else
 
 @code {
     private List<PhieuNhap> dataList = new List<PhieuNhap>();
+    private List<PhieuNhap> dataListException = new List<PhieuNhap>();
     private List<HoTrong> hoTrongList = new List<HoTrong>();
     private List<LoThanhLong> loThanhLongList = new List<LoThanhLong>();
     private List<Kho> khoList = new List<Kho>();
@@ -347,6 +270,7 @@ else
 
     private async Task LoadData(int maKho)
     {
+        dataListException = await PhieuNhap_Service.GetAllPhieuNhapForException();
         dataList = await PhieuNhap_Service.getAllData(maKho, user.username);
     }
 
@@ -361,6 +285,7 @@ else
     {
         addModalClass = "";
         addModalDisplayStyle = "display:none";
+        lstCTPN.Clear();
         StateHasChanged();
     }
 
@@ -410,6 +335,15 @@ else
 
     private void AddChiTiet()
     {
+        if (newChiTiet.MaLo==0 || newChiTiet.SoKg == 0 || newChiTiet.DonGia == 0)
+        {
+            ToastService.ShowError("Vui lòng nhập đầy đủ thông tin của chi tiết phiếu nhập!");
+            return;
+        }
+        if(newChiTiet.SoKg < 0 || newChiTiet.DonGia < 0){
+            ToastService.ShowError("Số Kg nhập và đơn giá phải lớn hơn 0");
+            return;
+        }
         var loThanhLong = loThanhLongList.FirstOrDefault(l => l.Auto_ID == newChiTiet.MaLo);
         newChiTiet.MaLoSTR = loThanhLong?.MaLo ?? "Không xác định";
         lstCTPN.Add(newChiTiet);
@@ -424,7 +358,7 @@ else
 
     protected async Task createPhieuNhap()
     {
-        if (await PhieuNhap_Service.isSoPhieuNhapExist(phieuNhap, dataList, "ORACLE"))
+        if (await PhieuNhap_Service.isSoPhieuNhapExist(phieuNhap, dataListException, "ORACLE"))
         {
             ToastService.ShowError("Mã phiếu nhập đã tồn tại!");
         }
@@ -432,6 +366,12 @@ else
         {
             try
             {
+                if(lstCTPN.Count == 0)
+                {
+                    ToastService.ShowError("Vui lòng thêm chi tiết phiếu nhập!");
+                    return;
+                }
+
                 phieuNhap.KhoID = khoId;
                 int autoID = await PhieuNhap_Service.addData(phieuNhap);
                 phieuNhap.Auto_ID = autoID;
@@ -456,7 +396,7 @@ else
 
     protected async Task updatePhieuNhap()
     {
-        if(await PhieuNhap_Service.isSoPhieuNhapExist(phieuNhap, dataList, soPhieuNhap))
+        if(await PhieuNhap_Service.isSoPhieuNhapExist(phieuNhap, dataListException, soPhieuNhap))
         {
             ToastService.ShowError("Số phiếu nhập đã tồn tại!");
         }

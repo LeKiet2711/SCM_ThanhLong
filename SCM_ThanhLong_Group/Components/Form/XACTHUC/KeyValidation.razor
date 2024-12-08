@@ -53,29 +53,6 @@
             </div>
         }
 
-        @* <!-- Kết quả hiển thị -->
-        @if (IsEmpty)
-        {
-            <div class="result invalid-key">Không được để trống ô nhập khóa!</div>
-        }
-        @if (IsInvalidLength)
-        {
-            <div class="result invalid-key">Khóa phải đủ 8 ký tự!</div>
-        } *@
-      @*   @if (IsValid.HasValue && isVerified.HasValue)
-        {
-            <div class="result" style="color: @(IsValid.Value ? "green" : "red")">
-                @if (IsValid.Value)
-                {
-                    <p>!Thanh cong: Chuyển trang sau: <span>@Countdown</span>s...</p>
-                }
-                else
-                {
-                    <p>Khóa không hợp lệ! Bạn còn @RemainingAttempts lần thử.</p>
-                }
-            </div>
-        } *@
-      
         <!-- Slider Thanh Long -->
         <div class=".dragon-fruit-slider">
             <div class="slider">
@@ -135,31 +112,6 @@
         user.password = "sys";
 
     }
-    // private async Task VerifyCode()
-    // {
-    //     // Mã hóa mã xác minh mới
-
-    //     IsEmpty = false;
-    //     if (string.IsNullOrWhiteSpace(matext))
-    //     {
-    //         IsEmpty = true;
-    //         IsInvalidLength = false;
-    //         isVerified = null;
-    //         SetNotification("Không được để trống ô MA XAC MINH!", "warning");
-    //         return;
-    //     }
-    //     // Kiểm tra mã xác minh người dùng nhập vào
-    //     isVerified = await verificationService.CheckVerificationCodeAsync(matext);
-
-    //     if (isVerified.Value)
-    //     {
-    //         ToastService.ShowSuccess("Mã xác minh hợp lệ!");
-    //     }
-    //     else
-    //     {
-    //         ToastService.ShowError("Mã xác minh không hợp lệ!");
-    //     }
-    // }
 
     private async Task SendGmail()
     {
@@ -318,8 +270,6 @@
             if (RemainingAttempts <= 0) LockInputField();
            
         }
-       
-
     }
    
     private async Task StartCountdown()

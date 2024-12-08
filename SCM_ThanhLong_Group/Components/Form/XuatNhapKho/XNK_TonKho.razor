@@ -23,11 +23,11 @@
 <span class="chu-dep" style="text-align:center;font-weight:bold">Báo cáo tồn kho</span>
 
 <div class="form-group">
-    <label for="ngayNhap" class="control-label mau-chu"><b>Ngày nhập: </b></label>
+    <label for="ngayNhap" class="control-label mau-chu" style="color:springgreen"><b>Ngày nhập: </b></label>
     <InputDate class="form-control" style="position: relative;" @bind-Value="ngayNhap" />
 </div>
 <div class="form-group">
-    <label for="ngayXuat" class="control-label mau-chu"><b>Ngày xuất: </b></label>
+    <label for="ngayXuat" class="control-label mau-chu" style="color:springgreen"><b>Ngày xuất: </b></label>
     <InputDate class="form-control" style="position: relative;" @bind-Value="ngayXuat" />
 </div>
 <button class="nut-dep" @onclick="LoadTonKhoData" style="margin-bottom:10px; position: relative;">
@@ -40,38 +40,6 @@
 }
 else
 {
-
-@*     <div class="container-table-main">
-        <div class="tieu-de-table">
-            <span>Thông tin tồn kho</span>
-        </div>
-        <div class="container-table">
-            <table class="style-table">
-                <thead>
-                    <tr>
-                        <th>Mã lô hàng</th>
-                        <th>Số lượng đầu kỳ</th>
-                        <th>Số lượng nhập</th>
-                        <th>Số lượng xuất</th>
-                        <th>Số lượng cuối kỳ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (TonKho data in tonKhoList)
-                    {
-                        <tr>
-                            <td>@data.MaLoHang</td>
-                            <td>@data.SLDauKy</td>
-                            <td>@data.SLNhap</td>
-                            <td>@data.SLXuat</td>
-                            <td>@data.SLCuoiKy</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div> *@
-
     <TelerikGrid Data="@tonKhoList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid">
         <GridColumns>
             <GridColumn Field="@nameof(TonKho.MaLoHang)" Title="Mã lô hàng" Width="100px" />
@@ -112,7 +80,7 @@ else
     {
         try
         {
-            // Làm sạch thời gian, chỉ lấy ngày
+            // Không lấy thời gian chỉ lấy ngày
             DateTime ngayNhapClean = new DateTime(ngayNhap.Year, ngayNhap.Month, ngayNhap.Day);
             DateTime ngayXuatClean = new DateTime(ngayXuat.Year, ngayXuat.Month, ngayXuat.Day);
 

@@ -88,17 +88,6 @@
                     <input class="input-dialog" type="number" id="@profileAttribute.RESOURCE_NAME" min="1" @bind="@profileAttribute.LIMIT">
                 </div>
             }
-
-            @* <div class="dialog-conten"> *@
-            @*     <label class="dialog-conten-title" for="">Tên profile</label> *@
-            @*     <select @bind="profileName"> *@
-            @*         @foreach (string pro in profiles) *@
-            @*         { *@
-            @*             <option>@pro</option> *@
-            @*         } *@
-            @*     </select> *@
-            @* </div> *@
-
             <div class="dialog-container-button">
                 <div>
                     <button @onclick="updateProfile" class="dialog-button">Cập nhật profile</button>

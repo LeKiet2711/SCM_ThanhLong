@@ -7,41 +7,7 @@
 @inject Users user
 @inject NavigationManager NavigationManager
 
-<style>
-    .modal {
-        background-color: rgba(0, 0, 0, 0.9);
-    }
-
-    .close-icon {
-        font-size: 2rem;
-    }
-    .modal-dialog {
-        border-radius: 15px;
-        overflow: hidden;
-    }
-
-    .modal-content {
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-header {
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-    }
-
-    .modal-footer {
-        border-bottom-left-radius: 15px;
-        border-bottom-right-radius: 15px;
-    }
-
-    .container-content {
-        margin-left: 1.5vw;
-        background: white;
-    }
-</style>
-
-
+<link href="css/form.css" rel="stylesheet" />
 <span class="chu-dep" style="text-align:center;font-weight:bold">Danh mục hộ trồng</span>
 <button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative;">
     <span class="oi oi-plus" aria-hidden="true">Thêm hộ trồng mới</span>
@@ -53,49 +19,6 @@
 }
 else
 {
-    @* <div class="container-table-main">
-        <div class="tieu-de-table">
-            <span>Danh mục hộ trồng</span>
-        </div>
-        <div class="container-table">
-            <table class="style-table">
-                <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Mã hộ trồng</th>
-                        <th>Tên hộ trồng</th>
-                        <th>Khu vực trồng</th>
-                        <th>Địa chỉ</th>
-                        <th>Số điện thoại</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (HoTrong hoTrong in dataList)
-                    {
-                        <tr>
-                            <td>@stt</td>
-                            <td>@hoTrong.MaHoTrong</td>
-                            <td>@hoTrong.TenHoTrong</td>
-                            <td>@hoTrong.TenKhuVucTrong</td>
-                            <td>@hoTrong.DiaChi</td>
-                            <td>@hoTrong.SoDienThoai</td>
-                            <td>
-                                <button class="nut-xanh-bang" @onclick="@(()=>OpenEditModal(hoTrong))">Cập nhật</button>
-                                <button class="nut-do-bang" @onclick="@(()=>OpenDeleteModal(hoTrong))">Xóa</button>
-                            </td>
-                        </tr>
-                        if(stt>0)
-                        {
-                            stt++;
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div> *@
-
-
      <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> 
          <GridColumns>
              <GridColumn Field="@nameof(HoTrong.MaHoTrong)" Title="Mã hộ trồng" Width="100px" /> 

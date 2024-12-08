@@ -269,5 +269,28 @@ namespace SCM_ThanhLong_Group.Service
             return soKG;
         }
 
+        public async Task<List<PhieuXuat>> GetAllPhieuXuatForException()
+        {
+            List<PhieuXuat> result = new List<PhieuXuat>();
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+            {
+                await conn.OpenAsync();
+                using (OracleCommand cmd = new OracleCommand("SELECT * FROM C##Admin.PhieuXuat", conn))
+                {
+                    using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            result.Add(new PhieuXuat
+                            {
+                                SoPhieuXuat = reader["SoPhieuXuat"].ToString(),
+                                // Các thuộc tính khác
+                            });
+                        }
+                    }
+                }
+            }
+            return result;
+        }
     }
 }

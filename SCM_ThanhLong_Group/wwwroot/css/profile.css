@@ -1,0 +1,82 @@
+﻿.form-them-profile {
+    color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 500px;
+    background-color: aqua;
+    border-radius: 20px;
+    padding: 20px;
+    margin: auto;
+    background: url('https://cdn.pixabay.com/photo/2014/12/07/09/30/milky-way-559641_1280.jpg');
+}
+
+.code-container {
+    position: relative;
+    background-color: #2d2d2d;
+    border-radius: 5px;
+    padding: 20px;
+    color: #f8f8f2;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: transform .3s ease-in-out;
+    /* animation: hoatHinh 2s linear; */
+}
+
+.daCoppy {
+    /* animation: hoatHinh 3s linear; */
+}
+
+
+/* keyframes hoatHinh {
+                from {
+                    opacity: 0;
+                    transform: skew(360deg) scale(.3);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: skew(0deg) scale(3);
+                }
+            } */
+
+.code-box {
+    background-color: #282c34;
+    color: #61dafb;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+pre {
+    margin: 0;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    background-color: #61dafb;
+    color: #282c34;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+    button:hover {
+        background-color: #21a1f1;
+    }
+
+.container {
+    display: flex;
+}

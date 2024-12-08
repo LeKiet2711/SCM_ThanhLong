@@ -11,34 +11,20 @@
 
 
 <link href="mahacss/styledangnhap.css" rel="stylesheet" />
-@* <link href="css/login.css" rel="stylesheet" /> *@
-
-
 <PageTitle>Login</PageTitle>
-
 <div class="moi"></div>
-
 <div class="giua dangky">
  <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
     <DataAnnotationsValidator />
-      @* <div class="dangnhapcontainer"> *@
         <div class="trentrai"></div>
-        @* <h1>Đăng nhập</h1> *@
         <span style="font-size: 40px; font-weight: bold; display: block; text-align: center; width: 100%;">
             Đăng
             nhập
         </span>
-        @* <div class="container-input"> *@
              <InputText @bind-Value="loginModel.username" class="textbox custom-input" placeholder="Tên đăng nhập"></InputText>
-            @* <input  @bind="loginModel.username" class="textbox custom-input" type="text" placeholder="Tên đăng nhập"> *@
             <i class="fa-solid fa-user"></i>
-           @* <ValidationMessage For="@(() =>loginModel.username)" class="validate-kb"/> *@
-        @* </div> *@
-        @* <div class="container-input"> *@
             <InputText @bind-Value="loginModel.password" class="textbox custom-input" type="password" placeholder="Mật khẩu"></InputText>
             <i class="fa-solid fa-lock"></i>
-       @*  <ValidationMessage For="@(()=>loginModel.password)" class="validate-kb" /> *@
-        @* </div> *@
         <button type="submit" class="nut-dang-nhap ">Đăng nhập</button>
         <div class="text-dang-ky-thanh-vien">
             <a href="Register">Đăng kí thành viên</a>

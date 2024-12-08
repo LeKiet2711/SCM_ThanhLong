@@ -10,96 +10,10 @@
 @inject OracleFgaService oraclefgaservice
 @inject NavigationManager NavigationManager
 @using Oracle.ManagedDataAccess.Client;
-
 @using System.Data;
-<style>
-    /* Tổng thể */
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9; /* Nền sáng nhẹ */
-        margin: 0px;
-    }
 
-    h3 {
-        text-align: center;
-        color: #4CAF50; /* Màu xanh lá đẹp */
-    }
 
-    /* Khung chứa combobox và nút */
-    .action-container {
-        background-color: #ffffff; /* Nền trắng */
-        border: 1px solid #ddd; /* Viền nhạt */
-        border-radius: 10px;
-        padding: 20px;
-        width: 100%;
-        margin: 0 auto 20px auto; /* Căn giữa và thêm khoảng cách */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
-        position: relative;
-    }
-        /* Combobox */
-        .action-container label {
-            font-weight: bold;
-            color: #333;
-            margin-right: 10px;
-        }
-        .action-container select {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        /* Nút bấm */
-        .action-container button {
-            background-color: #4CAF50; /* Màu nền xanh lá */
-            color: white; /* Màu chữ */
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-            .action-container button:hover {
-                background-color: #45a049; /* Màu xanh lá nhạt khi hover */
-            }
-
-    /* Bảng hiển thị */
-    table {
-        width: 80%;
-        margin: 0 auto;
-        border-collapse: collapse;
-        text-align: center;
-        background-color: #ffffff; /* Nền trắng */
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
-        position:relative;
-      
-    }
-
-    table, th, td {
-        border: 1px solid #ddd;
-    }
-
-    th {
-        background-color: #f4f4f4; /* Nền tiêu đề */
-        padding: 10px;
-        color: #4CAF50; /* Màu xanh lá */
-    }
-
-    td {
-        padding: 10px;
-    }
-
-    /* Tin nhắn trạng thái */
-    p {
-        text-align: center;
-        color: #FF5722; /* Màu cam */
-        font-weight: bold;
-    }
-</style>
-
+<link href="css/FGA.css" rel="stylesheet" />
 <h3>Trình Theo Dõi Tác Động Hệ Thống FGA</h3>
 
 <!-- Khung chứa combobox và nút -->

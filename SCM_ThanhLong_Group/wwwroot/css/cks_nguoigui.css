@@ -1,0 +1,128 @@
+﻿/* Giao diện chung */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('./images/phapluat3.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+    /* Overlay để làm mờ hình nền */
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Tạo hiệu ứng tối màu */
+        z-index: 0;
+    }
+
+/* Container chính */
+.container {
+    background-color: rgba(255, 255, 255, 0.9); /* Làm mờ để hòa với nền */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 700px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+/* Tiêu đề */
+h3 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', 'Script MT';
+    font-size: 28px;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Form nhóm */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .form-group input[type="file"],
+    .form-group input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .form-group input[type="file"] {
+        padding: 5px;
+    }
+
+/* Nút */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+.btn-info {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+    .btn-info:hover {
+        background-color: #117a8b;
+    }
+
+.btn-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+    .btn-success:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .btn-success:hover:not(:disabled) {
+        background-color: #218838;
+    }
+
+.key-display {
+    width: 100%;
+    height: 120px; /* Chiều cao cố định */
+    overflow: auto; /* Thêm thanh cuộn nếu nội dung dài */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: monospace; /* Phông chữ phù hợp với mã */
+    background-color: #f9f9f9;
+    color: #333;
+    resize: none; /* Không cho phép người dùng thay đổi kích thước */
+}

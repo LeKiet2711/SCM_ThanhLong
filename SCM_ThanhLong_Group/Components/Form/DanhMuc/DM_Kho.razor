@@ -6,41 +6,7 @@
 @inject Users user
 @inject NavigationManager NavigationManager
 
-<style>
-    .modal {
-        background-color: rgba(0, 0, 0, 0.9);
-    }
-
-    .close-icon {
-        font-size: 2rem;
-    }
-    .modal-dialog {
-        border-radius: 30px;
-        overflow: hidden;
-    }
-
-    .modal-content {
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-header {
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-    }
-
-    .modal-footer {
-        border-bottom-left-radius: 15px;
-        border-bottom-right-radius: 15px;
-    }
-
-    .container-content {
-        margin-left: 1.5vw;
-        background: white;
-    }
-</style>
-
-
+<link href="css/form.css" rel="stylesheet" />
 <span class="chu-dep" style="text-align:center;font-weight:bold">Danh mục kho</span>
 <button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative;">
     <span class="oi oi-plus" aria-hidden="true">Thêm kho mới</span>
@@ -52,38 +18,6 @@
 }
 else
 {
-    @* <div class="container-table-main">
-        <div class="tieu-de-table">
-            <span>Thông tin kho</span>
-        </div>
-        <div class="container-table">
-            <table class="style-table">
-                <thead>
-                    <tr>
-                        <th>Mã kho</th>
-                        <th>Tên kho</th>
-                        <th>Địa chỉ</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (Kho data in dataList)
-                    {
-                        <tr>
-                            <td>@data.MaKho</td>
-                            <td>@data.TenKho</td>
-                            <td>@data.DiaChi</td>
-                            <td>
-                                <button class="nut-xanh-bang" onclick="@(()=>OpenEditModal(data))">cập nhật</button>
-                                <button class="nut-do-bang" onclick="@(()=>OpenDeleteModal(data))">xóa</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div> *@
-
      <TelerikGrid Data="@dataList" Pageable="true" Sortable="true" Height="calc(100vh - 170px)" Resizable="true" Reorderable="true" Class="telerik-grid"> 
          <GridColumns>
              <GridColumn Field="@nameof(Kho.MaKho)" Title="Mã kho" Width="100px" /> 

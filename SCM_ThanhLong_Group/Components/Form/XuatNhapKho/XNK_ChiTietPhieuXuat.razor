@@ -8,37 +8,7 @@
 @inject Users user
 @inject NavigationManager NavigationManager
 
-<style>
-    .modal {
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-dialog {
-        border-radius: 15px;
-        overflow: hidden;
-    }
-
-    .modal-content {
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-header {
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-    }
-
-    .modal-footer {
-        border-bottom-left-radius: 15px;
-        border-bottom-right-radius: 15px;
-    }
-
-    .container-content {
-        margin-left: 1.5vw;
-        background: white;
-    }
-</style>
-
+<link href="css/form.css" rel="stylesheet" />
 <span class="chu-dep" style="text-align:center;font-weight:bold">Chi tiết phiếu xuất @Auto_ID</span>
 <button class="nut-dep" @onclick="OpenAddModal" style="margin-bottom:10px; position: relative">
     <span class="oi oi-plus" aria-hidden="true">Thêm chi tiết phiếu xuất mới</span>
@@ -84,6 +54,7 @@ else
                                 <option value="@item.Auto_ID">@item.MaLo</option>
                             }
                         </InputSelect>
+                        <ValidationMessage For="@(() => ctpx.MaLo)" />
                     </div>
                     <div class="form-group">
                         <label for="SoKg" class="control-label"><b>Số Kg: </b></label>
@@ -239,6 +210,11 @@ else
 
     protected async Task createChiTietPhieuXuat()
     {
+        if (ctpx.SoKg <= 0 || ctpx.DonGia <= 0)
+        {
+            ToastService.ShowError("Số Kg và Đơn giá phải lớn hơn 0!");
+            return;
+        }
         try
         {
             ctpx.SoPhieuXuat = Auto_ID;
