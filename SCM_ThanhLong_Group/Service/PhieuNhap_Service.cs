@@ -281,6 +281,7 @@ namespace SCM_ThanhLong_Group.Service
 
             return soPhieuNhap;
         }
+
         public async Task<List<PhieuNhap>> GetAllPhieuNhapForException()
         {
             List<PhieuNhap> result = new List<PhieuNhap>();

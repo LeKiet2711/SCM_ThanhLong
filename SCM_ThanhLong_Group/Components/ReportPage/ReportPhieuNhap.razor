@@ -49,7 +49,7 @@
     public bool ParametersAreaVisible { get; set; }
     public bool DocumentMapVisible { get; set; }
     public double Scale { get; set; } = 1.0;
-    
+    public double SoTien;
     public DateTime Date;
 
     [Parameter]
@@ -66,7 +66,8 @@
     {
         Date = DateTime.Now;
         ReportSource.Parameters.Add("NHAPKHO_ID", NHAPKHO_ID);
-
+        ReportSource.Parameters.Add("SoTien", "1,700");
+        ReportSource.Parameters.Add("SoPhieu", "PN07");
         EmailBody = $"Hóa đơn phiếu nhập {phieuNhapService.GetSoPhieuNhapById(Int32.Parse(NHAPKHO_ID))} ngày {Date.ToString("dd/MM/yyyy")}";
     }
 
