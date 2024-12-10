@@ -41,6 +41,7 @@ namespace SCM_ThanhLong_Group.Service
                                 KhoID = int.Parse(reader["MAKHO"].ToString()),
                                 TenKho = reader["TENKHO"].ToString(),
                                 NgayNhap = DateTime.Parse(reader["NGAYNHAP"].ToString()),
+                                TrangThai = int.Parse(reader["TrangThai"].ToString())
                             };
                             dataList.Add(data);
                         }
@@ -280,8 +281,6 @@ namespace SCM_ThanhLong_Group.Service
 
             return soPhieuNhap;
         }
-
-
         public async Task<List<PhieuNhap>> GetAllPhieuNhapForException()
         {
             List<PhieuNhap> result = new List<PhieuNhap>();
@@ -305,5 +304,21 @@ namespace SCM_ThanhLong_Group.Service
             }
             return result;
         }
+
+        public async Task UpdateTrangThai(string autoId, int trangThai)
+        {
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+            {
+                await conn.OpenAsync();
+                using (OracleCommand cmd = new OracleCommand("UPDATE PHIEUNHAP SET TrangThai = :trangThai WHERE AUTO_ID = :autoId", conn))
+                {
+                    cmd.Parameters.Add(new OracleParameter("trangThai", trangThai));
+                    cmd.Parameters.Add(new OracleParameter("autoId", autoId));
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+
     }
 }
