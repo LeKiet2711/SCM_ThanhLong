@@ -62,7 +62,6 @@ namespace SCM_ThanhLong_Group.Service
             }
         }
 
-
         public async Task<bool> isTheUserLocked(string userName)
         {
             bool result = false;
@@ -243,6 +242,59 @@ namespace SCM_ThanhLong_Group.Service
             catch (Exception ex)
             {
 
+            }
+        }
+        public async Task LoadSession()
+        {
+            using (var connection = _dbConnection.GetConnection("C##Admin", "oracle"))
+            {
+                await connection.OpenAsync();
+                using (var command = new OracleCommand("C##ADMIN.Load_Function", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        public async Task LoadSessionUser()
+        {
+            using (var connection = _dbConnection.GetConnection("C##Admin", "oracle"))
+            {
+                await connection.OpenAsync();
+                using (var command = new OracleCommand("C##ADMIN.LOADFUNCTIONUSER", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        public async Task GrantPermissionNhap(string username)
+        {
+            using (var connection = _dbConnection.GetConnection("C##Admin", "oracle"))
+            {
+                await connection.OpenAsync();
+                using (var command = new OracleCommand("C##ADMIN.GrantPermissionsNhapToUser", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add("p_username", OracleDbType.Varchar2).Value = username;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        public async Task GrantPermissionXuat(string username)
+        {
+            using (var connection = _dbConnection.GetConnection("C##Admin", "oracle"))
+            {
+                await connection.OpenAsync();
+                using (var command = new OracleCommand("C##ADMIN.GrantPermissionsXuatToUser", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add("p_username", OracleDbType.Varchar2).Value = username;
+                    await command.ExecuteNonQueryAsync();
+                }
             }
         }
 

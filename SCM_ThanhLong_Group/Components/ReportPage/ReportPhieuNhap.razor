@@ -12,7 +12,6 @@
     }
 </style>
 
-
 <PageTitle>Report Viewer</PageTitle>
 
 <ReportViewer ServiceUrl="/api/reports"
@@ -29,12 +28,11 @@
               ServiceType="@ReportViewerServiceType.REST"
               Height="900px"
               Width="100%">
-       <ReportViewerSettings>
-        <SendEmailDialogSettings
-            From="lgklgk2711@gmail.com"
-            Cc=""
-            Subject="Hóa đơn"
-            Body="@EmailBody">
+    <ReportViewerSettings>
+        <SendEmailDialogSettings From="lgklgk2711@gmail.com"
+                                 Cc=""
+                                 Subject="Hóa đơn"
+                                 Body="@EmailBody">
         </SendEmailDialogSettings>
     </ReportViewerSettings>
 </ReportViewer>
@@ -49,11 +47,13 @@
     public bool ParametersAreaVisible { get; set; }
     public bool DocumentMapVisible { get; set; }
     public double Scale { get; set; } = 1.0;
-    public double SoTien;
+    public decimal SoTien;
+    public string SoTienBangChu;
     public DateTime Date;
+    public string SoPhieuNhap;
 
     [Parameter]
-    public string NHAPKHO_ID{ get; set; }
+    public string NHAPKHO_ID { get; set; }
 
     public string EmailBody { get; set; }
 
@@ -62,13 +62,16 @@
         // Add parameters if applicable
     });
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        SoTien = await phieuNhapService.TinhTongTienPhieuNhap(Int32.Parse(NHAPKHO_ID));
+        SoPhieuNhap = await phieuNhapService.GetSoPhieuNhapById(Int32.Parse(NHAPKHO_ID));
+        SoTienBangChu = chuyenSoSangChu((double)SoTien);
         Date = DateTime.Now;
         ReportSource.Parameters.Add("NHAPKHO_ID", NHAPKHO_ID);
-        ReportSource.Parameters.Add("SoTien", "1,700");
-        ReportSource.Parameters.Add("SoPhieu", "PN07");
-        EmailBody = $"Hóa đơn phiếu nhập {phieuNhapService.GetSoPhieuNhapById(Int32.Parse(NHAPKHO_ID))} ngày {Date.ToString("dd/MM/yyyy")}";
+        ReportSource.Parameters.Add("SoTien", SoTienBangChu);
+        ReportSource.Parameters.Add("SoPhieu", SoPhieuNhap);
+        EmailBody = $"Hóa đơn phiếu nhập {SoPhieuNhap} ngày {Date.ToString("dd/MM/yyyy")}";
     }
 
     static string chuyenSoSangChu(double number)

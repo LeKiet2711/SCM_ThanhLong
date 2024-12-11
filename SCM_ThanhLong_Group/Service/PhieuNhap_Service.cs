@@ -50,9 +50,6 @@ namespace SCM_ThanhLong_Group.Service
             }
             return dataList;
         }
-
-
-
         public async Task<List<HoTrong>> getHoTrongData()
         {
             List<HoTrong> dataList = new List<HoTrong>();
@@ -236,6 +233,31 @@ namespace SCM_ThanhLong_Group.Service
                 }
             }
         }
+        public async Task<decimal> TinhTongTienPhieuNhap(int phieuNhapId)
+        {
+            decimal tongTien = 0;
+
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+            {
+                await conn.OpenAsync();
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetTongTienPhieuNhap", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("p_phieuNhapId", OracleDbType.Int32).Value = phieuNhapId;
+                    var tongTienParam = new OracleParameter("p_tongTien", OracleDbType.Decimal)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(tongTienParam);
+
+                    await cmd.ExecuteNonQueryAsync();
+
+                    tongTien = ((OracleDecimal)tongTienParam.Value).Value;
+                }
+            }
+
+            return tongTien;
+        }
 
         public async Task deleteData(string id)
         {
@@ -282,7 +304,7 @@ namespace SCM_ThanhLong_Group.Service
             return soPhieuNhap;
         }
 
-        public async Task<List<PhieuNhap>> GetAllPhieuNhapForException()
+        public async Task<List<PhieuNhap>> getAllPhieuNhapForException()
         {
             List<PhieuNhap> result = new List<PhieuNhap>();
             using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
