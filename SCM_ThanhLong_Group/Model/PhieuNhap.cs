@@ -12,6 +12,7 @@ namespace SCM_ThanhLong_Group.Model
         public int KhoID { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn ngày nhập hợp lệ")]
         public DateTime? NgayNhap { get; set; }
+        public int? TrangThai { get; set; }
         public int isDeleted { get; set; }
         public HoTrong HoTrong { get; set; }
         public Kho Kho { get; set; }

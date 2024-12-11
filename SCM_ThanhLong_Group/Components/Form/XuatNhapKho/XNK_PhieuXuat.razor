@@ -6,6 +6,7 @@
 @inject IToastService ToastService
 @inject Users_Service Users_Service
 @inject Users user
+@inject IJSRuntime JSRuntime
 
 <link href="css/form.css" rel="stylesheet" />
 <span class="chu-dep" style="text-align:center;font-weight:bold">Phiếu xuất kho</span>
@@ -39,6 +40,16 @@ else
              <GridColumn Field="@nameof(PhieuXuat.SoPhieuXuat)" Title="Số phiếu xuất" Width="100px" /> 
              <GridColumn Field="@nameof(PhieuXuat.TenKho)" Title="Tên kho" Width="100px" /> 
              <GridColumn Field="@nameof(PhieuXuat.NgayXuat)" Title="Ngày xuất" Width="100px" /> 
+             <GridColumn Title="Trạng thái" Width="150px">
+                 <Template>
+                    @{
+                        var phieuXuat = (PhieuXuat)context;
+                        string buttonClass = phieuXuat.TrangThai == 1 ? "btn btn-success" : "btn btn-warning";
+                        string buttonText = phieuXuat.TrangThai == 1 ? "Đã xử lý" : "Chưa được xử lý";
+                    }
+                    <button class="@buttonClass" disabled style="cursor: not-allowed; opacity: 0.65;">@buttonText</button>
+                </Template>
+            </GridColumn>
              <GridCommandColumn Width="180px"> 
                  <GridCommandButton Command="Edit" OnClick="@EditItem"> 
                      <span class="oi oi-pencil" Width="100px"></span> Sửa 
@@ -56,7 +67,6 @@ else
          </GridColumns> 
      </TelerikGrid> 
 }
-
 
 <div class="modal fade @addModalClass" tabindex="-1" role="dialog" style="@addModalDisplayStyle">
     <div class="modal-dialog modal-lg" role="document">
@@ -189,6 +199,9 @@ else
             </div>
             <div class="modal-body">
                 <div class="form-group">
+                    <p style="color:red;">Quy chuẩn nhập: Đơn giá = 40 => 40000 VND, Số Kg = 500 => 500kg</p>
+                </div>
+                <div class="form-group">
                     <InputSelect class="form-control" @bind-Value="@newChiTiet.MaLo">
                         <option value="">-- Chọn lô thanh long --</option>
                         @foreach (var item in loThanhLongList)
@@ -242,14 +255,18 @@ else
     private string username;
     private string password;
 
+    private bool IsAdmin => user.username == "C##ADMIN";
+
     protected override async Task OnInitializedAsync()
     {
         try{
             user.username = "C##" + await Users_Service.GetCurrentUserName();
             user.password = await Users_Service.GetCurrentPassWord();
+            await Users_Service.GrantPermissionXuat(user.username);
             hoTrongList = await PhieuXuat_Service.getHoTrongData();
             khoList = await PhieuXuat_Service.getKhoData();
             loThanhLongList = await PhieuXuat_Service.getLoThanhLongData();
+            await LoadSessionByUser();
         }
         catch
         {
@@ -272,6 +289,11 @@ else
 
     private void OpenAddModal()
     {
+        if(khoId == 0)
+        {
+            ToastService.ShowError("Vui lòng chọn kho trước khi thêm phiếu xuất!");
+            return;
+        }
         phieuXuat = new PhieuXuat();
         addModalClass = "show";
         addModalDisplayStyle = "display:block";
@@ -437,23 +459,78 @@ else
     private void EditItem(GridCommandEventArgs args)
     {
         var item = (PhieuXuat)args.Item;
-        OpenEditModal(item);
+        if (item.TrangThai == 0 || (item.TrangThai == 1 && IsAdmin))
+        {
+            OpenEditModal(item);
+        }
+        else
+        {
+            ToastService.ShowError("Phiếu xuất đã được xử lý vui lòng liên hệ admin để biết thêm!");
+        }
     }
 
     private void DeleteItem(GridCommandEventArgs args)
     {
         var item = (PhieuXuat)args.Item;
-        OpenDeleteModal(item);
+        if (item.TrangThai == 0 || (item.TrangThai == 1 && IsAdmin))
+        {
+            OpenDeleteModal(item);
+        }
+        else
+        {
+            ToastService.ShowError("Phiếu xuất đã được xử lý vui lòng liên hệ admin để biết thêm!");
+        }
     }
 
     private void ViewDetails(int Auto_ID)
     {
+        var phieuXuat = dataList.FirstOrDefault(p => p.Auto_ID == Auto_ID);
+        if (phieuXuat != null && phieuXuat.TrangThai == 1)
+        {
+            ToastService.ShowError("Phiếu xuất đã được xử lý, không thể xem chi tiết!");
+            return;
+        }
         Navigation.NavigateTo($"/chitietphieuxuat/{Auto_ID}");
     }
 
-    private void ExportReport(string Auto_ID)
+
+    private async Task ExportReport(string Auto_ID)
     {
-        Navigation.NavigateTo($"/reportxuatkho/{Auto_ID}");
+        var phieuXuat = dataList.FirstOrDefault(p => p.Auto_ID.ToString() == Auto_ID);
+        if (phieuXuat != null && phieuXuat.TrangThai == 1)
+        {
+            Navigation.NavigateTo($"/reportxuatkho/{Auto_ID}");
+            return;
+        }
+        bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", new object[] { "Bạn có chắc chắn xác nhận đã xử lý phiếu xuất không?" });
+        if (isConfirmed)
+        {
+            await UpdatePhieuXuatStatus(Auto_ID);
+            Navigation.NavigateTo($"/reportxuatkho/{Auto_ID}");
+        }
     }
 
+    private async Task UpdatePhieuXuatStatus(string Auto_ID)
+    {
+        try
+        {
+            await PhieuXuat_Service.UpdateTrangThai(Auto_ID, 1);
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+
+    private async Task LoadSessionByUser()
+    {
+        if (user.username == "C##ADMIN")
+        {
+            await Users_Service.LoadSessionUser();
+        }
+        else
+        {
+            await Users_Service.LoadSession();
+        }
+    }
 }

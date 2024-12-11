@@ -46,6 +46,9 @@ else
             <div class="modal-body">
                 <EditForm Model="@ctpx" OnValidSubmit="createChiTietPhieuXuat">
                     <div class="form-group">
+                        <p style="color:red;">Quy chuẩn nhập: Đơn giá = 40 => 40000 VND, Số Kg = 500 => 500kg</p>
+                    </div>
+                    <div class="form-group">
                         <label for="MaLo" class="control-label"><b>Mã lô hàng: </b></label>
                         <InputSelect class="form-control" @bind-Value="@ctpx.MaLo">
                             <option value="">-- Chọn lô thanh long --</option>
