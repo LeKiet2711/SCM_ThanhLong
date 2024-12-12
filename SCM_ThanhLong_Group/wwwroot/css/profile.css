@@ -8,6 +8,7 @@
     border-radius: 20px;
     padding: 20px;
     margin: auto;
+    position: relative;
     background: url('https://cdn.pixabay.com/photo/2014/12/07/09/30/milky-way-559641_1280.jpg');
 }
 
