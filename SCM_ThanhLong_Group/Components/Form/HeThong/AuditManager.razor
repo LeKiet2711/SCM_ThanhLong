@@ -209,13 +209,19 @@
         }
         else
         {
-            await auditService.create_audit_policy_standard(auditName, auditActions, auditTable);
-            await iJSRuntime.InvokeVoidAsync("alert", $"tạo chính sách KT_{auditName.ToUpper()} thành công");
-            show = "display:none";
-            StateHasChanged();
-            auditActions="";
-            auditName="";
-            auditTable="";
+            if (await auditService.create_audit_policy_standard(auditName, auditActions, auditTable))
+            {
+                await iJSRuntime.InvokeVoidAsync("alert", $"tạo chính sách KT_{auditName.ToUpper()} thành công");
+                show = "display:none";
+                StateHasChanged();
+                auditActions = "";
+                auditName = "";
+                auditTable = "";
+            }
+            else
+            {
+                await iJSRuntime.InvokeVoidAsync("alert", $"Hiện chưa thể thực hiện được lệnh! vui lòng nhấn nút đóng để thoát và liên hệ bộ phận IT để giải quyết! Cảm ơn!!!");
+            }
 
         }
 

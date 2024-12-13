@@ -140,7 +140,7 @@ namespace SCM_ThanhLong_Group.Service
             bool result = false;
             try
             {
-                using (OracleConnection kn = _dbConnection.GetConnection("C##ADMIN", "oracle"))
+                using (OracleConnection kn = _dbConnection.GetConnection("C##ADMIN", "oracle" ))//"sys", "sys", "SYSDBA"
                 {
                     OracleCommand oracleCommand = new OracleCommand("create_audit_policy_standard", kn);
                     oracleCommand.Parameters.Add("audit_name", OracleDbType.Varchar2).Value = auditName;
@@ -151,6 +151,7 @@ namespace SCM_ThanhLong_Group.Service
                     kn.Open();
                     oracleCommand.ExecuteNonQuery();
                     kn.Close();
+                    result = true;
                 }
             }
             catch (Exception e)

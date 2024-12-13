@@ -106,7 +106,7 @@ namespace SCM_ThanhLong_Group.Service
 
         public async Task<bool> createProfile(string tenProfile, string thuocTinh)
         {
-            string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
+            //string dbaPrivilege = _user.username.Equals("sys", StringComparison.OrdinalIgnoreCase) ? "SYSDBA" : null;
 
             using (OracleConnection kn = _dbConnection.GetConnection("sys","sys","sysdba"))
             {
