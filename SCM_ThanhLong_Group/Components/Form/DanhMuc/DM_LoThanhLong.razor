@@ -311,20 +311,25 @@ else
 
     private async Task GenerateQRCode(GridCommandEventArgs args)
     {
-        string sql = "GRANT EXECUTE ON C##Admin.GetLinkQRByLoThanhLong TO C##TET";
+        string sql = "GRANT EXECUTE ON C##Admin.GetLinkQRByLoThanhLong TO "+user.username;
         await Users_Service.ExecuteSqlCommand(sql);
         var item = (LoThanhLong)args.Item;
         loThanhLong = item.ShallowCopy();
         string linkQR = await loThanhLong_Service.GetLinkQRByLoThanhLongID(loThanhLong.Auto_ID);
+
+        var hoTrong = lstHoTrong.FirstOrDefault(ht => ht.Auto_ID == loThanhLong.HoTrongID);
+        string hoTrongInfo = hoTrong != null ? $"{hoTrong.MaHoTrong} - {hoTrong.TenHoTrong} - {hoTrong.DiaChi}" : "Thông tin hộ trồng không có sẵn";
+        string qrContent = $"Hộ trồng: {hoTrongInfo}\n{linkQR}";
+
         using (var qrGenerator = new QRCoder.QRCodeGenerator())
         {
-            var qrCodeData = qrGenerator.CreateQrCode(linkQR, QRCoder.QRCodeGenerator.ECCLevel.Q);
+            var qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCoder.QRCodeGenerator.ECCLevel.Q);
 
-            // PngByteQRCode generate 
+            //Chuyển định dạng code của QR Code thành dạng PNG
             var qrCode = new QRCoder.PngByteQRCode(qrCodeData);
             var qrCodeBytes = qrCode.GetGraphic(20);
 
-            // Convert QR Code image to Base64 to display
+            // Convert PNG QR Code thành Base64 để hiển thị
             loThanhLong.QRCode = Convert.ToBase64String(qrCodeBytes);
         }
 

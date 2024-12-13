@@ -5,7 +5,7 @@
 @rendermode InteractiveServer
 @layout LoginLayout
 
-<link href="css/cks_nguoinhan.csss" rel="stylesheet" />
+<link href="css/cks_nguoinhan.css" rel="stylesheet" />
 <div class="container">
     <h3>Xác thực chữ ký số hóa đơn</h3>
 
@@ -51,7 +51,7 @@
     private string uploadedSignedFileName;
     private bool? isSignatureValid;
     private string publicKey;
-    private string uploadedPublicKeyFileName; // Dùng để lưu tên file public key đã tải lên
+    private string uploadedPublicKeyFileName;
 
     private async Task UploadSignedFile(InputFileChangeEventArgs e)
     {

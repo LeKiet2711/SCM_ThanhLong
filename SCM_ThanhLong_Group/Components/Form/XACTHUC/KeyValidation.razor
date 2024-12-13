@@ -177,7 +177,22 @@
                         mail.From = new MailAddress("scmmanagesoftware@gmail.com");
                         mail.To.Add($"{gmail}");
                         mail.Subject = "Xác thực người dùng";
-                        mail.Body = $"<h1>Mã của bạn: {generatedCode}</h1>";
+                        mail.Body = $@"
+                                    <!DOCTYPE html>
+                                    <html lang='en'>
+                                    <head>
+                                        <meta charset='UTF-8'>
+                                        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                                    </head>
+                                    <body>
+                                        <h1>Xác nhận mã của bạn</h1>
+                                        <p>Xin chào,</p>
+                                        <p>Để tiếp tục, vui lòng sử dụng mã xác thực dưới đây:</p>
+                                        <p><strong>{generatedCode}</strong></p>
+                                        <p>Lưu ý: Mã xác thực chỉ có hiệu lực trong vòng 60 giây. Nếu bạn không yêu cầu mã này, vui lòng bỏ qua email.</p>
+                                        <p>Trân trọng,<br>Đội ngũ hỗ trợ</p>
+                                    </body>
+                                    </html>";
                         mail.IsBodyHtml = true;
 
                         using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
