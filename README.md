@@ -9,29 +9,20 @@
   <ol>
     <li>
       <a href="#about-the-project">Tổng quan</a>
-      <ul>
-        <li><a href="#built-with">Công nghệ sử dụng</a></li>
-      </ul>
     </li>
     <li>
       <a href="#introduce">Giới thiệu</a>
-      <ul>
-        <li><a href="#prerequisites">Điều kiện tiên quyết</a></li>
-        <li><a href="#installation">Cài đặt</a></li>
-      </ul>
       <a href="#member">Thành viên nhóm</a>
-      <a href="#feature">Tính năng</a>
-      <a href="#explain">Đặc tả tính năng</a>
+      <a href="#build-with">Công nghệ sử dụng</a>
+      <a href="#function">Chức năng nổi bật</a>
     </li>
-    <li><a href="#usage">Cách dùng</a></li>
   </ol>
 </details>
 
 
 <!-- VỀ DỰ ÁN -->
 
-<h1 id="introduce">Introduce</h1>
-
+<h1 id="introduce">Giới thiệu</h1>
 <hr>
         <h1>Giới thiệu ứng dụng quản lý cung ứng Thanh Long Bình Thuận</h1>
         <p>Ứng dụng quản lý kho là một phần mềm được thiết kế để tối ưu hóa các hoạt động liên quan đến việc lưu trữ và quản lý hàng hóa trong một kho hàng. Phần mềm này giúp các doanh nghiệp theo dõi hàng tồn kho, quản lý nhập xuất hàng, kiểm soát chất lượng và nâng cao hiệu quả hoạt động của kho.</p>
@@ -60,7 +51,7 @@
 * ![Blazor Badge](https://img.shields.io/badge/Blazor-512BD4?logo=blazor&logoColor=fff&style=plastic)
 * ![Oracle Badge](https://img.shields.io/badge/Oracle-E8000D?logo=oracle&logoColor=fff&style=plastic)
       
-<h2 id="ai">Chức năng nổi bật</h2>
+<h2 id="function">Chức năng nổi bật</h2>
 <p><b>Định danh xác thực sử dụng mã hóa DES</b></p>
 <p><b>Tạo hóa đơn ký số sử dụng mã hóa RSA</b></p>
 <p><b>Phân quyền 2 cấp độ</b></p>
