@@ -11,9 +11,12 @@
       <a href="#about-the-project">Tổng quan</a>
     </li>
     <li>
-      <a href="#introduce">Giới thiệu</a>
       <a href="#member">Thành viên nhóm</a>
+    </li>
+    <li>
       <a href="#build-with">Công nghệ sử dụng</a>
+    </li>
+    <li>
       <a href="#function">Chức năng nổi bật</a>
     </li>
   </ol>
@@ -22,16 +25,15 @@
 
 <!-- VỀ DỰ ÁN -->
 
-<h1 id="introduce">Giới thiệu</h1>
+<h1 id="about-the-project">TỔNG QUAN</h1>
 <hr>
         <h1>Giới thiệu ứng dụng quản lý cung ứng Thanh Long Bình Thuận</h1>
-        <p>Ứng dụng quản lý kho là một phần mềm được thiết kế để tối ưu hóa các hoạt động liên quan đến việc lưu trữ và quản lý hàng hóa trong một kho hàng. Phần mềm này giúp các doanh nghiệp theo dõi hàng tồn kho, quản lý nhập xuất hàng, kiểm soát chất lượng và nâng cao hiệu quả hoạt động của kho.</p>
-<h2>Mục tiêu của dự án</h2>
+        <p>Hệ thống SCM_ThanhLong được phát triển nhằm tối ưu hóa quy trình cung ứng thanh long. Ứng dụng được xây dựng trên nền tảng Blazor .NET, kết hợp với Oracle Database để đảm bảo hiệu suất cao và khả năng bảo mật mạnh mẽ. Hệ thống chủ trương chú trọng kiểm soát người dùng và bảo mật thông tin nhằm bảo vệ dữ liệu.</h2>
         <ul>
-            <li>Thay thế phương pháp thủ công: Giảm thiểu sai sót, tăng tốc độ xử lý thông tin.</li>
-            <li>Tăng độ chính xác: Đảm bảo thông tin về hàng hóa luôn được cập nhật và chính xác.</li>
-            <li>Tối ưu hóa không gian: Sắp xếp hàng hóa hợp lý, giảm thiểu lãng phí diện tích.</li>
-            <li>Nâng cao hiệu quả làm việc: Tự động hóa các công việc lặp đi lặp lại, giảm bớt gánh nặng cho nhân viên.</li>
+            <li>Tăng cường bảo mật dữ liệu: Ứng dụng các thuật toán mã hóa DES, RSA để đảm bảo an toàn thông tin.</li>
+            <li>Tối ưu quy trình quản lý kho: Theo dõi hàng tồn kho theo thời gian thực, giảm thiểu thất thoát và sai sót.</li>
+            <li>Tối ưu hóa đơn và dữ liệu: Xuất hóa đơn điện tử có ký số và theo dõi lịch sử thay đổi dữ liệu.</li>
+            <li>Cải thiện hiệu suất làm việc: Giảm tải công việc cho nhân viên bằng cách số hóa các quy trình nhập/xuất kho.</li>
         </ul>
 
 <h1 id="member">Thành viên nhóm</h1>
