@@ -1,17 +1,18 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 using SCM_ThanhLong_Group.Components.Connection;
+using SCM_ThanhLong_Group.Interface;
 using SCM_ThanhLong_Group.Model;
 using System.Data;
 
-namespace SCM_ThanhLong_Group.Service
+namespace SCM_ThanhLong_Group.Repository
 {
-    public class PhieuXuat_Service
+    public class PhieuXuatRepository:IPhieuXuatRepository
     {
         private readonly OracleDbConnection _dbConnection;
         private readonly Users _user;
 
-        public PhieuXuat_Service(OracleDbConnection dbConnection, Users user)
+        public PhieuXuatRepository(OracleDbConnection dbConnection, Users user)
         {
             _dbConnection = dbConnection;
             _user = user;
@@ -231,10 +232,10 @@ namespace SCM_ThanhLong_Group.Service
         {
             string soPhieuXuat = "";
 
-            using(OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
+            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
             {
                 await conn.OpenAsync();
-                using(OracleCommand cmd=new OracleCommand("C##Admin.GetSoPhieuXuatByID", conn))
+                using (OracleCommand cmd = new OracleCommand("C##Admin.GetSoPhieuXuatByID", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = xuatkhoid;

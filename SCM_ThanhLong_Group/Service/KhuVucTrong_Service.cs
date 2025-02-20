@@ -4,142 +4,52 @@ using SCM_ThanhLong_Group.Model;
 using SCM_ThanhLong_Group.Components.Connection;
 using System.Data;
 using System.Threading.Tasks;
+using SCM_ThanhLong_Group.Interface;
 
 namespace SCM_ThanhLong_Group.Service
 {
     public class KhuVucTrong_Service
     {
-        private readonly OracleDbConnection _dbConnection;
-        private readonly Users _user;
+        private readonly IKhuVucTrongRepository _kvtRepository;
 
-        public KhuVucTrong_Service(OracleDbConnection dbConnection, Users user)
+        public KhuVucTrong_Service(IKhuVucTrongRepository kvtRepository)
         {
-            _dbConnection = dbConnection;
-            _user = user;
+            _kvtRepository = kvtRepository;
         }
 
         public async Task<List<KhuVucTrong>> getAllData()
         {
-            List<KhuVucTrong> dataList = new List<KhuVucTrong>();
-
-            using (OracleConnection conn = _dbConnection.GetConnection(_user.username,_user.password))
-            {
-                await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.GetAllKhuVucTrong", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("p_cursor", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-
-                    using (OracleDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var data = new KhuVucTrong
-                            {
-                                Auto_ID = int.Parse(reader["Auto_ID"].ToString()),
-                                MaKhuVuc = reader["MaKhuVuc"].ToString(),
-                                TenKhuVuc = reader["TenKhuVuc"].ToString(),
-                                MoTa = reader["MoTa"].ToString(),
-                                LinkQR = reader["LinkQR"].ToString()
-                            };
-                            dataList.Add(data);
-                        }
-                    }
-                }
-            }
-            return dataList;
+            return await _kvtRepository.getAllData();
         }
 
         public KhuVucTrong getDataByID(string id)
         {
-            KhuVucTrong data = new KhuVucTrong();
-
-            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
-            {
-                conn.Open();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.GetKhuVucTrongByID", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    // Thêm tham số đầu vào
-                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = int.Parse(id);
-
-                    // Thêm các tham số đầu ra
-                    cmd.Parameters.Add("p_MaKhuVuc", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_TenKhuVuc", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_MoTa", OracleDbType.Varchar2, 200).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_LinkQR", OracleDbType.Varchar2, 200).Direction = ParameterDirection.Output;
-
-                    // Thực thi stored procedure
-                    cmd.ExecuteNonQuery();
-
-                    data.MaKhuVuc = cmd.Parameters["p_MaKhuVuc"].Value?.ToString() ?? string.Empty;
-                    data.TenKhuVuc = cmd.Parameters["p_TenKhuVuc"].Value?.ToString() ?? string.Empty;
-                    data.MoTa = cmd.Parameters["p_MoTa"].Value?.ToString() ?? string.Empty;
-                    data.LinkQR = cmd.Parameters["p_LinkQR"].Value?.ToString() ?? string.Empty;
-                }
-            }
-            return data;
+            return _kvtRepository.getDataByID(id);
         }
 
         public async Task addData(KhuVucTrong khuVucTrong)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
-            {
-                await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.AddKhuVucTrong", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.Add("p_MaKhuVuc", OracleDbType.Varchar2).Value = khuVucTrong.MaKhuVuc;
-                    cmd.Parameters.Add("p_TenKhuVuc", OracleDbType.Varchar2).Value = khuVucTrong.TenKhuVuc;
-                    cmd.Parameters.Add("p_MoTa", OracleDbType.Varchar2).Value = khuVucTrong.MoTa;
-                    cmd.Parameters.Add("p_LinkQR", OracleDbType.Varchar2).Value = khuVucTrong.LinkQR;
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
+            await _kvtRepository.addData(khuVucTrong);
         }
 
         public async Task updateData(KhuVucTrong khuVucTrong)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
-            {
-                await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.UpdateKhuVucTrong", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = khuVucTrong.Auto_ID;
-                    cmd.Parameters.Add("p_MaKhuVuc", OracleDbType.Varchar2).Value = khuVucTrong.MaKhuVuc;
-                    cmd.Parameters.Add("p_TenKhuVuc", OracleDbType.Varchar2).Value = khuVucTrong.TenKhuVuc;
-                    cmd.Parameters.Add("p_MoTa", OracleDbType.Varchar2).Value = khuVucTrong.MoTa;
-                    cmd.Parameters.Add("p_LinkQR", OracleDbType.Varchar2).Value = khuVucTrong.LinkQR;
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
+            await _kvtRepository.updateData(khuVucTrong);
         }
 
         public async Task deleteData(string Auto_ID)
         {
-            using (OracleConnection conn = _dbConnection.GetConnection(_user.username, _user.password))
-            {
-                await conn.OpenAsync();
-                using (OracleCommand cmd = new OracleCommand("C##Admin.DeleteKhuVucTrong", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("p_Auto_ID", OracleDbType.Int32).Value = Auto_ID;
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
+            await _kvtRepository.deleteData(Auto_ID);
         }
 
         public async Task<bool> isMaKhuVucExist(KhuVucTrong khuVucTrong, List<KhuVucTrong> lstData, string ma)
         {
-            return lstData.Any(k => k.MaKhuVuc == khuVucTrong.MaKhuVuc && khuVucTrong.MaKhuVuc != ma);
+            return await _kvtRepository.isMaKhuVucExist(khuVucTrong, lstData, ma);
         }
 
         public async Task<bool> isTenKhuVucExist(KhuVucTrong khuVucTrong, List<KhuVucTrong> lstData, string ma)
         {
-            return lstData.Any(k => k.TenKhuVuc == khuVucTrong.TenKhuVuc && khuVucTrong.TenKhuVuc != ma);
-        }
+            return await _kvtRepository.isTenKhuVucExist(khuVucTrong, lstData, ma);
+        }    
     }
 }
