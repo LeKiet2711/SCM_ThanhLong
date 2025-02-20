@@ -315,7 +315,7 @@ else
         await Users_Service.ExecuteSqlCommand(sql);
         var item = (LoThanhLong)args.Item;
         loThanhLong = item.ShallowCopy();
-        string linkQR = await loThanhLong_Service.GetLinkQRByLoThanhLongID(loThanhLong.Auto_ID);
+        string linkQR = await loThanhLong_Service.getLinkQRByLoThanhLongID(loThanhLong.Auto_ID);
 
         var hoTrong = lstHoTrong.FirstOrDefault(ht => ht.Auto_ID == loThanhLong.HoTrongID);
         string hoTrongInfo = hoTrong != null ? $"{hoTrong.MaHoTrong} - {hoTrong.TenHoTrong} - {hoTrong.DiaChi}" : "Thông tin hộ trồng không có sẵn";
@@ -342,7 +342,7 @@ else
         await Users_Service.ExecuteSqlCommand(sql);
         var item = args;
         loThanhLong = item.ShallowCopy();
-        string linkQR = await loThanhLong_Service.GetLinkQRByLoThanhLongID(loThanhLong.Auto_ID);
+        string linkQR = await loThanhLong_Service.getLinkQRByLoThanhLongID(loThanhLong.Auto_ID);
         using (var qrGenerator = new QRCoder.QRCodeGenerator())
         {
             var qrCodeData = qrGenerator.CreateQrCode(linkQR, QRCoder.QRCodeGenerator.ECCLevel.Q);

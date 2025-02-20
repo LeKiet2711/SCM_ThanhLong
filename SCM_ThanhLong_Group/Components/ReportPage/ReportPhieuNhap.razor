@@ -64,8 +64,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        SoTien = await phieuNhapService.TinhTongTienPhieuNhap(Int32.Parse(NHAPKHO_ID));
-        SoPhieuNhap = await phieuNhapService.GetSoPhieuNhapById(Int32.Parse(NHAPKHO_ID));
+        SoTien = await phieuNhapService.tinhTongTienPhieuNhap(Int32.Parse(NHAPKHO_ID));
+        SoPhieuNhap = await phieuNhapService.getSoPhieuNhapById(Int32.Parse(NHAPKHO_ID));
         SoTienBangChu = chuyenSoSangChu((double)SoTien);
         Date = DateTime.Now;
         ReportSource.Parameters.Add("NHAPKHO_ID", NHAPKHO_ID);

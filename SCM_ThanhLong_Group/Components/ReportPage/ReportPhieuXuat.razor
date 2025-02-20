@@ -63,12 +63,12 @@
     protected override async Task OnInitializedAsync()
     {
         Date = DateTime.Now;
-        SoKG = await phieuXuatService.GetSoKgByID(Int32.Parse(XUATKHO_ID));
+        SoKG = await phieuXuatService.getSoKgByID(Int32.Parse(XUATKHO_ID));
 
         ReportSource.Parameters.Add("XUATKHO_ID", XUATKHO_ID);
         ReportSource.Parameters.Add("SoKG", SoKG);
         ReportSource.Parameters.Add("strSoKG", chuyenSoThanhChu(SoKG));
-        EmailBody = $"Hóa đơn phiếu xuất {phieuXuatService.GetSoPhieuXuatByID(Int32.Parse(XUATKHO_ID))} ngày {Date.ToString("dd/MM/yyyy")}";
+        EmailBody = $"Hóa đơn phiếu xuất {phieuXuatService.getSoPhieuXuatByID(Int32.Parse(XUATKHO_ID))} ngày {Date.ToString("dd/MM/yyyy")}";
     }
 
     static string chuyenSoThanhChu(double number)

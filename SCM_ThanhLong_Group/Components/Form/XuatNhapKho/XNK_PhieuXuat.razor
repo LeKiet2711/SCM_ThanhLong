@@ -283,7 +283,7 @@ else
 
     private async Task LoadData(int maKho)
     {
-        dataListException= await PhieuXuat_Service.GetAllPhieuXuatForException();
+        dataListException= await PhieuXuat_Service.getAllPhieuXuatForException();
         dataList = await PhieuXuat_Service.getAllData(maKho,user.username);
     }
 
@@ -514,7 +514,7 @@ else
     {
         try
         {
-            await PhieuXuat_Service.UpdateTrangThai(Auto_ID, 1);
+            await PhieuXuat_Service.updateTrangThai(Auto_ID, 1);
         }
         catch (Exception e)
         {
